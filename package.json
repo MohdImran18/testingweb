@@ -1,4 +1,4 @@
-﻿{
+{
     "name":  "clearbot-premium-nextjs",
     "version":  "2.0.0",
     "private":  true,
@@ -9,7 +9,7 @@
                     "build":  "next build",
                     "start":  "concurrently -k -n API,NEXT -c blue,green \"npm:start:api\" \"npm:start:web\"",
                     "start:api":  "node server.js",
-                    "start:web":  "next start -H 0.0.0.0 -p ${PORT:-3001}"
+                    "start:web":  "next start -H 0.0.0.0 -p $PORT"
                 },
     "engines":  {
                     "node":  "\u003e=20.9.0"
