@@ -1,4 +1,4 @@
-const http = require('node:http');
+﻿const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
@@ -6,8 +6,8 @@ const crypto = require('node:crypto');
 const ROOT = __dirname;
 const DATA_DIR = path.join(ROOT, 'data');
 const DATA_FILE = path.join(DATA_DIR, 'enquiries.json');
-const PORT = Number(process.env.PORT || 3000);
-const HOST = process.env.HOST || '127.0.0.1';
+const PORT = Number(process.env.API_PORT || 3000);
+const HOST = '127.0.0.1';
 const MAX_BODY = 32 * 1024;
 const MIME = { '.html':'text/html; charset=utf-8', '.css':'text/css; charset=utf-8', '.js':'text/javascript; charset=utf-8', '.json':'application/json; charset=utf-8', '.png':'image/png', '.jpg':'image/jpeg', '.jpeg':'image/jpeg', '.svg':'image/svg+xml', '.webp':'image/webp', '.xml':'application/xml; charset=utf-8', '.ico':'image/x-icon' };
 
@@ -97,3 +97,5 @@ const server = http.createServer(async (req, res) => {
 });
 
 server.listen(PORT, HOST, () => console.log(`Clearbot local website: http://${HOST}:${PORT}\nAPI health: http://${HOST}:${PORT}/api/health\nEnquiries are stored in data/enquiries.json`));
+
+
