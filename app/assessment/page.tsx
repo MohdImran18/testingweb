@@ -86,6 +86,15 @@ export default function AssessmentPage() {
       setError("Please complete all required fields and give consent to be contacted.");
       return;
     }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
+      setError("Please enter a valid work email address.");
+      return;
+    }
+    if (form.phone.replace(/\D/g, "").length < 6) {
+      setError("Please enter a valid phone number with country code.");
+      return;
+    }
+    if (busy) return;
     setBusy(true);
     try {
       const response = await fetch("/api/enquiries", {
@@ -93,9 +102,31 @@ export default function AssessmentPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...form,
+          fullName: form.fullName.trim(),
+          email: form.email.trim().toLowerCase(),
+          phone: form.phone.trim(),
+          company: form.company.trim(),
+          source: "website",
           sourcePage: "/assessment",
           formType: "project-assessment",
           formId: "clearbotProjectAssessment",
+          formFields: {
+            "Waterbody Type": form.waterbodyType,
+            "Cleaning Requirements": form.cleaningNeeds.join(", "),
+            "Country": form.country,
+            "City / State / Region": form.region,
+            "Waterbody Name": form.waterbodyName,
+            "Approximate Area": form.area ? `${form.area} ${form.areaUnit}` : "",
+            "Project Timeline": form.projectTimeline,
+            "Project Details": form.projectDetails,
+            "Full Name": form.fullName,
+            "Company": form.company,
+            "Job Title": form.jobTitle,
+            "Business Email": form.email,
+            "Phone Number": form.phone,
+            "Industry": form.industry,
+            "Consent": form.consent ? "Yes" : "No",
+          },
           useCase: [
             `Waterbody: ${form.waterbodyType}`,
             `Cleaning requirements: ${form.cleaningNeeds.join(", ")}`,

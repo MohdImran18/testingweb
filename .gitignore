@@ -1,9 +1,17 @@
-﻿node_modules/
+node_modules/
 .next/
 .env
 .env.*
 !.env.example
-data/enquiries.json
-backup-*/
 *.log
 .DS_Store
+data/admin-store.json
+backup-*/
+
+# Local data and sensitive records
+data/
+
+# Local backups
+*.backup
+*.pre-bom-backup
+tsconfig.json.backup

@@ -11,83 +11,185 @@ type Props = {
   title: string;
 };
 
-export default function LegacyDocument({ body, styles, links, scripts, title }: Props) {
+type SubmitControl = HTMLButtonElement | HTMLInputElement;
+
+function normaliseKey(value: string) {
+  return value.toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
+function getFormValues(form: HTMLFormElement) {
+  const values: Record<string, string> = {};
+  const data = new FormData(form);
+  for (const [key, entry] of data.entries()) {
+    if (typeof entry !== "string") continue;
+    const value = entry.trim();
+    if (!value) continue;
+    values[key] = values[key] ? `${values[key]}, ${value}` : value;
+  }
+  return values;
+}
+
+function pickField(values: Record<string, string>, ...aliases: string[]) {
+  const aliasSet = new Set(aliases.map(normaliseKey));
+  for (const [key, value] of Object.entries(values)) {
+    if (aliasSet.has(normaliseKey(key)) && value) return value;
+  }
+  return "";
+}
+
+export default function LegacyDocument({ body, styles, links, scripts }: Props) {
   useEffect(() => {
     const nodes: HTMLScriptElement[] = [];
     let cancelled = false;
 
-    // One shared handler wires every enquiry/contact form on every legacy page
-    // to the same backend. Capture phase prevents older mailto-only handlers
-    // from taking over the submit event.
+    // All legacy website enquiries are submitted through the same API used by
+    // Project Assessment. Capture phase prevents old page scripts from opening mailto.
     const submitEnquiry = async (event: Event) => {
-      const target = event.target;
-      if (!(target instanceof HTMLFormElement)) return;
-      if (!target.matches('form')) return;
-      const hasSubmit = target.querySelector('button[type="submit"], input[type="submit"]');
-      if (!hasSubmit) return;
+      const form = event.target;
+      if (!(form instanceof HTMLFormElement)) return;
+      if (form.closest(".cb-admin-login-page, .cb-admin-shell")) return;
+      if (form.dataset.nativeSubmit === "true") return;
+
       event.preventDefault();
       event.stopImmediatePropagation();
-      if (!target.reportValidity()) return;
+      if (!form.reportValidity()) return;
 
-      const button = hasSubmit as HTMLButtonElement | HTMLInputElement;
-      const originalLabel = button instanceof HTMLInputElement ? button.value : button.textContent || 'Submit';
-      button.disabled = true;
-      if (button instanceof HTMLInputElement) button.value = 'Submitting…';
-      else button.textContent = 'Submitting…';
-
-      let feedback = target.querySelector<HTMLElement>('[role="status"], .form-feedback, .form-message, .form-status');
-      if (!feedback) {
-        feedback = document.createElement('div');
-        feedback.className = 'form-feedback';
-        feedback.setAttribute('role', 'status');
-        target.appendChild(feedback);
+      const submitter = (event as SubmitEvent).submitter;
+      const control = (submitter instanceof HTMLButtonElement || submitter instanceof HTMLInputElement)
+        ? submitter
+        : form.querySelector<SubmitControl>('button[type="submit"], input[type="submit"]');
+      const originalLabel = control instanceof HTMLInputElement
+        ? control.value
+        : control?.textContent || "Submit enquiry";
+      const wasDisabled = control?.disabled || false;
+      if (control) {
+        control.disabled = true;
+        if (control instanceof HTMLInputElement) control.value = "Submitting…";
+        else control.textContent = "Submitting…";
       }
-      feedback.style.display = 'block';
-      feedback.textContent = 'Sending your enquiry…';
 
-      const raw: Record<string, string> = {};
-      new FormData(target).forEach((value, key) => { raw[key] = String(value).trim(); });
-      const pick = (...keys: string[]) => {
-        for (const key of keys) {
-          const found = Object.entries(raw).find(([name]) => name.toLowerCase() === key.toLowerCase());
-          if (found?.[1]) return found[1];
+      let feedback = form.querySelector<HTMLElement>(
+        '[data-enquiry-feedback], [role="status"], .form-feedback, .form-message, .form-status'
+      );
+      if (!feedback) {
+        feedback = document.createElement("div");
+        feedback.className = "form-feedback";
+        feedback.setAttribute("role", "status");
+        feedback.setAttribute("aria-live", "polite");
+        form.appendChild(feedback);
+      }
+      feedback.style.display = "block";
+      feedback.classList.remove("is-success", "is-error");
+      feedback.textContent = "Sending your enquiry securely…";
+
+      const raw = getFormValues(form);
+      const fullName = pickField(raw, "Full Name", "Name", "Your Name", "Contact Name", "fullName", "fullname")
+        || [pickField(raw, "First Name", "firstName"), pickField(raw, "Last Name", "lastName")].filter(Boolean).join(" ");
+      const email = pickField(raw, "Business Email", "Email", "Email Address", "Work Email", "Your Email", "emailAddress", "email");
+      const phone = pickField(raw, "Phone Number", "Phone", "Mobile", "Mobile Number", "Telephone", "Contact Number", "phone");
+      const company = pickField(raw, "Company Name", "Company", "Organisation", "Organization", "Organisation Name", "company");
+      const jobTitle = pickField(raw, "Job Title", "Designation", "Role", "Position", "jobTitle");
+      const country = pickField(raw, "Country", "country");
+      const region = pickField(raw, "State / Region", "State", "Region", "City", "Location", "region");
+      const industry = pickField(raw, "Industry", "Sector", "Business Type", "industry");
+      const useCase = pickField(raw, "Use Case", "Message", "Project Details", "Enquiry", "Enquiry Details", "Requirements", "Comments", "How can we help", "useCase");
+
+      if (!fullName || !email || !phone) {
+        feedback.classList.add("is-error");
+        feedback.textContent = "Please provide your name, email address and phone number.";
+        if (control) {
+          control.disabled = wasDisabled;
+          if (control instanceof HTMLInputElement) control.value = String(originalLabel);
+          else control.textContent = String(originalLabel);
         }
-        return '';
-      };
+        return;
+      }
+
       const payload = {
-        fullName: pick('Full Name', 'Name', 'Your Name', 'Contact Name', 'fullName'),
-        email: pick('Business Email', 'Email', 'Email Address', 'Work Email', 'email'),
-        phone: pick('Phone Number', 'Phone', 'Mobile', 'Telephone', 'phone'),
-        company: pick('Company Name', 'Company', 'Organisation', 'Organization', 'company'),
-        jobTitle: pick('Job Title', 'Designation', 'Role', 'jobTitle'),
-        country: pick('Country', 'country'),
-        region: pick('State / Region', 'State', 'Region', 'City', 'Location', 'region'),
-        industry: pick('Industry', 'Sector', 'industry'),
-        useCase: pick('Use Case', 'Message', 'Project Details', 'Enquiry', 'Requirements', 'Comments', 'useCase'),
-        sourcePage: window.location.pathname,
-        formId: target.id || '',
-        formType: target.getAttribute('data-enquiry-type') || 'website-enquiry',
+        fullName, email, phone, company, jobTitle, country, region, industry, useCase,
+        source: "website",
+        sourcePage: `${window.location.pathname}${window.location.hash || ""}`,
+        formId: form.id || "",
+        formType: form.dataset.enquiryType || form.dataset.enquiryForm || "website-enquiry",
         formFields: raw,
-        consent: target.querySelector<HTMLInputElement>('input[type="checkbox"][name*="consent" i]')?.checked || false
+        consent: Boolean(form.querySelector<HTMLInputElement>('input[type="checkbox"][name*="consent" i]')?.checked),
       };
 
       try {
-        const response = await fetch('/api/enquiries', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+        const response = await fetch("/api/enquiries", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          credentials: "same-origin",
+          body: JSON.stringify(payload),
         });
         const result = await response.json().catch(() => ({}));
-        if (!response.ok) throw new Error(result.error || 'We could not submit your enquiry. Please try again.');
-        feedback.textContent = `Thank you. Your enquiry has been received successfully. Reference: ${String(result.enquiryId || '').slice(0, 8).toUpperCase()}. Our team will contact you.`;
-        target.reset();
+        if (!response.ok) throw new Error(result.error || `Submission failed (${response.status}). Please try again.`);
+        feedback.classList.add("is-success");
+        feedback.textContent = `Thank you, ${fullName}. Your enquiry has been received. Reference: ${String(result.enquiryId || "").slice(0, 8).toUpperCase()}. Our team will contact you.`;
+        form.reset();
       } catch (error) {
-        feedback.textContent = error instanceof Error ? error.message : 'Unable to submit your enquiry. Please try again.';
+        feedback.classList.add("is-error");
+        feedback.textContent = error instanceof Error
+          ? error.message
+          : "We could not submit your enquiry. Please check your connection and try again.";
       } finally {
-        button.disabled = false;
-        if (button instanceof HTMLInputElement) button.value = originalLabel;
-        else button.textContent = originalLabel;
+        if (control) {
+          control.disabled = wasDisabled;
+          if (control instanceof HTMLInputElement) control.value = String(originalLabel);
+          else control.textContent = String(originalLabel);
+        }
       }
     };
-    document.addEventListener('submit', submitEnquiry, true);
+    document.addEventListener("submit", submitEnquiry, true);
+
+    // Add published CMS articles to the existing Insights listing.
+    const addedBlogNodes: HTMLElement[] = [];
+    if (/blog\.html$/.test(window.location.pathname)) {
+      fetch("/api/public/blogs", { credentials: "same-origin" })
+        .then((response) => response.ok ? response.json() : null)
+        .then((result) => {
+          const grid = document.querySelector<HTMLElement>("#blogGrid");
+          if (!grid || !Array.isArray(result?.blogs)) return;
+          for (const blog of result.blogs) {
+            const card = document.createElement("article");
+            card.className = "insight-card";
+            card.dataset.category = blog.category || "Clearbot Insights";
+            const imageLink = document.createElement("a");
+            imageLink.className = "insight-image";
+            imageLink.href = `/blog/${encodeURIComponent(blog.slug)}`;
+            if (blog.featuredImage) {
+              const img = document.createElement("img");
+              img.src = blog.featuredImage;
+              img.alt = blog.imageAlt || blog.title || "Clearbot article";
+              img.loading = "lazy";
+              imageLink.appendChild(img);
+            }
+            const content = document.createElement("div");
+            content.className = "insight-body";
+            const meta = document.createElement("div");
+            meta.className = "insight-meta";
+            const tag = document.createElement("span");
+            tag.className = "insight-tag";
+            tag.textContent = blog.category || "Clearbot Insights";
+            const date = document.createElement("span");
+            date.className = "insight-date";
+            date.textContent = blog.publishAt ? new Date(blog.publishAt).toLocaleDateString() : "Clear Robotics Insights";
+            meta.append(tag, date);
+            const heading = document.createElement("h3");
+            heading.textContent = blog.title || "Clearbot Insight";
+            const summary = document.createElement("p");
+            summary.textContent = blog.excerpt || "";
+            const link = document.createElement("a");
+            link.className = "insight-link";
+            link.href = `/blog/${encodeURIComponent(blog.slug)}`;
+            link.textContent = "Read insight ↗";
+            content.append(meta, heading, summary, link);
+            card.append(imageLink, content);
+            grid.appendChild(card);
+            addedBlogNodes.push(card);
+          }
+        }).catch(() => {});
+    }
 
     const load = async () => {
       for (const item of scripts) {
@@ -114,14 +216,14 @@ export default function LegacyDocument({ body, styles, links, scripts, title }: 
     void load();
     return () => {
       cancelled = true;
-      document.removeEventListener('submit', submitEnquiry, true);
+      document.removeEventListener("submit", submitEnquiry, true);
+      addedBlogNodes.forEach((node) => node.remove());
       nodes.forEach((node) => node.remove());
     };
   }, [scripts]);
 
   return (
     <>
-      <title>{title}</title>
       {links.map((href, i) => <link key={`${href}-${i}`} rel="stylesheet" href={href} />)}
       {styles.map((css, i) => <style key={i} dangerouslySetInnerHTML={{ __html: css }} />)}
       <div className="legacy-site" dangerouslySetInnerHTML={{ __html: body }} />

@@ -50,7 +50,7 @@ footer{background:#031923;color:#b6c8d0;padding:38px 0 22px}.footer-top{display:
 .contact-form-card{background:#fff;color:#12384a;border-radius:22px;padding:30px;box-shadow:0 28px 80px rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.22)}
 .form-heading{display:flex;align-items:flex-start;justify-content:flex-start;gap:18px;margin-bottom:22px}.form-heading h2{font-size:25px;line-height:1.1;letter-spacing:-.9px;color:#0a2940;margin:0 0 7px}.form-heading p{margin:0;color:#71838e;font-size:11px;line-height:1.6}
 .contact-form{display:grid;grid-template-columns:1fr 1fr;gap:14px 13px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:10px;font-weight:800;color:#345366}.field label em{font-style:normal;color:#0b9298}.field input,.field select,.field textarea{width:100%;min-height:44px;border:1px solid #dce7eb;border-radius:9px;padding:11px 12px;font:inherit;font-size:12px;color:#163b4b;background:#fbfdfe;outline:none;transition:border .18s,box-shadow .18s}.field textarea{min-height:88px;resize:vertical}.field input:focus,.field select:focus,.field textarea:focus{border-color:#13aeb0;box-shadow:0 0 0 3px rgba(22,199,194,.12);background:#fff}.field input::placeholder,.field textarea::placeholder{color:#9aaab2}
-.form-submit{grid-column:1/-1;display:flex;align-items:center;gap:14px;margin-top:3px}.form-submit button{border:0}.form-submit small{color:#8798a1;font-size:9px;line-height:1.45}.form-feedback{grid-column:1/-1;display:none;padding:11px 13px;border-radius:9px;background:#fff7e8;border:1px solid #f1dfbd;color:#76541b;font-size:10px;line-height:1.6}
+.form-submit{grid-column:1/-1;display:flex;align-items:center;gap:14px;margin-top:3px}.form-submit button{border:0}.form-submit small{color:#8798a1;font-size:9px;line-height:1.45}.form-feedback{grid-column:1/-1;display:none;padding:12px 14px;border-radius:10px;background:#fff7e8;border:1px solid #f1dfbd;color:#76541b;font-size:12px;line-height:1.65}.form-feedback.is-success{display:block;background:#edfaf5;border-color:#b9e8d2;color:#146b4b}.form-feedback.is-error{display:block;background:#fff3f1;border-color:#f0c4bc;color:#9d362b}
 .contact-process{background:#f4f8f9}.process-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:17px}.process-card{position:relative;overflow:hidden;background:#fff;border:1px solid #e1eaed;border-radius:18px;padding:25px;min-height:220px;box-shadow:0 8px 24px rgba(5,42,58,.035)}.process-number{width:37px;height:37px;display:grid;place-items:center;border-radius:12px;background:#e6f7f6;color:#078b96;font-size:11px;font-weight:900}.process-card h3{font-size:17px;letter-spacing:-.4px;color:#12384a;margin:19px 0 8px}.process-card p{font-size:12px;line-height:1.75;color:#71838e;margin:0}.process-card:after{content:"";position:absolute;width:110px;height:110px;right:-45px;bottom:-55px;border:1px solid #d8f0ee;border-radius:50%;box-shadow:0 0 0 17px rgba(22,199,194,.035)}
 .contact-details{padding:68px 0}.details-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:stretch}.detail-panel{padding:28px;border:1px solid #e1eaed;border-radius:18px;background:#fff}.detail-panel h3{font-size:20px;letter-spacing:-.6px;color:#0a2940;margin:0 0 8px}.detail-panel>p{font-size:12px;color:#71838e;line-height:1.75;margin:0}.detail-link{display:flex;align-items:center;gap:14px;margin-top:22px;padding:15px;border:1px solid #e3ecef;border-radius:13px;background:#f8fbfc}.detail-link-icon{width:39px;height:39px;display:grid;place-items:center;flex:0 0 39px;border-radius:11px;background:#e6f7f6;color:#078b96;font-size:17px}.detail-link small{display:block;color:#81919a;font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase}.detail-link strong{display:block;color:#14384a;font-size:13px;margin-top:3px}.detail-link a:hover strong{color:#078b96}.social-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:19px}.social-row a{padding:9px 13px;border:1px solid #dce7eb;border-radius:999px;color:#345366;font-size:10px;font-weight:750}.social-row a:hover{border-color:#13aeb0;color:#078b96;background:#f2fbfa}
 .contact-bottom{background:linear-gradient(120deg,#062b3a,#07465a);color:#fff;padding:48px 0}.contact-bottom-wrap{display:flex;justify-content:space-between;align-items:center;gap:24px}.contact-bottom h2{font-size:clamp(24px,3vw,34px);line-height:1.1;letter-spacing:-1px;margin:0 0 8px}.contact-bottom p{font-size:12px;color:#c2d7dd;margin:0;line-height:1.7}.contact-bottom .btn{flex-shrink:0}
@@ -382,17 +382,17 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
 </div>
 <div class="contact-form-card" id="contact-form">
 <div class="form-heading"><div><h2>Talk to our team</h2><p>Share a few details and tell us what you’re looking to achieve.</p></div></div>
-<form class="contact-form" id="clearbotContactForm">
-<div class="field"><label for="fullName">Full Name <em>*</em></label><input autocomplete="name" id="fullName" name="Full Name" placeholder="Your full name" required="" type="text"/></div>
-<div class="field"><label for="businessEmail">Business Email <em>*</em></label><input autocomplete="email" id="businessEmail" name="Business Email" placeholder="name@company.com" required="" type="email"/></div>
-<div class="field"><label for="phone">Phone Number <em>*</em></label><input autocomplete="tel" id="phone" name="Phone Number" placeholder="Include country code" required="" type="tel"/></div>
-<div class="field"><label for="company">Company Name <em>*</em></label><input autocomplete="organization" id="company" name="Company Name" placeholder="Your organisation" required="" type="text"/></div>
-<div class="field"><label for="jobTitle">Job Title</label><input autocomplete="organization-title" id="jobTitle" name="Job Title" placeholder="Your role" type="text"/></div>
-<div class="field"><label for="country">Country <em>*</em></label><input autocomplete="country-name" id="country" name="Country" placeholder="Country" required="" type="text"/></div>
-<div class="field"><label for="region">State / Region <em>*</em></label><input autocomplete="address-level1" id="region" name="State / Region" placeholder="State or region" required="" type="text"/></div>
-<div class="field"><label for="industry">Industry <em>*</em></label><input id="industry" name="Industry" placeholder="e.g. Government, Ports, Utilities" required="" type="text"/></div>
-<div class="field full"><label for="useCase">Use Case</label><textarea id="useCase" name="Use Case" placeholder="Tell us about your waterbody, operational challenge or project requirements."></textarea></div>
-<div class="form-feedback" id="formFeedback" role="status"></div>
+<form class="contact-form" id="clearbotContactForm" data-enquiry-form="website" data-enquiry-type="contact">
+<div class="field"><label for="fullName">Full Name <em>*</em></label><input autocomplete="name" id="fullName" name="Full Name" placeholder="Your full name" maxlength="120" required="" type="text"/></div>
+<div class="field"><label for="businessEmail">Business Email <em>*</em></label><input autocomplete="email" id="businessEmail" name="Business Email" placeholder="name@company.com" maxlength="254" required="" type="email"/></div>
+<div class="field"><label for="phone">Phone Number <em>*</em></label><input autocomplete="tel" id="phone" name="Phone Number" placeholder="Include country code" maxlength="40" required="" type="tel"/></div>
+<div class="field"><label for="company">Company Name <em>*</em></label><input autocomplete="organization" id="company" name="Company Name" placeholder="Your organisation" maxlength="160" required="" type="text"/></div>
+<div class="field"><label for="jobTitle">Job Title</label><input autocomplete="organization-title" id="jobTitle" name="Job Title" placeholder="Your role" maxlength="120" type="text"/></div>
+<div class="field"><label for="country">Country <em>*</em></label><input autocomplete="country-name" id="country" name="Country" placeholder="Country" maxlength="100" required="" type="text"/></div>
+<div class="field"><label for="region">State / Region <em>*</em></label><input autocomplete="address-level1" id="region" name="State / Region" placeholder="State or region" maxlength="100" required="" type="text"/></div>
+<div class="field"><label for="industry">Industry <em>*</em></label><input id="industry" name="Industry" placeholder="e.g. Government, Ports, Utilities" maxlength="120" required="" type="text"/></div>
+<div class="field full"><label for="useCase">Use Case</label><textarea id="useCase" name="Use Case" maxlength="5000" placeholder="Tell us about your waterbody, operational challenge or project requirements."></textarea></div>
+<div class="form-feedback" id="formFeedback" role="status" aria-live="polite" aria-atomic="true"></div>
 <div class="form-submit"><button class="btn btn-primary" type="submit">Send Project Enquiry ↗</button><small>Your enquiry is submitted securely to our team. We will contact you using the details provided.</small></div>
 </form>
 </div>
@@ -427,25 +427,7 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
 </div>
 <div class="footer-bottom"><span>© 2026 Clear Robotics. All rights reserved.</span><span>Cleaner waterways. Smarter operations.</span></div>
 </div></footer>
-<script>
-(function(){
- const form = document.getElementById('clearbotContactForm');
- const feedback = document.getElementById('formFeedback');
- if (!form) return;
- form.addEventListener('submit', function(event) {
-  event.preventDefault();
-  if (!form.reportValidity()) return;
-  const data = new FormData(form);
-  const fields = ['Full Name','Business Email','Phone Number','Company Name','Job Title','Country','State / Region','Industry','Use Case'];
-  const body = fields.map(function(key) { return key + ': ' + (data.get(key) || 'Not provided'); }).join('\n');
-  const subject = 'Clearbot website enquiry - ' + (data.get('Company Name') || data.get('Full Name'));
-  const mailto = 'mailto:contact@clearbot.org?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
-  feedback.style.display = 'block';
-  feedback.textContent = 'Your email app should open with the enquiry details. Please send the prepared email to complete your enquiry.';
-  window.location.href = mailto;
- });
-})();
-</script>
+
 <!-- Fixed quick-contact sidebar -->
 <aside aria-label="Quick contact options" class="floating-contact-rail">
 <a aria-label="Chat with Clear Robotics on WhatsApp" class="floating-contact whatsapp" href="https://wa.me/85251385925?text=Hello%20Clearbot%20team%2C%20I%20would%20like%20to%20discuss%20a%20waterway%20project." rel="noopener noreferrer" target="_blank" title="Chat on WhatsApp">
@@ -454,7 +436,41 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
 <a aria-label="Call Clear Robotics at +852 5138 5925" class="floating-contact call" href="tel:+85251385925" title="Call Clear Robotics">
 <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24c1.12.37 2.33.56 3.57.56.55 0 1 .45 1 1V20c0 .55-.45 1-1 1C10.61 21 3 13.39 3 4c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.24.19 2.45.56 3.57.11.36.02.76-.25 1.03l-2.19 2.19Z"></path></svg><span>Call</span>
 </a>
-</aside><script id="clear-robotics-global-navigation">(function(){
+</aside><script id="clearbot-contact-form-fallback">
+(function () {
+  const form = document.getElementById('clearbotContactForm');
+  if (!form) return;
+  form.addEventListener('submit', async function (event) {
+    if (event.defaultPrevented) return;
+    event.preventDefault();
+    if (!form.reportValidity()) return;
+    const button = form.querySelector('button[type="submit"]');
+    const feedback = document.getElementById('formFeedback');
+    const original = button ? button.textContent : 'Send Project Enquiry';
+    if (button) { button.disabled = true; button.textContent = 'Submitting…'; }
+    if (feedback) { feedback.style.display = 'block'; feedback.classList.remove('is-success','is-error'); feedback.textContent = 'Sending your enquiry securely…'; }
+    const values = {};
+    new FormData(form).forEach((value, key) => { if (typeof value === 'string') values[key] = value.trim(); });
+    const get = (...keys) => { for (const key of keys) { const found = Object.keys(values).find(name => name.toLowerCase() === key.toLowerCase()); if (found && values[found]) return values[found]; } return ''; };
+    try {
+      const response = await fetch('/api/enquiries', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, credentials: 'same-origin', body: JSON.stringify({
+        fullName: get('Full Name'), email: get('Business Email'), phone: get('Phone Number'), company: get('Company Name'),
+        jobTitle: get('Job Title'), country: get('Country'), region: get('State / Region'), industry: get('Industry'), useCase: get('Use Case'),
+        source: 'website', sourcePage: window.location.pathname, formId: form.id, formType: 'contact', formFields: values
+      }) });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.error || 'We could not submit your enquiry. Please try again.');
+      if (feedback) { feedback.classList.add('is-success'); feedback.textContent = 'Thank you. Your enquiry has been received. Reference: ' + String(result.enquiryId || '').slice(0,8).toUpperCase() + '. Our team will contact you.'; }
+      form.reset();
+    } catch (error) {
+      if (feedback) { feedback.classList.add('is-error'); feedback.textContent = error && error.message ? error.message : 'Unable to submit your enquiry. Please try again.'; }
+    } finally {
+      if (button) { button.disabled = false; button.textContent = original; }
+    }
+  });
+})();
+</script>
+<script id="clear-robotics-global-navigation">(function(){
  const nav=document.getElementById('navlinks');
  const menu=document.getElementById('globalMenuToggle');
  if(menu&&nav){menu.addEventListener('click',()=>{const open=nav.classList.toggle('open');menu.setAttribute('aria-expanded',String(open));menu.setAttribute('aria-label',open?'Close navigation':'Open navigation');menu.textContent=open?'×':'☰';});}
