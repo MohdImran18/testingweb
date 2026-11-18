@@ -802,6 +802,59 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
   }
 }
 </style>
+<style id="about-timeline-remove-distributed-gap">
+/* Keep milestones in natural sequence; do not distribute rows across empty container height */
+.about-timeline-section .milestone-list {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  align-content: flex-start !important;
+  align-items: stretch !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  row-gap: 12px !important;
+  column-gap: 0 !important;
+  gap: 12px !important;
+}
+.about-timeline-section .milestone-list > .milestone {
+  flex: 0 0 auto !important;
+  flex-grow: 0 !important;
+  flex-shrink: 0 !important;
+  flex-basis: auto !important;
+  align-self: stretch !important;
+  align-items: start !important;
+  height: fit-content !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.about-timeline-section .milestone-list > .milestone > .milestone-card {
+  height: fit-content !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 15px 22px 16px !important;
+}
+.about-timeline-section .milestone-list > .milestone > .milestone-year {
+  align-self: start !important;
+  height: fit-content !important;
+  min-height: 0 !important;
+}
+@media (max-width: 760px) {
+  .about-timeline-section .milestone-list {
+    justify-content: flex-start !important;
+    row-gap: 12px !important;
+    gap: 12px !important;
+  }
+  .about-timeline-section .milestone-list > .milestone {
+    flex: 0 0 auto !important;
+    height: fit-content !important;
+    min-height: 0 !important;
+  }
+}
+</style>
 </head><body><header class="site-header">
 <div class="container nav">
 <a aria-label="Clear Robotics home" class="brand" href="index.html#home"><img alt="Clear Robotics" class="brand-logo" src="assets/clear-robotics-logo.png"/></a>
