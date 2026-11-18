@@ -62,3 +62,12 @@ For production image persistence, keep the Render PostgreSQL `DATABASE_URL` conf
 - Fixed preview URL handling for `data:image/...` embedded images so they render directly instead of being incorrectly treated as a root-relative file path.
 - Kept image replacement and restore-original actions on every image card.
 - Validation: TypeScript/TSX transpilation reports zero syntax diagnostics; manifest parses with 149 slots across 30 pages. Full Next.js build could not be run because dependency installation timed out in this environment.
+
+
+## Homepage slider + image manager correction (18 November 2026)
+- Rebuilt the homepage hero carousel as a React-controlled component instead of relying on direct DOM event listeners attached by a legacy `useEffect`. React state controls the active slide, arrows and dots; autoplay advances every five seconds; hover/focus pauses autoplay; touch swipe is supported on mobile.
+- The route extracts the five slide articles from the served homepage HTML and renders them through the React carousel. This avoids the timing/race problem of initializing controls against injected legacy HTML.
+- Upgraded the Alligator Neo, Class 2 and Class 3 hero slide sources to their bundled 1920 × 900 px original assets. Waterway cleanup and Fetch remain 1200 × 630 px sources and are flagged as below the recommended hero size.
+- Image Manager now has a dedicated **Homepage Hero Slider** group with five named cards. Each card identifies its slide and shows current uploaded dimensions, recommended size, file size, format and a resolution status. Slider replacement in Admin still maps to the corresponding homepage image slot.
+- Recommended homepage hero image dimensions: 1920 × 900 px (wide landscape). Actual current bundled dimensions are listed in `README-ADMIN.md`.
+- Validation: TypeScript `tsc --noEmit` passed; static checks confirmed five carousel slides, five matching image-manifest records, local image files and the React-based controls. A full Next.js build was not completed in this Linux container because the available dependency set does not include the Linux SWC binary; run `npm ci` and `npm run build` in the target Windows/Render environment before deployment.

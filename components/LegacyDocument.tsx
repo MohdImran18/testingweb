@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import PremiumEffects from "./PremiumEffects";
 
 type Props = {
@@ -8,6 +8,7 @@ type Props = {
   links: string[];
   scripts: { src?: string; code?: string; id?: string; type?: string }[];
   title: string;
+  heroSlides?: string[];
 };
 
 type SubmitControl = HTMLButtonElement | HTMLInputElement;
@@ -36,7 +37,81 @@ function pickField(values: Record<string, string>, ...aliases: string[]) {
   return "";
 }
 
-export default function LegacyDocument({ body, styles, links, scripts }: Props) {
+function HomeHeroCarousel({ slides }: { slides: string[] }) {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const touchStartX = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (slides.length < 2 || paused) return;
+    const intervalId = window.setInterval(() => {
+      if (!document.hidden) setActiveIndex((current) => (current + 1) % slides.length);
+    }, 5000);
+    return () => window.clearInterval(intervalId);
+  }, [slides.length, paused]);
+
+  const goTo = (index: number) => setActiveIndex((index + slides.length) % slides.length);
+  const handleTouchEnd = (event: React.TouchEvent<HTMLElement>) => {
+    const start = touchStartX.current;
+    const end = event.changedTouches[0]?.clientX;
+    if (start !== null && typeof end === "number") {
+      const delta = end - start;
+      if (Math.abs(delta) > 45) goTo(activeIndex + (delta < 0 ? 1 : -1));
+    }
+    touchStartX.current = null;
+  };
+
+  if (!slides.length) return null;
+  return (
+    <section
+      aria-label="Featured Clear Robotics solutions"
+      aria-roledescription="carousel"
+      className="hero hero-carousel"
+      id="home"
+      data-cb-react-carousel="true"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocus={() => setPaused(true)}
+      onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setPaused(false); }}
+      onTouchStart={(event) => { touchStartX.current = event.touches[0]?.clientX ?? null; }}
+      onTouchEnd={handleTouchEnd}
+    >
+      <div className="hero-slides">
+        {slides.map((slide, index) => (
+          <article
+            key={`home-hero-slide-${index + 1}`}
+            aria-hidden={index !== activeIndex}
+            className={`hero-slide${index === activeIndex ? " is-active" : ""}`}
+            dangerouslySetInnerHTML={{ __html: slide }}
+          />
+        ))}
+      </div>
+      <div className="hero-carousel-controls">
+        <div className="hero-slide-progress" aria-live="polite">
+          <span className="hero-slide-current">{String(activeIndex + 1).padStart(2, "0")}</span>
+          <span className="hero-slide-divider"/>
+          <span className="hero-slide-total">{String(slides.length).padStart(2, "0")}</span>
+        </div>
+        <div aria-label="Choose a slide" className="hero-slide-dots" role="group">
+          {slides.map((_, index) => (
+            <button
+              key={`home-hero-dot-${index + 1}`}
+              aria-label={`Show slide ${index + 1}`}
+              aria-pressed={index === activeIndex}
+              className={`hero-slide-dot${index === activeIndex ? " is-active" : ""}`}
+              onClick={() => goTo(index)}
+              type="button"
+            />
+          ))}
+        </div>
+        <button aria-label="Previous slide" className="hero-slide-arrow" onClick={() => goTo(activeIndex - 1)} type="button">‹</button>
+        <button aria-label="Next slide" className="hero-slide-arrow" onClick={() => goTo(activeIndex + 1)} type="button">›</button>
+      </div>
+    </section>
+  );
+}
+
+export default function LegacyDocument({ body, styles, links, scripts, heroSlides = [] }: Props) {
   useEffect(() => {
     const nodes: HTMLScriptElement[] = [];
     let cancelled = false;
@@ -281,110 +356,16 @@ export default function LegacyDocument({ body, styles, links, scripts }: Props) 
     };
   }, [scripts]);
 
-  // Initialize the homepage carousel from the mounted React DOM. The legacy
-  // HTML is injected with dangerouslySetInnerHTML, so this lifecycle hook is
-  // more reliable than an inline script embedded in the original HTML file.
-  useEffect(() => {
-    const root = document.querySelector<HTMLElement>(".legacy-site .hero-carousel");
-    if (!root) return;
-
-    const slides = Array.from(root.querySelectorAll<HTMLElement>("[data-hero-slide]"));
-    const dots = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-hero-dot]"));
-    const currentLabel = root.querySelector<HTMLElement>("[data-hero-current]");
-    const totalLabel = root.querySelector<HTMLElement>(".hero-slide-total");
-    const previousButton = root.querySelector<HTMLButtonElement>("[data-hero-prev]");
-    const nextButton = root.querySelector<HTMLButtonElement>("[data-hero-next]");
-
-    if (slides.length < 2) return;
-
-    let activeIndex = slides.findIndex((slide) => slide.classList.contains("is-active"));
-    if (activeIndex < 0) activeIndex = 0;
-    let intervalId: number | undefined;
-    let touchStartX: number | null = null;
-
-    if (totalLabel) totalLabel.textContent = String(slides.length).padStart(2, "0");
-
-    const showSlide = (requestedIndex: number) => {
-      activeIndex = (requestedIndex + slides.length) % slides.length;
-      slides.forEach((slide, index) => {
-        const isActive = index === activeIndex;
-        slide.classList.toggle("is-active", isActive);
-        slide.setAttribute("aria-hidden", String(!isActive));
-        slide.inert = !isActive;
-      });
-      dots.forEach((dot, index) => {
-        const isActive = index === activeIndex;
-        dot.classList.toggle("is-active", isActive);
-        dot.setAttribute("aria-pressed", String(isActive));
-      });
-      if (currentLabel) currentLabel.textContent = String(activeIndex + 1).padStart(2, "0");
-    };
-
-    const stopAutoplay = () => {
-      if (intervalId !== undefined) {
-        window.clearInterval(intervalId);
-        intervalId = undefined;
-      }
-    };
-    const startAutoplay = () => {
-      stopAutoplay();
-      if (!document.hidden) intervalId = window.setInterval(() => showSlide(activeIndex + 1), 5000);
-    };
-    const goToSlide = (index: number) => {
-      showSlide(index);
-      startAutoplay();
-    };
-    const handlePrevious = () => goToSlide(activeIndex - 1);
-    const handleNext = () => goToSlide(activeIndex + 1);
-    const handleVisibility = () => {
-      if (document.hidden) stopAutoplay();
-      else startAutoplay();
-    };
-    const handleTouchStart = (event: TouchEvent) => {
-      touchStartX = event.changedTouches[0]?.clientX ?? null;
-    };
-    const dotHandlers = dots.map((dot) => {
-      const index = Number(dot.dataset.heroDot);
-      const handler = () => goToSlide(Number.isFinite(index) ? index : 0);
-      return { dot, handler };
-    });
-    const handleTouchEnd = (event: TouchEvent) => {
-      if (touchStartX === null) return;
-      const endX = event.changedTouches[0]?.clientX;
-      if (typeof endX === "number") {
-        const delta = endX - touchStartX;
-        if (Math.abs(delta) > 45) goToSlide(activeIndex + (delta < 0 ? 1 : -1));
-      }
-      touchStartX = null;
-    };
-
-    previousButton?.addEventListener("click", handlePrevious);
-    nextButton?.addEventListener("click", handleNext);
-    dotHandlers.forEach(({ dot, handler }) => dot.addEventListener("click", handler));
-    root.addEventListener("touchstart", handleTouchStart, { passive: true });
-    root.addEventListener("touchend", handleTouchEnd, { passive: true });
-    document.addEventListener("visibilitychange", handleVisibility);
-
-    showSlide(activeIndex);
-    startAutoplay();
-
-    return () => {
-      stopAutoplay();
-      previousButton?.removeEventListener("click", handlePrevious);
-      nextButton?.removeEventListener("click", handleNext);
-      dotHandlers.forEach(({ dot, handler }) => dot.removeEventListener("click", handler));
-      root.removeEventListener("touchstart", handleTouchStart);
-      root.removeEventListener("touchend", handleTouchEnd);
-      document.removeEventListener("visibilitychange", handleVisibility);
-    };
-  }, [body]);
 
   return (
     <>
       {links.map((href, i) => <link key={`${href}-${i}`} rel="stylesheet" href={href} />)}
       {styles.map((css, i) => <style key={i} dangerouslySetInnerHTML={{ __html: css }} />)}
-      <div className="legacy-site" dangerouslySetInnerHTML={{ __html: body }} />
-      <PremiumEffects />
+      <div className="legacy-site">
+        {heroSlides.length > 0 && <HomeHeroCarousel slides={heroSlides}/> }
+        <div dangerouslySetInnerHTML={{ __html: body }} />
+      </div>
+      <PremiumEffects/>
     </>
   );
 }

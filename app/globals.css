@@ -59,3 +59,14 @@
 @media(max-width:800px){.cb-site-image-toolbar{align-items:stretch}.cb-site-image-toolbar-actions{min-width:100%;justify-content:stretch}.cb-site-image-search{max-width:none}.cb-site-image-page-heading{align-items:flex-start}.cb-site-image-page-stats{max-width:135px}}
 @media(max-width:560px){.cb-site-image-toolbar-actions{flex-wrap:wrap}.cb-site-image-search{flex-basis:100%;max-width:none}.cb-site-image-page-heading{padding:12px}.cb-site-image-page-title h2{font-size:15px}.cb-site-image-page-stats{gap:5px}.cb-site-image-page-stats i{width:100%;padding:4px 0 0;border:0;text-align:right}.cb-site-image-meta{grid-template-columns:1fr 1fr 58px}}
 .cb-site-image-overall-loaded{display:block;margin-top:5px;color:#0b8997!important;font-size:10px!important;font-weight:800}
+
+/* Homepage hero slider slots are labelled separately in Image Manager. */
+.cb-site-image-meta-detailed{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+.cb-site-image-meta-detailed span{font-size:10px;line-height:1.35}
+.cb-site-image-meta-detailed span small{font-size:9px;color:#71858c;line-height:1.25}
+.cb-site-image-resolution{font-size:10px!important;font-weight:800!important}
+.cb-site-image-resolution.good{color:#16815e!important}
+.cb-site-image-resolution.warn{color:#b56a16!important}
+.cb-site-image-hero-card{border-color:rgba(22,174,176,.34)!important}
+
+.cb-site-image-group-note{margin:-2px 0 13px;padding:11px 14px;border:1px solid #bce4e2;border-radius:9px;background:#f1fbfa;color:#17666d;font-size:11px;line-height:1.5}

@@ -344,19 +344,19 @@
   {
     "id": "index.html::2",
     "page": "index.html",
-    "src": "assets/home-hero-alligator-neo.jpg",
+    "src": "assets/Alligator-neo.png",
     "alt": "Clearbot Alligator Neo aquatic vegetation and water hyacinth collector"
   },
   {
     "id": "index.html::3",
     "page": "index.html",
-    "src": "assets/home-hero-class-2-skimmer.jpg",
+    "src": "assets/Class-2.jpg.jpeg",
     "alt": "Clearbot Class 2 electric skimmer vessel for floating waste recovery"
   },
   {
     "id": "index.html::4",
     "page": "index.html",
-    "src": "assets/home-hero-class-3-skimmer.jpg",
+    "src": "assets/Class-3.png",
     "alt": "Clearbot Class 3 unmanned electric skimmer operating in a waterway"
   },
   {

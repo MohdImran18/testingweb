@@ -58,6 +58,26 @@ function imageFormat(src:string) {
   } catch { return "IMAGE"; }
 }
 
+const homeHeroSlideNames=["Waterway cleanup","Alligator Neo","Class 2 Skimmer","Class 3 Skimmer","Fetch Skimmer"];
+function heroSlideNumber(slot:SiteImage){
+  if(slot.page!=="index.html") return 0;
+  const match=slot.id.match(/^index\.html::([1-5])$/);
+  return match?Number(match[1]):0;
+}
+function imageRequirement(slot:SiteImage){
+  const slide=heroSlideNumber(slot);
+  if(slide) return {size:"1920 × 900 px",detail:"Homepage hero slider · wide 2.13:1 crop",minimumWidth:1920};
+  const alt=(slot.alt||"").toLowerCase();
+  if(/youtube|video|thumbnail/.test(alt)||/ytimg\.com/.test(slot.src)) return {size:"1280 × 720 px",detail:"Video thumbnail · 16:9 crop",minimumWidth:1280};
+  if(/logo|partner|client/.test(alt)||/logo|partner|client/i.test(slot.src)||/\.svg(?:$|\?)/i.test(slot.src)) return {size:"SVG or 600 × 300 px PNG",detail:"Transparent logo artwork",minimumWidth:600};
+  return {size:"1200 px wide minimum",detail:"Keep the original image aspect ratio",minimumWidth:1200};
+}
+function imageResolutionStatus(slot:SiteImage,actual:string){
+  const width=Number((actual||"").match(/^([\d,]+)/)?.[1]?.replace(/,/g,""));
+  if(!width) return "Checking actual resolution";
+  return width>=imageRequirement(slot).minimumWidth?"Meets recommendation":"Below recommendation";
+}
+
 export default function AdminPage() {
   const [user,setUser]=useState<User|null>(null);
   const [section,setSection]=useState<Section>("overview");
@@ -154,12 +174,12 @@ export default function AdminPage() {
 
   const filteredLeads=useMemo(()=>leads.filter(l=>(leadStatus==="all"||l.status===leadStatus)&&(!leadSearch||[l.fullName,l.email,l.company,l.country,l.phone].some(v=>String(v||"").toLowerCase().includes(leadSearch.toLowerCase())))),[leads,leadStatus,leadSearch]);
   const groupedSiteImages=useMemo(()=>{
-    const pageOrder=["index.html","about.html","projects.html","class-1.html","class-2.html","class-3.html","alligator.html","deployment-models.html","services.html","service-bathymetric-survey.html","service-draft-survey.html","service-hyacinth-removal.html","service-solid-waste-recovery.html","project-falgu-river-gaya.html","project-hong-kong-oil-response.html","project-ilugin-river-philippines.html","project-jnpa-mumbai.html","project-lohagarh-fort-bharatpur.html","project-nonbah-river-meghalaya.html","project-putiya-kavin-chira-kerala.html","project-sentx-landfill-hong-kong.html","project-sino-group-hong-kong.html","project-umiam-lake-meghalaya.html","blog.html","news.html","blog-complete-waterway-fleet.html","blog-diesel-to-digital.html","blog-digital-twins.html","blog-service-based-management.html","contact.html"];
+    const pageOrder=["Homepage Hero Slider","index.html","about.html","projects.html","class-1.html","class-2.html","class-3.html","alligator.html","deployment-models.html","services.html","service-bathymetric-survey.html","service-draft-survey.html","service-hyacinth-removal.html","service-solid-waste-recovery.html","project-falgu-river-gaya.html","project-hong-kong-oil-response.html","project-ilugin-river-philippines.html","project-jnpa-mumbai.html","project-lohagarh-fort-bharatpur.html","project-nonbah-river-meghalaya.html","project-putiya-kavin-chira-kerala.html","project-sentx-landfill-hong-kong.html","project-sino-group-hong-kong.html","project-umiam-lake-meghalaya.html","blog.html","news.html","blog-complete-waterway-fleet.html","blog-diesel-to-digital.html","blog-digital-twins.html","blog-service-based-management.html","contact.html"];
     const order=new Map(pageOrder.map((page,index)=>[page,index]));
     const query=siteImageSearch.trim().toLowerCase();
-    const filtered=siteImages.filter(slot=>!query||[slot.page,slot.alt,slot.src].some(value=>String(value||"").toLowerCase().includes(query)));
+    const filtered=siteImages.filter(slot=>{const slide=heroSlideNumber(slot);return !query||[slot.page,slot.alt,slot.src,slide?"homepage hero slider":""].some(value=>String(value||"").toLowerCase().includes(query));});
     const grouped=new Map<string,SiteImage[]>();
-    for(const slot of filtered){const key=slot.page||"Other pages";if(!grouped.has(key))grouped.set(key,[]);grouped.get(key)!.push(slot);}
+    for(const slot of filtered){const key=heroSlideNumber(slot)?"Homepage Hero Slider":(slot.page||"Other pages");if(!grouped.has(key))grouped.set(key,[]);grouped.get(key)!.push(slot);}
     return Array.from(grouped.entries()).sort(([a],[b])=>(order.get(a)??999)-(order.get(b)??999)||a.localeCompare(b));
   },[siteImages,siteImageSearch]);
   const tabs=[{id:"overview" as Section,label:"Overview",icon:LayoutDashboard,show:true},{id:"leads" as Section,label:"Leads & enquiries",icon:Users,show:canLeads},{id:"blogs" as Section,label:"Blog manager",icon:BookOpen,show:canContent},{id:"images" as Section,label:"Image manager",icon:Images,show:canContent},{id:"seo" as Section,label:"SEO manager",icon:Globe,show:canContent},{id:"users" as Section,label:"User access",icon:Shield,show:isSuper},{id:"settings" as Section,label:"Settings",icon:Settings,show:true}].filter(t=>t.show);
@@ -200,20 +220,27 @@ export default function AdminPage() {
 
       {section==="images"&&canContent&&<>
         <div className="cb-admin-toolbar cb-site-image-toolbar">
-          <div className="cb-admin-toolbar-copy"><b>Website image library <span>{siteImages.length} image slots · {groupedSiteImages.length} pages</span></b><small>Images are arranged page-by-page in website order. Each image shows its dimensions, file size and source.</small><small className="cb-site-image-overall-loaded">Preview status: {Object.keys(imageDimensions).length} of {siteImages.length} images loaded</small></div>
+          <div className="cb-admin-toolbar-copy"><b>Website image library <span>{siteImages.length} image slots · {groupedSiteImages.length} pages</span></b><small>Homepage slider images are grouped separately. Each card shows the actual uploaded dimensions against the recommended size for that image slot.</small><small className="cb-site-image-overall-loaded">Preview status: {Object.keys(imageDimensions).length} of {siteImages.length} images loaded</small></div>
           <div className="cb-site-image-toolbar-actions"><label className="cb-site-image-search"><Search size={15}/><input value={siteImageSearch} onChange={e=>setSiteImageSearch(e.target.value)} placeholder="Search page, image or filename…"/></label><button className="cb-admin-secondary" onClick={refresh}><RefreshCw size={15}/> Refresh</button></div>
         </div>
         {groupedSiteImages.length===0?<div className="cb-admin-empty cb-site-image-empty"><Images/><b>No matching images</b><span>Change the search term to see more website images.</span></div>:groupedSiteImages.map(([page,slots],pageIndex)=>{
           const loadedCount=slots.filter(slot=>Boolean(imageDimensions[slot.id])).length;
-          const pagePath=page==="index.html"?"/":`/${page}`;
+          const pagePath=(page==="index.html"||page==="Homepage Hero Slider")?"/":`/${page}`;
           return <section className="cb-site-image-page" key={page}>
             <header className="cb-site-image-page-heading"><div className="cb-site-image-page-title"><span>PAGE {String(pageIndex+1).padStart(2,"0")}</span><h2>{imagePageTitle(page)}</h2><a href={pagePath} target="_blank" rel="noreferrer">{pagePath} <ArrowUpRight size={12}/></a></div><div className="cb-site-image-page-stats"><b>{slots.length}</b><span>Image slots</span><i>{loadedCount}/{slots.length} loaded</i></div></header>
+            {page==="Homepage Hero Slider"&&<div className="cb-site-image-group-note">These five images are used by the homepage hero slider. Replace each slide here to change that specific carousel image. Recommended source size: 1920 × 900 px (wide landscape).</div>}
             <div className="cb-site-image-grid">{slots.map((slot,slotIndex)=>{
               const source=imageSource(slot);
-              const fileName=slot.src.startsWith("data:")?"Embedded image":(slot.src.split("?")[0].split("/").pop()||"Website image");
-              return <article className="cb-admin-card cb-site-image-card" key={slot.id}>
+              const fileName=slot.url?"Admin uploaded replacement":(slot.src.startsWith("data:")?"Embedded image":(slot.src.split("?")[0].split("/").pop()||"Website image"));
+              const slide=heroSlideNumber(slot);
+              const requirement=imageRequirement(slot);
+              const actual=imageDimensions[slot.id]||"Loading…";
+              const resolutionStatus=imageResolutionStatus(slot,imageDimensions[slot.id]||"");
+              const cardTitle=slide?`Homepage Hero Slider — Slide ${slide}: ${homeHeroSlideNames[slide-1]}`:(slot.alt||fileName);
+              const positionLabel=slide?`Slide ${slide} of 5 · Homepage carousel image`:`${imagePageTitle(page)} · Image ${slotIndex+1} of ${slots.length}`;
+              return <article className={`cb-admin-card cb-site-image-card${slide?" cb-site-image-hero-card":""}`} key={slot.id}>
                 <div className="cb-site-image-preview">{source?<img src={source} alt={slot.alt||fileName} loading="lazy" onLoad={e=>{void recordSiteImageMeta(slot,e.currentTarget);}} onError={e=>{const img=e.currentTarget;img.style.display="none";const parent=img.parentElement;if(parent){parent.classList.add("is-broken");if(!parent.querySelector(".cb-site-image-dummy")){const fallback=document.createElement("div");fallback.className="cb-site-image-dummy";fallback.innerHTML="<b>Preview unavailable</b><small>Upload a replacement image</small>";parent.appendChild(fallback);}}}}/>:<div className="cb-site-image-dummy"><ImagePlus/><b>Image placeholder</b><small>Upload image to fill this slot</small></div>}</div>
-                <div className="cb-site-image-info"><b>{slot.alt||fileName}</b><small className="cb-site-image-position">{imagePageTitle(page)} · Image {slotIndex+1} of {slots.length}</small><div className="cb-site-image-meta"><span><strong>Dimensions</strong>{imageDimensions[slot.id]||"Loading…"}</span><span><strong>File size</strong>{imageFileSizes[slot.id]||"Checking…"}</span><span><strong>Format</strong>{imageFormat(source)}</span></div><small className="cb-site-image-source" title={slot.src}>{fileName}</small></div>
+                <div className="cb-site-image-info"><b>{cardTitle}</b><small className="cb-site-image-position">{positionLabel}</small><div className="cb-site-image-meta cb-site-image-meta-detailed"><span><strong>Current uploaded</strong>{actual}</span><span><strong>Recommended</strong>{requirement.size}<small>{requirement.detail}</small></span><span><strong>File size</strong>{imageFileSizes[slot.id]||"Checking…"}</span><span><strong>Format</strong>{imageFormat(source)}</span></div><small className={`cb-site-image-resolution ${resolutionStatus==="Meets recommendation"?"good":resolutionStatus==="Below recommendation"?"warn":""}`}>{resolutionStatus}</small><small className="cb-site-image-source" title={slot.src}>{fileName}</small></div>
                 <div className="cb-site-image-actions"><label className="cb-admin-primary compact"><ImagePlus size={14}/> Upload replacement<input type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden onChange={e=>uploadSiteImage(slot,e.target.files?.[0])}/></label>{slot.url&&<button className="cb-admin-secondary compact" disabled={busy} onClick={()=>resetSiteImage(slot)}>Restore original</button>}</div>
               </article>;
             })}</div>

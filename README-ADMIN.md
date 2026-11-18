@@ -45,3 +45,19 @@ The admin API creates the required database tables at startup and migrates entri
 - Without SMTP variables, enquiry records still save, but email status is `not_configured`; the app does not claim that an email was sent.
 - Admin login is protected by a 12-hour HTTP-only, SameSite cookie. Production login requires `SESSION_SECRET`.
 - Role permissions: Super Admin (all modules), Sales (leads), Marketing (blogs and SEO).
+
+## Homepage hero slider images
+
+Open Admin → Image manager and look for the separate **Homepage Hero Slider** group. Its five image cards are labelled Slide 1 through Slide 5 (Waterway cleanup, Alligator Neo, Class 2 Skimmer, Class 3 Skimmer and Fetch Skimmer). Replacing a card updates only that slide; use **Restore original** to return to the bundled image.
+
+For wide desktop hero banners, use **1920 × 900 px** landscape images. The Image Manager shows the browser-detected current uploaded dimensions, file size, format and whether the image meets the recommended width. The current bundled slider sources are:
+
+| Slide | Image | Current dimensions | Recommended dimensions |
+|---|---|---:|---:|
+| 1 | Waterway cleanup | 1200 × 630 px | 1920 × 900 px |
+| 2 | Alligator Neo | 1920 × 900 px | 1920 × 900 px |
+| 3 | Class 2 Skimmer | 1920 × 900 px | 1920 × 900 px |
+| 4 | Class 3 Skimmer | 1920 × 900 px | 1920 × 900 px |
+| 5 | Fetch Skimmer | 1200 × 630 px | 1920 × 900 px |
+
+The carousel is React-controlled: arrows and dots use React click handlers, autoplay advances every five seconds, and touch swipe works on mobile. Keep `data/site-image-manifest.json` and the five files under `public/assets` in the deployment.
