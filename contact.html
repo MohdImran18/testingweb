@@ -511,6 +511,146 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
   }
 }
 </style>
+
+<style id="contact-balanced-equal-height">
+/* Balanced contact layout: equal-height columns and consistent process cards */
+@media (min-width: 761px) {
+  .contact-hero.contact-combined {
+    padding: 48px 0 52px !important;
+  }
+  .contact-hero.contact-combined .contact-combined-grid {
+    display: grid !important;
+    width: min(calc(100% - 64px), 1290px) !important;
+    max-width: 1290px !important;
+    margin: 0 auto !important;
+    grid-template-columns: minmax(0, 38fr) minmax(0, 62fr) !important;
+    gap: clamp(20px, 2vw, 30px) !important;
+    align-items: stretch !important;
+  }
+  .contact-hero.contact-combined .contact-process-content {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+  .contact-hero.contact-combined .contact-process-content .section-head {
+    margin: 0 0 17px !important;
+    max-width: 100% !important;
+  }
+  .contact-hero.contact-combined .contact-process-content .section-head h2 {
+    margin: 9px 0 10px !important;
+    font-size: clamp(26px, 2.45vw, 36px) !important;
+    line-height: 1.1 !important;
+    letter-spacing: -1.15px !important;
+  }
+  .contact-hero.contact-combined .contact-process-content .section-head p {
+    max-width: 96% !important;
+    font-size: 12px !important;
+    line-height: 1.62 !important;
+  }
+  .contact-hero.contact-combined .contact-process-content .process-grid {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-auto-rows: minmax(112px, auto) !important;
+    gap: 10px !important;
+  }
+  .contact-hero.contact-combined .contact-process-content .process-card {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    min-height: 112px !important;
+    padding: 13px 16px !important;
+    border: 1px solid rgba(222, 239, 241, .95) !important;
+    border-radius: 15px !important;
+    background: #fff !important;
+    box-shadow: 0 8px 22px rgba(2, 31, 43, .08) !important;
+  }
+  .contact-hero.contact-combined .contact-process-content .process-number {
+    width: 29px !important;
+    height: 29px !important;
+    margin-bottom: 2px !important;
+    border-radius: 9px !important;
+    font-size: 10px !important;
+  }
+  .contact-hero.contact-combined .contact-process-content .process-card h3 {
+    margin: 7px 0 4px !important;
+    color: #102c3d !important;
+    font-size: 13px !important;
+    line-height: 1.25 !important;
+  }
+  .contact-hero.contact-combined .contact-process-content .process-card p {
+    color: #607783 !important;
+    opacity: 1 !important;
+    font-size: 10px !important;
+    line-height: 1.5 !important;
+    margin: 0 !important;
+  }
+  .contact-hero.contact-combined .contact-form-card {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-self: stretch !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: clamp(25px, 2.4vw, 34px) !important;
+    border-radius: 22px !important;
+    box-shadow: 0 24px 58px rgba(0, 16, 26, .2) !important;
+    box-sizing: border-box !important;
+  }
+  .contact-hero.contact-combined .form-heading {
+    margin-bottom: 20px !important;
+  }
+  .contact-hero.contact-combined .form-heading h2 {
+    font-size: clamp(24px, 2vw, 29px) !important;
+    line-height: 1.12 !important;
+  }
+  .contact-hero.contact-combined .contact-form {
+    gap: 14px 13px !important;
+  }
+  .contact-hero.contact-combined .field input,
+  .contact-hero.contact-combined .phone-number-group select,
+  .contact-hero.contact-combined .phone-number-group input {
+    min-height: 46px !important;
+  }
+  .contact-hero.contact-combined .form-submit {
+    align-items: center !important;
+    margin-top: 3px !important;
+    gap: 13px !important;
+  }
+  .contact-hero.contact-combined .form-submit .btn {
+    min-height: 48px !important;
+    padding: 12px 24px !important;
+  }
+}
+@media (max-width: 760px) {
+  .contact-hero.contact-combined .contact-combined-grid {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 22px !important;
+  }
+  .contact-hero.contact-combined .contact-process-content {
+    width: 100% !important;
+  }
+  .contact-hero.contact-combined .contact-process-content .process-card {
+    min-height: 0 !important;
+    padding: 14px 15px !important;
+  }
+  .contact-hero.contact-combined .contact-process-content .process-card p {
+    color: #607783 !important;
+    opacity: 1 !important;
+  }
+  .contact-hero.contact-combined .contact-form-card {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <header class="site-header">
