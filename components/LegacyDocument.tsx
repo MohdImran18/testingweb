@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 import PremiumEffects from "./PremiumEffects";
 
 type Props = {
@@ -8,7 +8,6 @@ type Props = {
   links: string[];
   scripts: { src?: string; code?: string; id?: string; type?: string }[];
   title: string;
-  heroSlides?: string[];
 };
 
 type SubmitControl = HTMLButtonElement | HTMLInputElement;
@@ -37,81 +36,85 @@ function pickField(values: Record<string, string>, ...aliases: string[]) {
   return "";
 }
 
-function HomeHeroCarousel({ slides }: { slides: string[] }) {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
-  const touchStartX = useRef<number | null>(null);
-
+export default function LegacyDocument({ body, styles, links, scripts }: Props) {
+  // Initialise the homepage carousel only after the original page HTML is in the DOM.
+  // Keeping the carousel in its original document position preserves header/hero layout.
   useEffect(() => {
-    if (slides.length < 2 || paused) return;
+    const hero = document.querySelector<HTMLElement>(".legacy-site .hero.hero-carousel");
+    if (!hero) return;
+
+    const slides = Array.from(hero.querySelectorAll<HTMLElement>(".hero-slide"));
+    const dots = Array.from(hero.querySelectorAll<HTMLButtonElement>(".hero-slide-dot, [data-hero-dot]"));
+    const previous = hero.querySelector<HTMLButtonElement>("[data-hero-prev], .hero-slide-arrow[aria-label='Previous slide']");
+    const next = hero.querySelector<HTMLButtonElement>("[data-hero-next], .hero-slide-arrow[aria-label='Next slide']");
+    const current = hero.querySelector<HTMLElement>("[data-hero-current], .hero-slide-current");
+
+    if (slides.length < 2) return;
+
+    let activeIndex = Math.max(0, slides.findIndex((slide) => slide.classList.contains("is-active")));
+    let touchStartX: number | null = null;
+
+    const showSlide = (requestedIndex: number) => {
+      activeIndex = (requestedIndex + slides.length) % slides.length;
+      slides.forEach((slide, index) => {
+        const active = index === activeIndex;
+        slide.classList.toggle("is-active", active);
+        slide.setAttribute("aria-hidden", active ? "false" : "true");
+      });
+      dots.forEach((dot, index) => {
+        const active = index === activeIndex;
+        dot.classList.toggle("is-active", active);
+        dot.setAttribute("aria-pressed", active ? "true" : "false");
+      });
+      if (current) current.textContent = String(activeIndex + 1).padStart(2, "0");
+    };
+
+    const onPrevious = () => showSlide(activeIndex - 1);
+    const onNext = () => showSlide(activeIndex + 1);
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "ArrowLeft") { event.preventDefault(); onPrevious(); }
+      if (event.key === "ArrowRight") { event.preventDefault(); onNext(); }
+    };
+    const onTouchStart = (event: TouchEvent) => {
+      touchStartX = event.touches[0]?.clientX ?? null;
+    };
+    const onTouchEnd = (event: TouchEvent) => {
+      const endX = event.changedTouches[0]?.clientX;
+      if (touchStartX !== null && typeof endX === "number") {
+        const distance = endX - touchStartX;
+        if (Math.abs(distance) > 45) distance < 0 ? onNext() : onPrevious();
+      }
+      touchStartX = null;
+    };
+
+    previous?.addEventListener("click", onPrevious);
+    next?.addEventListener("click", onNext);
+    const dotHandlers = dots.map((dot, index) => {
+      const handler = () => showSlide(index);
+      dot.addEventListener("click", handler);
+      return handler;
+    });
+    hero.addEventListener("keydown", onKeyDown);
+    hero.addEventListener("touchstart", onTouchStart, { passive: true });
+    hero.addEventListener("touchend", onTouchEnd, { passive: true });
+
+    // Always advance on a predictable timer; manual interaction does not disable autoplay.
+    showSlide(activeIndex);
     const intervalId = window.setInterval(() => {
-      if (!document.hidden) setActiveIndex((current) => (current + 1) % slides.length);
+      if (!document.hidden) showSlide(activeIndex + 1);
     }, 5000);
-    return () => window.clearInterval(intervalId);
-  }, [slides.length, paused]);
 
-  const goTo = (index: number) => setActiveIndex((index + slides.length) % slides.length);
-  const handleTouchEnd = (event: React.TouchEvent<HTMLElement>) => {
-    const start = touchStartX.current;
-    const end = event.changedTouches[0]?.clientX;
-    if (start !== null && typeof end === "number") {
-      const delta = end - start;
-      if (Math.abs(delta) > 45) goTo(activeIndex + (delta < 0 ? 1 : -1));
-    }
-    touchStartX.current = null;
-  };
+    return () => {
+      window.clearInterval(intervalId);
+      previous?.removeEventListener("click", onPrevious);
+      next?.removeEventListener("click", onNext);
+      dots.forEach((dot, index) => dot.removeEventListener("click", dotHandlers[index]));
+      hero.removeEventListener("keydown", onKeyDown);
+      hero.removeEventListener("touchstart", onTouchStart);
+      hero.removeEventListener("touchend", onTouchEnd);
+    };
+  }, [body]);
 
-  if (!slides.length) return null;
-  return (
-    <section
-      aria-label="Featured Clear Robotics solutions"
-      aria-roledescription="carousel"
-      className="hero hero-carousel"
-      id="home"
-      data-cb-react-carousel="true"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      onFocus={() => setPaused(true)}
-      onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setPaused(false); }}
-      onTouchStart={(event) => { touchStartX.current = event.touches[0]?.clientX ?? null; }}
-      onTouchEnd={handleTouchEnd}
-    >
-      <div className="hero-slides">
-        {slides.map((slide, index) => (
-          <article
-            key={`home-hero-slide-${index + 1}`}
-            aria-hidden={index !== activeIndex}
-            className={`hero-slide${index === activeIndex ? " is-active" : ""}`}
-            dangerouslySetInnerHTML={{ __html: slide }}
-          />
-        ))}
-      </div>
-      <div className="hero-carousel-controls">
-        <div className="hero-slide-progress" aria-live="polite">
-          <span className="hero-slide-current">{String(activeIndex + 1).padStart(2, "0")}</span>
-          <span className="hero-slide-divider"/>
-          <span className="hero-slide-total">{String(slides.length).padStart(2, "0")}</span>
-        </div>
-        <div aria-label="Choose a slide" className="hero-slide-dots" role="group">
-          {slides.map((_, index) => (
-            <button
-              key={`home-hero-dot-${index + 1}`}
-              aria-label={`Show slide ${index + 1}`}
-              aria-pressed={index === activeIndex}
-              className={`hero-slide-dot${index === activeIndex ? " is-active" : ""}`}
-              onClick={() => goTo(index)}
-              type="button"
-            />
-          ))}
-        </div>
-        <button aria-label="Previous slide" className="hero-slide-arrow" onClick={() => goTo(activeIndex - 1)} type="button">‹</button>
-        <button aria-label="Next slide" className="hero-slide-arrow" onClick={() => goTo(activeIndex + 1)} type="button">›</button>
-      </div>
-    </section>
-  );
-}
-
-export default function LegacyDocument({ body, styles, links, scripts, heroSlides = [] }: Props) {
   useEffect(() => {
     const nodes: HTMLScriptElement[] = [];
     let cancelled = false;
@@ -219,11 +222,7 @@ export default function LegacyDocument({ body, styles, links, scripts, heroSlide
       const fullName = pickField(raw, "Full Name", "Name", "Your Name", "Contact Name", "fullName", "fullname")
         || [pickField(raw, "First Name", "firstName"), pickField(raw, "Last Name", "lastName")].filter(Boolean).join(" ");
       const email = pickField(raw, "Business Email", "Email", "Email Address", "Work Email", "Your Email", "emailAddress", "email");
-      const phoneNumber = pickField(raw, "Phone Number", "Phone", "Mobile", "Mobile Number", "Telephone", "Contact Number", "phone");
-      const phoneCountryCode = pickField(raw, "Phone Country Code", "Country Calling Code", "Dial Code");
-      const phone = phoneNumber
-        ? (phoneNumber.trim().startsWith("+") ? phoneNumber : `${phoneCountryCode} ${phoneNumber}`.trim())
-        : "";
+      const phone = pickField(raw, "Phone Number", "Phone", "Mobile", "Mobile Number", "Telephone", "Contact Number", "phone");
       const company = pickField(raw, "Company Name", "Company", "Organisation", "Organization", "Organisation Name", "company");
       const jobTitle = pickField(raw, "Job Title", "Designation", "Role", "Position", "jobTitle");
       const country = pickField(raw, "Country", "country");
@@ -366,7 +365,6 @@ export default function LegacyDocument({ body, styles, links, scripts, heroSlide
       {links.map((href, i) => <link key={`${href}-${i}`} rel="stylesheet" href={href} />)}
       {styles.map((css, i) => <style key={i} dangerouslySetInnerHTML={{ __html: css }} />)}
       <div className="legacy-site">
-        {heroSlides.length > 0 && <HomeHeroCarousel slides={heroSlides}/> }
         <div dangerouslySetInnerHTML={{ __html: body }} />
       </div>
       <PremiumEffects/>
