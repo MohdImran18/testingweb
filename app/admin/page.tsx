@@ -32,6 +32,31 @@ async function api<T=any>(url:string, options:RequestInit={}):Promise<T> {
 }
 function dateText(value?:string) { if(!value) return "—"; const d=new Date(value); return Number.isNaN(d.getTime())?value:d.toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"}); }
 function makeSlug(value:string) { return value.toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""); }
+function imagePageTitle(page:string) {
+  if(page === "index.html") return "Homepage";
+  const base=page.replace(/\.html$/i,"").replace(/^(project|service)-/i,"$1 — ").replace(/-/g," ");
+  return base.replace(/\b\w/g,letter=>letter.toUpperCase());
+}
+function imageSource(slot:SiteImage) {
+  if(slot.url) return slot.url;
+  if(/^(https?:|data:|blob:)/i.test(slot.src)) return slot.src;
+  return `/${slot.src.replace(/^\.\//,"").replace(/^\//,"")}`;
+}
+function formatBytes(bytes:number) {
+  if(!Number.isFinite(bytes)||bytes<0) return "—";
+  if(bytes<1024) return `${bytes} B`;
+  if(bytes<1024*1024) return `${(bytes/1024).toFixed(1)} KB`;
+  return `${(bytes/(1024*1024)).toFixed(2)} MB`;
+}
+function imageFormat(src:string) {
+  const dataMime=src.match(/^data:image\/([^;,]+)/i)?.[1];
+  if(dataMime) return dataMime.toUpperCase().replace("JPEG","JPG");
+  try {
+    const path=new URL(src,typeof window!=="undefined"?window.location.origin:"https://clearbot.invalid").pathname;
+    const ext=path.split(".").pop()||"image";
+    return ext.toUpperCase()==="JPEG"?"JPG":ext.toUpperCase();
+  } catch { return "IMAGE"; }
+}
 
 export default function AdminPage() {
   const [user,setUser]=useState<User|null>(null);
@@ -53,6 +78,8 @@ export default function AdminPage() {
   const [blogs,setBlogs]=useState<Blog[]>([]);
   const [siteImages,setSiteImages]=useState<SiteImage[]>([]);
   const [imageDimensions,setImageDimensions]=useState<Record<string,string>>({});
+  const [imageFileSizes,setImageFileSizes]=useState<Record<string,string>>({});
+  const [siteImageSearch,setSiteImageSearch]=useState("");
   const [categories,setCategories]=useState<Category[]>([]);
   const [blog,setBlog]=useState<Blog>(emptyBlog());
   const [editingBlog,setEditingBlog]=useState(false);
@@ -98,6 +125,27 @@ export default function AdminPage() {
 
   async function uploadSiteImage(slot:SiteImage,file?:File){if(!file)return;setBusy(true);setError("");try{if(!/^image\/(jpeg|png|webp|gif)$/.test(file.type))throw new Error("Use JPG, PNG, WEBP or GIF images.");if(file.size>5*1024*1024)throw new Error("Image must be 5 MB or smaller.");const dataUrl=await new Promise<string>((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result));reader.onerror=()=>reject(new Error("Could not read image."));reader.readAsDataURL(file);});const uploaded=await api<{url:string}>("/api/admin/uploads",{method:"POST",body:JSON.stringify({filename:file.name,dataUrl})});await api("/api/admin/site-images",{method:"PUT",body:JSON.stringify({id:slot.id,url:uploaded.url})});setSiteImages(prev=>prev.map(item=>item.id===slot.id?{...item,url:uploaded.url}:item));setNotice("Website image replaced successfully.");}catch(e){setError((e as Error).message);}finally{setBusy(false);}}
   async function resetSiteImage(slot:SiteImage){setBusy(true);try{await api("/api/admin/site-images",{method:"PUT",body:JSON.stringify({id:slot.id,url:""})});setSiteImages(prev=>prev.map(item=>item.id===slot.id?{...item,url:""}:item));setNotice("Original image restored.");}catch(e){setError((e as Error).message);}finally{setBusy(false);}}
+  async function recordSiteImageMeta(slot:SiteImage,img:HTMLImageElement){
+    const width=img.naturalWidth; const height=img.naturalHeight;
+    if(width&&height) setImageDimensions(prev=>({...prev,[slot.id]:`${width.toLocaleString()} × ${height.toLocaleString()} px · ${(width/height).toFixed(2)}:1`}));
+    const src=img.currentSrc||imageSource(slot);
+    if(/^data:image\//i.test(src)){
+      const comma=src.indexOf(","); const payload=src.slice(comma+1);
+      const bytes=/;base64,/i.test(src)?Math.max(0,Math.floor(payload.length*3/4)-(payload.endsWith("==")?2:payload.endsWith("=")?1:0)):new Blob([decodeURIComponent(payload)]).size;
+      setImageFileSizes(prev=>({...prev,[slot.id]:formatBytes(bytes)}));
+      return;
+    }
+    try{
+      const parsed=new URL(src,window.location.href);
+      if(parsed.origin!==window.location.origin){setImageFileSizes(prev=>({...prev,[slot.id]:"External CDN"}));return;}
+      const response=await fetch(parsed.toString(),{method:"HEAD",credentials:"same-origin",cache:"force-cache"});
+      const length=Number(response.headers.get("content-length")||0);
+      if(response.ok&&length>0){setImageFileSizes(prev=>({...prev,[slot.id]:formatBytes(length)}));return;}
+      const fallback=await fetch(parsed.toString(),{credentials:"same-origin",cache:"force-cache"});
+      if(fallback.ok){const blob=await fallback.blob();setImageFileSizes(prev=>({...prev,[slot.id]:formatBytes(blob.size)}));return;}
+      setImageFileSizes(prev=>({...prev,[slot.id]:"Size unavailable"}));
+    }catch{setImageFileSizes(prev=>({...prev,[slot.id]:"External / unavailable"}));}
+  }
   async function saveSeo(e:FormEvent){e.preventDefault();setBusy(true);setError("");try{const r=await api<{seo:SeoPage}>("/api/admin/seo",{method:"PUT",body:JSON.stringify({path:seoPath,...seoForm})});setSeoPages(prev=>[r.seo,...prev.filter(p=>p.path!==seoPath)]);setNotice("SEO settings saved for "+seoPath);}catch(e){setError((e as Error).message);}finally{setBusy(false);}}
   async function addUser(e:FormEvent){e.preventDefault();setBusy(true);setError("");try{const r=await api<{user:User}>("/api/admin/users",{method:"POST",body:JSON.stringify(newUser)});setUsers(prev=>[r.user,...prev]);setNewUser({name:"",email:"",password:"",role:"sales"});setNewUserOpen(false);setNotice("User account created.");}catch(e){setError((e as Error).message);}finally{setBusy(false);}}
   async function toggleUser(u:User){try{const r=await api<{user:User}>(`/api/admin/users/${u.id}`,{method:"PATCH",body:JSON.stringify({active:!u.active})});setUsers(prev=>prev.map(v=>v.id===u.id?r.user:v));}catch(e){setError((e as Error).message);}}
@@ -105,6 +153,15 @@ export default function AdminPage() {
   async function refresh(){setBusy(true);try{await loadAll();setNotice("Dashboard refreshed.");}catch(e){setError((e as Error).message);}finally{setBusy(false);}}
 
   const filteredLeads=useMemo(()=>leads.filter(l=>(leadStatus==="all"||l.status===leadStatus)&&(!leadSearch||[l.fullName,l.email,l.company,l.country,l.phone].some(v=>String(v||"").toLowerCase().includes(leadSearch.toLowerCase())))),[leads,leadStatus,leadSearch]);
+  const groupedSiteImages=useMemo(()=>{
+    const pageOrder=["index.html","about.html","projects.html","class-1.html","class-2.html","class-3.html","alligator.html","deployment-models.html","services.html","service-bathymetric-survey.html","service-draft-survey.html","service-hyacinth-removal.html","service-solid-waste-recovery.html","project-falgu-river-gaya.html","project-hong-kong-oil-response.html","project-ilugin-river-philippines.html","project-jnpa-mumbai.html","project-lohagarh-fort-bharatpur.html","project-nonbah-river-meghalaya.html","project-putiya-kavin-chira-kerala.html","project-sentx-landfill-hong-kong.html","project-sino-group-hong-kong.html","project-umiam-lake-meghalaya.html","blog.html","news.html","blog-complete-waterway-fleet.html","blog-diesel-to-digital.html","blog-digital-twins.html","blog-service-based-management.html","contact.html"];
+    const order=new Map(pageOrder.map((page,index)=>[page,index]));
+    const query=siteImageSearch.trim().toLowerCase();
+    const filtered=siteImages.filter(slot=>!query||[slot.page,slot.alt,slot.src].some(value=>String(value||"").toLowerCase().includes(query)));
+    const grouped=new Map<string,SiteImage[]>();
+    for(const slot of filtered){const key=slot.page||"Other pages";if(!grouped.has(key))grouped.set(key,[]);grouped.get(key)!.push(slot);}
+    return Array.from(grouped.entries()).sort(([a],[b])=>(order.get(a)??999)-(order.get(b)??999)||a.localeCompare(b));
+  },[siteImages,siteImageSearch]);
   const tabs=[{id:"overview" as Section,label:"Overview",icon:LayoutDashboard,show:true},{id:"leads" as Section,label:"Leads & enquiries",icon:Users,show:canLeads},{id:"blogs" as Section,label:"Blog manager",icon:BookOpen,show:canContent},{id:"images" as Section,label:"Image manager",icon:Images,show:canContent},{id:"seo" as Section,label:"SEO manager",icon:Globe,show:canContent},{id:"users" as Section,label:"User access",icon:Shield,show:isSuper},{id:"settings" as Section,label:"Settings",icon:Settings,show:true}].filter(t=>t.show);
 
   if(loading)return <div className="cb-admin-loading"><LoaderCircle className="spin" size={25}/> Checking secure admin session…</div>;
@@ -142,12 +199,26 @@ export default function AdminPage() {
       }
 
       {section==="images"&&canContent&&<>
-        <div className="cb-admin-toolbar"><div className="cb-admin-toolbar-copy"><b>Website image library <span>{siteImages.length} slots</span></b><small>Replace images used across the website without editing code. Each card shows its current display dimensions.</small></div><button className="cb-admin-secondary" onClick={refresh}><RefreshCw size={15}/> Refresh</button></div>
-        <div className="cb-site-image-grid">{siteImages.map(slot=><article className="cb-admin-card cb-site-image-card" key={slot.id}>
-          <div className="cb-site-image-preview">{(slot.url||slot.src)?<img src={slot.url||(slot.src.startsWith("http")?slot.src:`/${slot.src.replace(/^\.\//,"")}`)} alt={slot.alt||slot.page} onLoad={e=>{const im=e.currentTarget;setImageDimensions(prev=>({...prev,[slot.id]:`${im.naturalWidth} × ${im.naturalHeight} px`}));}} onError={e=>{const img=e.currentTarget;img.style.display="none";const parent=img.parentElement;if(parent){parent.classList.add("is-broken");if(!parent.querySelector(".cb-site-image-dummy")){const fallback=document.createElement("div");fallback.className="cb-site-image-dummy";fallback.innerHTML="<b>Preview unavailable</b><small>Upload a replacement image</small>";parent.appendChild(fallback);}}}}/>:<div className="cb-site-image-dummy"><ImagePlus/><b>Image placeholder</b><small>Upload image to fill this slot</small></div>}</div>
-          <div className="cb-site-image-info"><b>{slot.alt||slot.src.split("/").pop()||"Website image"}</b><small>{slot.page}</small><small>Image dimensions: {imageDimensions[slot.id]||"Loading dimensions…"}</small><small className="cb-site-image-source">{slot.src}</small></div>
-          <div className="cb-site-image-actions"><label className="cb-admin-primary compact"><ImagePlus size={14}/> Upload replacement<input type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden onChange={e=>uploadSiteImage(slot,e.target.files?.[0])}/></label>{slot.url&&<button className="cb-admin-secondary compact" disabled={busy} onClick={()=>resetSiteImage(slot)}>Restore original</button>}</div>
-        </article>)}</div>
+        <div className="cb-admin-toolbar cb-site-image-toolbar">
+          <div className="cb-admin-toolbar-copy"><b>Website image library <span>{siteImages.length} image slots · {groupedSiteImages.length} pages</span></b><small>Images are arranged page-by-page in website order. Each image shows its dimensions, file size and source.</small><small className="cb-site-image-overall-loaded">Preview status: {Object.keys(imageDimensions).length} of {siteImages.length} images loaded</small></div>
+          <div className="cb-site-image-toolbar-actions"><label className="cb-site-image-search"><Search size={15}/><input value={siteImageSearch} onChange={e=>setSiteImageSearch(e.target.value)} placeholder="Search page, image or filename…"/></label><button className="cb-admin-secondary" onClick={refresh}><RefreshCw size={15}/> Refresh</button></div>
+        </div>
+        {groupedSiteImages.length===0?<div className="cb-admin-empty cb-site-image-empty"><Images/><b>No matching images</b><span>Change the search term to see more website images.</span></div>:groupedSiteImages.map(([page,slots],pageIndex)=>{
+          const loadedCount=slots.filter(slot=>Boolean(imageDimensions[slot.id])).length;
+          const pagePath=page==="index.html"?"/":`/${page}`;
+          return <section className="cb-site-image-page" key={page}>
+            <header className="cb-site-image-page-heading"><div className="cb-site-image-page-title"><span>PAGE {String(pageIndex+1).padStart(2,"0")}</span><h2>{imagePageTitle(page)}</h2><a href={pagePath} target="_blank" rel="noreferrer">{pagePath} <ArrowUpRight size={12}/></a></div><div className="cb-site-image-page-stats"><b>{slots.length}</b><span>Image slots</span><i>{loadedCount}/{slots.length} loaded</i></div></header>
+            <div className="cb-site-image-grid">{slots.map((slot,slotIndex)=>{
+              const source=imageSource(slot);
+              const fileName=slot.src.startsWith("data:")?"Embedded image":(slot.src.split("?")[0].split("/").pop()||"Website image");
+              return <article className="cb-admin-card cb-site-image-card" key={slot.id}>
+                <div className="cb-site-image-preview">{source?<img src={source} alt={slot.alt||fileName} loading="lazy" onLoad={e=>{void recordSiteImageMeta(slot,e.currentTarget);}} onError={e=>{const img=e.currentTarget;img.style.display="none";const parent=img.parentElement;if(parent){parent.classList.add("is-broken");if(!parent.querySelector(".cb-site-image-dummy")){const fallback=document.createElement("div");fallback.className="cb-site-image-dummy";fallback.innerHTML="<b>Preview unavailable</b><small>Upload a replacement image</small>";parent.appendChild(fallback);}}}}/>:<div className="cb-site-image-dummy"><ImagePlus/><b>Image placeholder</b><small>Upload image to fill this slot</small></div>}</div>
+                <div className="cb-site-image-info"><b>{slot.alt||fileName}</b><small className="cb-site-image-position">{imagePageTitle(page)} · Image {slotIndex+1} of {slots.length}</small><div className="cb-site-image-meta"><span><strong>Dimensions</strong>{imageDimensions[slot.id]||"Loading…"}</span><span><strong>File size</strong>{imageFileSizes[slot.id]||"Checking…"}</span><span><strong>Format</strong>{imageFormat(source)}</span></div><small className="cb-site-image-source" title={slot.src}>{fileName}</small></div>
+                <div className="cb-site-image-actions"><label className="cb-admin-primary compact"><ImagePlus size={14}/> Upload replacement<input type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden onChange={e=>uploadSiteImage(slot,e.target.files?.[0])}/></label>{slot.url&&<button className="cb-admin-secondary compact" disabled={busy} onClick={()=>resetSiteImage(slot)}>Restore original</button>}</div>
+              </article>;
+            })}</div>
+          </section>;
+        })}
       </>}
 
       {section==="seo"&&canContent&&<div className="cb-admin-seo-layout"><section className="cb-admin-card"><div className="cb-admin-card-heading"><div><h3>Page SEO settings</h3><p>Choose a page and manage its search and social metadata.</p></div><Globe/></div><form onSubmit={saveSeo} className="cb-admin-form-stack"><label className="cb-admin-field"><span>Website page</span><select value={seoPath} onChange={e=>setSeoPath(e.target.value)}>{pageOptions.map(p=><option key={p} value={p}>{p==="/"?"Homepage":p}</option>)}</select></label><label className="cb-admin-field"><span>SEO title <small>{seoForm.title.length}/60</small></span><input maxLength={220} value={seoForm.title} onChange={e=>setSeoForm({...seoForm,title:e.target.value})} placeholder="Page title for Google"/></label><label className="cb-admin-field"><span>Meta description <small>{seoForm.description.length}/160</small></span><textarea rows={3} maxLength={500} value={seoForm.description} onChange={e=>setSeoForm({...seoForm,description:e.target.value})} placeholder="Describe this page for search results."/></label><label className="cb-admin-field"><span>Focus & secondary keywords</span><input value={seoForm.keywords} onChange={e=>setSeoForm({...seoForm,keywords:e.target.value})} placeholder="waterway cleanup, aquatic weed harvester"/></label><label className="cb-admin-field"><span>Canonical URL</span><input value={seoForm.canonical} onChange={e=>setSeoForm({...seoForm,canonical:e.target.value})} placeholder="https://www.clearbot.org/page"/></label><label className="cb-admin-field"><span>Search indexing</span><select value={seoForm.robots} onChange={e=>setSeoForm({...seoForm,robots:e.target.value})}><option value="index,follow">Index and follow</option><option value="noindex,follow">No index, follow links</option><option value="noindex,nofollow">No index, no follow</option></select></label><div className="cb-admin-section-divider">SOCIAL SHARING / OPEN GRAPH</div><label className="cb-admin-field"><span>Social title</span><input value={seoForm.ogTitle} onChange={e=>setSeoForm({...seoForm,ogTitle:e.target.value})}/></label><label className="cb-admin-field"><span>Social description</span><textarea rows={2} value={seoForm.ogDescription} onChange={e=>setSeoForm({...seoForm,ogDescription:e.target.value})}/></label><label className="cb-admin-field"><span>Social image URL</span><input value={seoForm.ogImage} onChange={e=>setSeoForm({...seoForm,ogImage:e.target.value})}/></label><button className="cb-admin-primary" disabled={busy}><Save size={15}/> Save SEO settings</button></form></section><section className="cb-admin-card cb-admin-seo-preview"><span className="cb-admin-kicker">SEARCH PREVIEW</span><div className="cb-seo-google"><small>clearbot.org › {seoPath.replace(/^\//,"")}</small><h3>{seoForm.title||"Clearbot | Cleaner Waterways"}</h3><p>{seoForm.description||"Your page description will appear here in search results."}</p></div><div className="cb-admin-seo-checks"><h3>SEO checklist</h3><CheckRow ok={seoForm.title.length>=30&&seoForm.title.length<=60} label="Title is between 30–60 characters"/><CheckRow ok={seoForm.description.length>=70&&seoForm.description.length<=160} label="Description is between 70–160 characters"/><CheckRow ok={Boolean(seoForm.keywords.trim())} label="Focus keywords added"/><CheckRow ok={Boolean(seoForm.canonical.trim())} label="Canonical URL configured"/><CheckRow ok={Boolean(seoForm.ogImage.trim())} label="Social sharing image configured"/></div><div className="cb-admin-seo-note"><AlertCircle size={16}/> SEO checks are guidance, not a ranking guarantee. Search engines may choose different snippets.</div></section></div>}

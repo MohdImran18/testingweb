@@ -577,16 +577,16 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
 </style>
 <style id="clearbot-intro-video-split-v2">
 .cb-intro-video{padding:clamp(54px,7vw,88px) 0!important;background:#f5f9fa}
-.cb-intro-video .cb-intro-layout{display:grid;grid-template-columns:minmax(0,2fr) minmax(260px,1fr);gap:clamp(28px,5vw,68px);align-items:center}
+.cb-intro-video .cb-intro-layout{display:grid;grid-template-columns:minmax(230px,1fr) minmax(0,3fr);gap:clamp(28px,5vw,68px);align-items:center}
 .cb-intro-video .cb-intro-copy{max-width:100%;margin:0;text-align:left}
-.cb-intro-video .cb-intro-copy h2{max-width:760px;margin:12px 0 18px;font-size:clamp(30px,3.8vw,48px);line-height:1.12;letter-spacing:-.045em}
-.cb-intro-video .cb-intro-copy p{max-width:720px;margin:0;color:#5d7480;font-size:clamp(14px,1.25vw,17px);line-height:1.85}
-.cb-intro-video .cb-intro-link{display:inline-flex;align-items:center;gap:12px;margin-top:24px;color:#087f88;font-size:13px;font-weight:800;text-decoration:none}
+.cb-intro-video .cb-intro-copy h2{max-width:100%;margin:10px 0 14px;font-size:clamp(25px,2.5vw,34px);line-height:1.12;letter-spacing:-.04em}
+.cb-intro-video .cb-intro-copy p{max-width:100%;margin:0;color:#5d7480;font-size:clamp(13px,1.05vw,15px);line-height:1.75}
+.cb-intro-video .cb-intro-link{display:inline-flex;align-items:center;gap:12px;margin-top:18px;color:#087f88;font-size:13px;font-weight:800;text-decoration:none}
 .cb-intro-video .cb-intro-link span{font-size:19px;transition:transform .2s}
 .cb-intro-video .cb-intro-link:hover span{transform:translateX(4px)}
 .cb-intro-video .cb-video-frame{width:100%;aspect-ratio:16/9;min-height:0;overflow:hidden;border-radius:18px;background:#082d3b;box-shadow:0 18px 44px rgba(5,39,53,.16)}
 .cb-intro-video .cb-video-frame iframe{display:block;width:100%;height:100%;min-height:0;border:0}
-@media(max-width:760px){.cb-intro-video .cb-intro-layout{grid-template-columns:1fr;gap:26px}.cb-intro-video .cb-intro-copy h2{font-size:clamp(30px,8vw,40px)}.cb-intro-video .cb-video-frame{max-width:100%}}
+@media(max-width:900px){.cb-intro-video .cb-intro-layout{grid-template-columns:minmax(0,1fr) minmax(0,1.8fr);gap:24px}}@media(max-width:760px){.cb-intro-video .cb-intro-layout{grid-template-columns:1fr;gap:26px}.cb-intro-video .cb-intro-copy h2{font-size:clamp(30px,8vw,40px)}.cb-intro-video .cb-video-frame{max-width:100%}}
 </style>
 </head>
 <body>
@@ -681,6 +681,7 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
 <button aria-label="Next slide" class="hero-slide-arrow" data-hero-next="" type="button">›</button>
 </div>
 </section>
+<section class="content-section cb-intro-video" id="intro-video"><div class="container cb-intro-layout"><div class="section-heading cb-intro-copy"><span class="section-kicker">SEE CLEARBOT IN ACTION</span><h2>Smarter operations on the water.</h2><p>Our unmanned electric vessels combine practical field engineering, AI-driven monitoring and mission planning to help municipalities, ports and environmental teams keep waterways cleaner. Watch how our teams work across real-world deployments.</p><a class="cb-intro-link" href="projects.html">Explore our projects <span aria-hidden="true">→</span></a></div><div class="cb-video-frame"><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" loading="lazy" src="https://www.youtube-nocookie.com/embed/b_Z2uiMx288" title="Clearbot waterway operations video"></iframe></div></div></section>
 <section aria-label="Global presence" class="global global-intro">
 <div class="container global-intro-wrap">
 <div class="global-intro-copy">
@@ -696,8 +697,7 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
 <div class="global-intro-stat"><strong>AI-driven</strong><span>Intelligent operations</span></div>
 </div>
 </div>
-</section>
-<section class="content-section cb-intro-video" id="intro-video"><div class="container cb-intro-layout"><div class="section-heading cb-intro-copy"><span class="section-kicker">SEE CLEARBOT IN ACTION</span><h2>Smarter operations on the water.</h2><p>Our unmanned electric vessels combine practical field engineering, AI-driven monitoring and mission planning to help municipalities, ports and environmental teams keep waterways cleaner. Watch how our teams work across real-world deployments.</p><a class="cb-intro-link" href="projects.html">Explore our projects <span aria-hidden="true">→</span></a></div><div class="cb-video-frame"><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" loading="lazy" src="https://www.youtube-nocookie.com/embed/b_Z2uiMx288" title="Clearbot waterway operations video"></iframe></div></div></section><section class="projects" id="projects">
+</section><section class="projects" id="projects">
 <div class="container">
 <div class="section-head"><div><div class="kicker">Proven deployments</div><h2>Already Delivering Impact Worldwide</h2><p>Our unmanned electric vessels are working across rivers, lakes, ports and urban waterways. Explore selected deployments and see how our technology supports cleaner waterbodies.</p></div><a class="text-link" href="projects.html">View all projects  →</a></div>
 <div class="project-grid">
@@ -782,62 +782,5 @@ document.addEventListener('DOMContentLoaded',function(){
  });
 });
 </script>
-<script>
-(function(){
-  function initClearbotHeroCarousel(){
-    const root=document.querySelector('.hero-carousel');
-    if(!root || root.dataset.carouselReady==='true') return;
-    const slides=Array.from(root.querySelectorAll('[data-hero-slide]'));
-    const dots=Array.from(root.querySelectorAll('[data-hero-dot]'));
-    const currentLabel=root.querySelector('[data-hero-current]');
-    const totalLabel=root.querySelector('.hero-slide-total');
-    const prev=root.querySelector('[data-hero-prev]');
-    const next=root.querySelector('[data-hero-next]');
-    if(slides.length<2) return;
-    root.dataset.carouselReady='true';
-    let active=Math.max(0,slides.findIndex(slide=>slide.classList.contains('is-active')));
-    let timer=null;
-    if(totalLabel) totalLabel.textContent=String(slides.length).padStart(2,'0');
-    function show(index){
-      active=(index+slides.length)%slides.length;
-      slides.forEach((slide,i)=>{
-        const selected=i===active;
-        slide.classList.toggle('is-active',selected);
-        slide.setAttribute('aria-hidden',String(!selected));
-        if('inert' in slide) slide.inert=!selected;
-        else if(selected) slide.removeAttribute('inert');
-        else slide.setAttribute('inert','');
-      });
-      dots.forEach((dot,i)=>{
-        const selected=i===active;
-        dot.classList.toggle('is-active',selected);
-        dot.setAttribute('aria-pressed',String(selected));
-      });
-      if(currentLabel) currentLabel.textContent=String(active+1).padStart(2,'0');
-    }
-    function stop(){if(timer){window.clearInterval(timer);timer=null;}}
-    function start(){
-      stop();
-      if(!document.hidden) timer=window.setInterval(()=>show(active+1),5000);
-    }
-    function go(index){show(index);start();}
-    if(prev) prev.addEventListener('click',()=>go(active-1));
-    if(next) next.addEventListener('click',()=>go(active+1));
-    dots.forEach(dot=>dot.addEventListener('click',()=>go(Number(dot.dataset.heroDot)||0)));
-    document.addEventListener('visibilitychange',()=>{if(document.hidden)stop();else start();});
-    let touchStart=null;
-    root.addEventListener('touchstart',event=>{touchStart=event.changedTouches[0].clientX;},{passive:true});
-    root.addEventListener('touchend',event=>{
-      if(touchStart===null)return;
-      const dx=event.changedTouches[0].clientX-touchStart;
-      if(Math.abs(dx)>45)go(active+(dx<0?1:-1));
-      touchStart=null;
-    },{passive:true});
-    show(active);
-    start();
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',initClearbotHeroCarousel,{once:true});
-  else initClearbotHeroCarousel();
-})();
-</script>
+
 </body></html>

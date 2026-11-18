@@ -29,7 +29,7 @@ async function getPage(file: string) {
       const id = m[1].match(/id=["']([^"']+)["']/i)?.[1];
       const type = m[1].match(/type=["']([^"']+)["']/i)?.[1];
       return src ? { src, id, type } : { code: m[2], id, type };
-    });
+    }).filter((item) => !(item.code && item.code.includes("hero-carousel") && item.code.includes("data-hero-slide")));
     let imageIndex = 0;
     const body = rawBody.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '').replace(/<img\b[^>]*>/gi, (tag) => {
       const srcMatch = tag.match(/\bsrc\s*=\s*([\"'])(.*?)\1/i);

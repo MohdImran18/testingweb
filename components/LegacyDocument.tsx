@@ -281,6 +281,104 @@ export default function LegacyDocument({ body, styles, links, scripts }: Props) 
     };
   }, [scripts]);
 
+  // Initialize the homepage carousel from the mounted React DOM. The legacy
+  // HTML is injected with dangerouslySetInnerHTML, so this lifecycle hook is
+  // more reliable than an inline script embedded in the original HTML file.
+  useEffect(() => {
+    const root = document.querySelector<HTMLElement>(".legacy-site .hero-carousel");
+    if (!root) return;
+
+    const slides = Array.from(root.querySelectorAll<HTMLElement>("[data-hero-slide]"));
+    const dots = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-hero-dot]"));
+    const currentLabel = root.querySelector<HTMLElement>("[data-hero-current]");
+    const totalLabel = root.querySelector<HTMLElement>(".hero-slide-total");
+    const previousButton = root.querySelector<HTMLButtonElement>("[data-hero-prev]");
+    const nextButton = root.querySelector<HTMLButtonElement>("[data-hero-next]");
+
+    if (slides.length < 2) return;
+
+    let activeIndex = slides.findIndex((slide) => slide.classList.contains("is-active"));
+    if (activeIndex < 0) activeIndex = 0;
+    let intervalId: number | undefined;
+    let touchStartX: number | null = null;
+
+    if (totalLabel) totalLabel.textContent = String(slides.length).padStart(2, "0");
+
+    const showSlide = (requestedIndex: number) => {
+      activeIndex = (requestedIndex + slides.length) % slides.length;
+      slides.forEach((slide, index) => {
+        const isActive = index === activeIndex;
+        slide.classList.toggle("is-active", isActive);
+        slide.setAttribute("aria-hidden", String(!isActive));
+        slide.inert = !isActive;
+      });
+      dots.forEach((dot, index) => {
+        const isActive = index === activeIndex;
+        dot.classList.toggle("is-active", isActive);
+        dot.setAttribute("aria-pressed", String(isActive));
+      });
+      if (currentLabel) currentLabel.textContent = String(activeIndex + 1).padStart(2, "0");
+    };
+
+    const stopAutoplay = () => {
+      if (intervalId !== undefined) {
+        window.clearInterval(intervalId);
+        intervalId = undefined;
+      }
+    };
+    const startAutoplay = () => {
+      stopAutoplay();
+      if (!document.hidden) intervalId = window.setInterval(() => showSlide(activeIndex + 1), 5000);
+    };
+    const goToSlide = (index: number) => {
+      showSlide(index);
+      startAutoplay();
+    };
+    const handlePrevious = () => goToSlide(activeIndex - 1);
+    const handleNext = () => goToSlide(activeIndex + 1);
+    const handleVisibility = () => {
+      if (document.hidden) stopAutoplay();
+      else startAutoplay();
+    };
+    const handleTouchStart = (event: TouchEvent) => {
+      touchStartX = event.changedTouches[0]?.clientX ?? null;
+    };
+    const dotHandlers = dots.map((dot) => {
+      const index = Number(dot.dataset.heroDot);
+      const handler = () => goToSlide(Number.isFinite(index) ? index : 0);
+      return { dot, handler };
+    });
+    const handleTouchEnd = (event: TouchEvent) => {
+      if (touchStartX === null) return;
+      const endX = event.changedTouches[0]?.clientX;
+      if (typeof endX === "number") {
+        const delta = endX - touchStartX;
+        if (Math.abs(delta) > 45) goToSlide(activeIndex + (delta < 0 ? 1 : -1));
+      }
+      touchStartX = null;
+    };
+
+    previousButton?.addEventListener("click", handlePrevious);
+    nextButton?.addEventListener("click", handleNext);
+    dotHandlers.forEach(({ dot, handler }) => dot.addEventListener("click", handler));
+    root.addEventListener("touchstart", handleTouchStart, { passive: true });
+    root.addEventListener("touchend", handleTouchEnd, { passive: true });
+    document.addEventListener("visibilitychange", handleVisibility);
+
+    showSlide(activeIndex);
+    startAutoplay();
+
+    return () => {
+      stopAutoplay();
+      previousButton?.removeEventListener("click", handlePrevious);
+      nextButton?.removeEventListener("click", handleNext);
+      dotHandlers.forEach(({ dot, handler }) => dot.removeEventListener("click", handler));
+      root.removeEventListener("touchstart", handleTouchStart);
+      root.removeEventListener("touchend", handleTouchEnd);
+      document.removeEventListener("visibilitychange", handleVisibility);
+    };
+  }, [body]);
+
   return (
     <>
       {links.map((href, i) => <link key={`${href}-${i}`} rel="stylesheet" href={href} />)}

@@ -36,3 +36,29 @@ For production image persistence, keep the Render PostgreSQL `DATABASE_URL` conf
 - Preserved the requested 2/3 text + 1/3 YouTube video layout and its responsive stacking on mobile.
 - Regenerated `data/site-image-manifest.json` against the current served HTML so the five hero images have valid Admin Image Manager slots. Total slots: 149.
 - Validation: 5 slides / 5 dots, video layout CSS and 16:9 aspect ratio confirmed; `node --check` passed for the carousel initializer. A full Next.js build was not rerun in this container.
+
+
+## Homepage video emphasis and section reorder (18 November 2026)
+- Reworked the homepage intro section to give the YouTube video approximately 75% of the content width and the text copy 25%, with the text on the left and video on the right.
+- Reduced heading/body typography in the narrow copy column to keep it balanced.
+- Reordered the homepage so “See Clearbot in Action” appears before “Global Presence”; the former lower section is now above the latter.
+- Kept the responsive stacked layout on mobile and preserved the five-slide hero carousel.
+
+
+## Hero carousel reliability fix (18 November 2026)
+- Moved homepage hero-carousel initialization from an inline script embedded in legacy HTML into `LegacyDocument.tsx` React `useEffect`, which runs after the legacy DOM has mounted.
+- Removed the old inline initializer from the served homepage and filtered legacy carousel scripts from dynamic script injection to prevent duplicate controllers.
+- Next / Previous controls, five pagination dots, touch swipe and 5-second autoplay are wired directly to the mounted carousel DOM. Autoplay pauses only while the document is hidden and resumes when visible.
+- Preserved the 5 homepage slide articles and local slide imagery, and preserved the 25% text / 75% YouTube layout.
+- Verified 5 slides, 5 dots, video-section order above Global Presence, 25/75 CSS grid, and TypeScript `tsc --noEmit` passing.
+- Full Next.js build could not run in this Linux container because the available dependency bundle lacks the Linux SWC binary and npm registry access is unavailable.
+
+
+## Admin image manager — page-wise library (18 November 2026)
+- Reorganised the Image Manager into page-wise sections, ordered from Homepage down through About, Projects, Fleet/Product pages, Services, individual project pages, Insights and Contact. Images within each page retain their original top-to-bottom order from the served HTML.
+- Each page header shows its page number, readable page name, route, total image-slot count and preview-load progress.
+- Added search across page name, alt text and source filename.
+- Each image card shows the image preview, source filename, position within its page, natural pixel dimensions, aspect ratio, file size when same-origin or embedded metadata is available, and image format. External CDN assets are clearly labelled when browser security prevents reading their exact byte size.
+- Fixed preview URL handling for `data:image/...` embedded images so they render directly instead of being incorrectly treated as a root-relative file path.
+- Kept image replacement and restore-original actions on every image card.
+- Validation: TypeScript/TSX transpilation reports zero syntax diagnostics; manifest parses with 149 slots across 30 pages. Full Next.js build could not be run because dependency installation timed out in this environment.
