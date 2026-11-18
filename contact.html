@@ -443,6 +443,74 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
 }
 </style>
 
+<style id="contact-layout-dom-fix">
+@media (min-width: 761px) {
+  .contact-hero.contact-combined { width:100% !important; }
+  .contact-hero.contact-combined .contact-combined-grid {
+    width:min(calc(100% - 64px),1290px) !important;
+    max-width:1290px !important;
+    margin:0 auto !important;
+    display:grid !important;
+    grid-template-columns:minmax(0,38fr) minmax(0,62fr) !important;
+    gap:28px !important;
+    align-items:center !important;
+  }
+  .contact-hero.contact-combined .contact-process-content,
+  .contact-hero.contact-combined .contact-form-card {
+    min-width:0 !important;
+    width:100% !important;
+    max-width:none !important;
+    margin:0 !important;
+    justify-self:stretch !important;
+    box-sizing:border-box !important;
+  }
+  .contact-hero.contact-combined .contact-process-content .section-head {
+    display:block !important;
+    max-width:100% !important;
+    margin:0 0 18px !important;
+  }
+  .contact-hero.contact-combined .contact-process-content .section-head h2 {
+    color:#fff !important;
+    font-size:clamp(25px,2.5vw,38px) !important;
+    line-height:1.12 !important;
+    margin:10px 0 !important;
+  }
+  .contact-hero.contact-combined .contact-process-content .section-head p {
+    color:rgba(255,255,255,.82) !important;
+    font-size:13px !important;
+    line-height:1.55 !important;
+  }
+  .contact-hero.contact-combined .contact-process-content .process-grid {
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) !important;
+    gap:10px !important;
+  }
+  .contact-hero.contact-combined .contact-process-content .process-card {
+    min-height:0 !important;
+    padding:12px 14px !important;
+    background:#fff !important;
+    color:#102c3d !important;
+  }
+  .contact-hero.contact-combined .contact-process-content .process-card h3 {color:#102c3d !important;}
+  .contact-hero.contact-combined .contact-process-content .process-card p {
+    color:#526b78 !important;
+    opacity:1 !important;
+  }
+}
+@media (max-width:760px) {
+  .contact-hero.contact-combined .contact-combined-grid {
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) !important;
+    gap:22px !important;
+  }
+  .contact-hero.contact-combined .contact-process-content,
+  .contact-hero.contact-combined .contact-form-card {
+    width:100% !important;
+    max-width:none !important;
+    margin:0 !important;
+  }
+}
+</style>
 </head>
 <body>
 <header class="site-header">
@@ -479,16 +547,32 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
 <main>
 <div class="container breadcrumb"><a href="index.html#home">Home</a><span>›</span>Contact Us</div>
 <section class="contact-hero contact-combined" id="top">
-<div class="container contact-hero-grid contact-combined-grid">
-<div class="contact-process-content">
-<div class="section-head"><div class="kicker">YOUR PROJECT, OUR PROCESS</div>
-<div class="process-grid">
-<article class="process-card"><div class="process-number">01</div><h3>Share your project</h3><p>Tell us about your waterbody, port or location, the challenge you want to address and your operational goals.</p></article>
-<article class="process-card"><div class="process-number">02</div><h3>Explore the right technology</h3><p>Our team will review your requirements and introduce the most suitable unmanned electric and solar-powered Clearbot platform.</p></article>
-<article class="process-card"><div class="process-number">03</div><h3>Plan the way forward</h3><p>We’ll discuss site conditions, technical requirements and the next steps towards a practical deployment plan.</p></article>
-</div>
-</div>
-<div class="contact-form-card" id="contact-form">
+  <div class="container contact-hero-grid contact-combined-grid">
+    <div class="contact-process-content">
+      <div class="section-head">
+        <div class="kicker">YOUR PROJECT, OUR PROCESS</div>
+        <h2>Let’s find the right solution for your waterway.</h2>
+        <p>Every site has its own operational needs. We work with you to understand the challenge and identify a practical Clearbot solution for your location.</p>
+      </div>
+      <div class="process-grid">
+        <article class="process-card">
+          <div class="process-number">01</div>
+          <h3>Share your project</h3>
+          <p>Tell us about your waterbody, port or location, the challenge you want to address and your operational goals.</p>
+        </article>
+        <article class="process-card">
+          <div class="process-number">02</div>
+          <h3>Explore the right technology</h3>
+          <p>Our team will review your requirements and introduce the most suitable unmanned electric and solar-powered Clearbot platform.</p>
+        </article>
+        <article class="process-card">
+          <div class="process-number">03</div>
+          <h3>Plan the way forward</h3>
+          <p>We’ll discuss site conditions, technical requirements and the next steps towards a practical deployment plan.</p>
+        </article>
+      </div>
+    </div>
+    <div class="contact-form-card" id="contact-form">
 <div class="form-heading"><div><h2>Talk to our team</h2><p>Share a few details and tell us what you’re looking to achieve.</p></div></div>
 <form class="contact-form" data-enquiry-form="website" data-enquiry-type="contact" id="clearbotContactForm">
 <div class="field"><label for="fullName">Full Name <em>*</em></label><input autocomplete="name" id="fullName" maxlength="120" name="Full Name" placeholder="Your full name" required="" type="text"/></div>
