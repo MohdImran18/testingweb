@@ -73,7 +73,8 @@ For production image persistence, keep the Render PostgreSQL `DATABASE_URL` conf
 - Validation: TypeScript `tsc --noEmit` passed; static checks confirmed five carousel slides, five matching image-manifest records, local image files and the React-based controls. A full Next.js build was not completed in this Linux container because the available dependency set does not include the Linux SWC binary; run `npm ci` and `npm run build` in the target Windows/Render environment before deployment.
 
 
-## Contact form simplification — 18 November 2026
-- Reduced the public contact form to three visible fields: Full Name, Business Email and Phone Number.
-- Added country calling-code selection (default India +91) within the phone field.
-- Combined selected dial code and entered phone number before submitting to the enquiry API.
+## Contact page follow-up copy update
+- Replaced the old “Schedule a Call” / “Contact us – Virtual demos – Get Clearbot” block with a Clearbot project enquiry process.
+- Replaced the social-follow panel with “What to include in your enquiry” guidance.
+- Updated the lower CTA to “Start an enquiry” linking back to the three-field contact form.
+- Updated Contact page title and Open Graph copy.
