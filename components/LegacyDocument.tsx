@@ -43,25 +43,38 @@ type SlideDirection = "next" | "prev";
 function HomeHeroCarousel({ slides }: { slides: string[] }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [direction, setDirection] = useState<SlideDirection>("next");
+  const [leavingIndex, setLeavingIndex] = useState<number | null>(null);
   const touchStartX = useRef<number | null>(null);
-
-  // Reset a five-second timer after every automatic or manual slide change.
-  useEffect(() => {
-    if (slides.length < 2) return;
-    const timerId = window.setTimeout(() => {
-      setDirection("next");
-      setActiveIndex((current) => (current + 1) % slides.length);
-    }, 5000);
-    return () => window.clearTimeout(timerId);
-  }, [activeIndex, slides.length]);
 
   const goTo = (requestedIndex: number, requestedDirection?: SlideDirection) => {
     if (slides.length < 2) return;
     const nextIndex = ((requestedIndex % slides.length) + slides.length) % slides.length;
     if (nextIndex === activeIndex) return;
-    setDirection(requestedDirection || (nextIndex > activeIndex ? "next" : "prev"));
+
+    const forwardDistance = (nextIndex - activeIndex + slides.length) % slides.length;
+    const backwardDistance = (activeIndex - nextIndex + slides.length) % slides.length;
+    const nextDirection = requestedDirection || (forwardDistance <= backwardDistance ? "next" : "prev");
+
+    setLeavingIndex(activeIndex);
+    setDirection(nextDirection);
     setActiveIndex(nextIndex);
   };
+
+  // Autoplay advances every five seconds and resets after a manual interaction.
+  useEffect(() => {
+    if (slides.length < 2) return;
+    const timerId = window.setTimeout(() => {
+      goTo(activeIndex + 1, "next");
+    }, 5000);
+    return () => window.clearTimeout(timerId);
+  }, [activeIndex, slides.length]);
+
+  // Keep the outgoing slide mounted just long enough to complete the horizontal motion.
+  useEffect(() => {
+    if (leavingIndex === null) return;
+    const timerId = window.setTimeout(() => setLeavingIndex(null), 760);
+    return () => window.clearTimeout(timerId);
+  }, [activeIndex, leavingIndex]);
 
   const handleTouchEnd = (event: TouchEvent<HTMLElement>) => {
     const start = touchStartX.current;
@@ -104,8 +117,8 @@ function HomeHeroCarousel({ slides }: { slides: string[] }) {
         {slides.map((slide, index) => (
           <article
             key={`home-hero-slide-${index + 1}`}
-            aria-hidden={index !== activeIndex}
-            className={`hero-slide${index === activeIndex ? " is-active" : ""}`}
+            aria-hidden={index !== activeIndex && index !== leavingIndex}
+            className={`hero-slide${index === activeIndex ? " is-active" : ""}${index === leavingIndex ? " is-leaving" : ""}`}
             dangerouslySetInnerHTML={{ __html: slide }}
           />
         ))}
@@ -149,31 +162,100 @@ function HomeHeroCarousel({ slides }: { slides: string[] }) {
 }
 
 const HERO_SLIDE_MOTION_CSS = `
-.legacy-site .hero.hero-carousel .hero-slide {
-  transform: translate3d(42px, 0, 0);
-  transition:
-    opacity .72s ease,
-    visibility .72s ease,
-    transform .72s cubic-bezier(.22,.68,.2,1);
-  will-change: opacity, transform;
+/* Override the old legacy rule that hid every slide after the first one. */
+.legacy-site .hero.hero-carousel .hero-slides {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
 }
-.legacy-site .hero.hero-carousel[data-slide-direction="prev"] .hero-slide:not(.is-active) {
-  transform: translate3d(-42px, 0, 0);
+.legacy-site .hero.hero-carousel .hero-slides > .hero-slide {
+  display: flex !important;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translate3d(100%, 0, 0);
+  transition: none;
+  will-change: transform;
+  z-index: 0;
 }
-.legacy-site .hero.hero-carousel[data-slide-direction="next"] .hero-slide:not(.is-active) {
-  transform: translate3d(42px, 0, 0);
+.legacy-site .hero.hero-carousel[data-slide-direction="next"] .hero-slides > .hero-slide.is-active {
+  visibility: visible;
+  pointer-events: auto;
+  z-index: 2;
+  animation: cbHeroSlideEnterFromRight .72s cubic-bezier(.22,.68,.2,1) both;
 }
-.legacy-site .hero.hero-carousel .hero-slide.is-active {
-  transform: translate3d(0, 0, 0);
+.legacy-site .hero.hero-carousel[data-slide-direction="next"] .hero-slides > .hero-slide.is-leaving {
+  visibility: visible;
+  pointer-events: none;
+  z-index: 1;
+  animation: cbHeroSlideExitToLeft .72s cubic-bezier(.22,.68,.2,1) both;
+}
+.legacy-site .hero.hero-carousel[data-slide-direction="prev"] .hero-slides > .hero-slide.is-active {
+  visibility: visible;
+  pointer-events: auto;
+  z-index: 2;
+  animation: cbHeroSlideEnterFromLeft .72s cubic-bezier(.22,.68,.2,1) both;
+}
+.legacy-site .hero.hero-carousel[data-slide-direction="prev"] .hero-slides > .hero-slide.is-leaving {
+  visibility: visible;
+  pointer-events: none;
+  z-index: 1;
+  animation: cbHeroSlideExitToRight .72s cubic-bezier(.22,.68,.2,1) both;
+}
+@keyframes cbHeroSlideEnterFromRight {
+  from { transform: translate3d(100%, 0, 0); }
+  to { transform: translate3d(0, 0, 0); }
+}
+@keyframes cbHeroSlideExitToLeft {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-100%, 0, 0); }
+}
+@keyframes cbHeroSlideEnterFromLeft {
+  from { transform: translate3d(-100%, 0, 0); }
+  to { transform: translate3d(0, 0, 0); }
+}
+@keyframes cbHeroSlideExitToRight {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(100%, 0, 0); }
+}
+.legacy-site .hero.hero-carousel .hero-slides > .hero-slide.is-leaving .hero-carousel-content {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+.legacy-site .hero.hero-carousel .hero-carousel-controls {
+  z-index: 8;
+}
+.legacy-site .hero.hero-carousel .hero-slide-arrow {
+  box-shadow: 0 8px 24px rgba(0,0,0,.2);
+  transition: background .2s ease, transform .2s ease, border-color .2s ease;
+}
+.legacy-site .hero.hero-carousel .hero-slide-arrow:active {
+  transform: scale(.94);
+}
+.legacy-site .hero.hero-carousel .hero-slide-dot {
+  flex: 0 0 auto;
 }
 @media (prefers-reduced-motion: reduce) {
-  .legacy-site .hero.hero-carousel .hero-slide {
+  .legacy-site .hero.hero-carousel .hero-slides > .hero-slide {
+    animation: none !important;
     transform: none !important;
     transition: none !important;
     will-change: auto;
   }
+  .legacy-site .hero.hero-carousel .hero-slides > .hero-slide:not(.is-active):not(.is-leaving) {
+    visibility: hidden !important;
+  }
+  .legacy-site .hero.hero-carousel .hero-slides > .hero-slide.is-active,
+  .legacy-site .hero.hero-carousel .hero-slides > .hero-slide.is-leaving {
+    visibility: visible !important;
+  }
 }
-`;
+`;;
 
 export default function LegacyDocument({ body, styles, links, scripts, heroSlides = [] }: Props) {
   useEffect(() => {
@@ -395,6 +477,9 @@ export default function LegacyDocument({ body, styles, links, scripts, heroSlide
     const load = async () => {
       for (const item of scripts) {
         if (cancelled) return;
+        // The homepage carousel is React-controlled. Never attach the older DOM controller too.
+        if (item.id === "clearbot-home-hero-carousel-init") continue;
+        if (item.code && item.code.includes("initialiseClearbotHeroCarousel")) continue;
         const script = document.createElement("script");
         if (item.id) script.id = item.id;
         if (item.type) script.type = item.type;
