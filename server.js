@@ -12,6 +12,7 @@ const ROOT = __dirname;
 const DATA_DIR = path.join(ROOT, 'data');
 const ENQUIRIES_FILE = path.join(DATA_DIR, 'enquiries.json');
 const STORE_FILE = path.join(DATA_DIR, 'admin-store.json');
+const SITE_IMAGE_MANIFEST = path.join(DATA_DIR, 'site-image-manifest.json');
 const API_PORT = Number(process.env.API_PORT || 3000);
 const HOST = '127.0.0.1';
 const MAX_BODY = 8 * 1024 * 1024;
@@ -33,7 +34,7 @@ const transporter = mailConfigured ? nodemailer.createTransport({
 
 fs.mkdirSync(DATA_DIR, { recursive: true });
 if (!fs.existsSync(ENQUIRIES_FILE)) fs.writeFileSync(ENQUIRIES_FILE, '[]\n');
-if (!fs.existsSync(STORE_FILE)) fs.writeFileSync(STORE_FILE, JSON.stringify({ users: [], leads: [], blogs: [], categories: [], seo: [], activity: [], media: [] }, null, 2));
+if (!fs.existsSync(STORE_FILE)) fs.writeFileSync(STORE_FILE, JSON.stringify({ users: [], leads: [], blogs: [], categories: [], seo: [], activity: [], media: [], siteImages: [] }, null, 2));
 
 function json(res, status, payload, extraHeaders = {}) {
   res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', ...extraHeaders });
@@ -59,7 +60,7 @@ function readBody(req) {
 function readJsonFile(file, fallback) {
   try { return JSON.parse(fs.readFileSync(file, 'utf8')); } catch { return fallback; }
 }
-function readFallbackStore() { return readJsonFile(STORE_FILE, { users: [], leads: [], blogs: [], categories: [], seo: [], activity: [], media: [] }); }
+function readFallbackStore() { return readJsonFile(STORE_FILE, { users: [], leads: [], blogs: [], categories: [], seo: [], activity: [], media: [], siteImages: [] }); }
 function writeFallbackStore(store) { fs.writeFileSync(STORE_FILE, JSON.stringify(store, null, 2) + '\n'); }
 
 async function initStorage() {
@@ -93,7 +94,7 @@ async function initStorage() {
   }
   // If a local development store is deliberately copied to production during migration, preserve its records too.
   const localStore = readJsonFile(STORE_FILE, {});
-  for (const collection of ['leads','blogs','categories','seo','activity','users']) {
+  for (const collection of ['leads','blogs','categories','seo','activity','users','siteImages']) {
     for (const item of (Array.isArray(localStore[collection]) ? localStore[collection] : [])) {
       if (!item?.id) continue;
       await pool.query('INSERT INTO admin_records(id, collection, data) VALUES($1,$2,$3::jsonb) ON CONFLICT(id) DO NOTHING', [item.id, collection, JSON.stringify(item)]);
@@ -355,6 +356,11 @@ async function handleApi(req, res, url) {
     const blog = (await listRecords('blogs')).find(b => b.slug === slug && (b.status === 'published' || (b.status === 'scheduled' && b.publishAt && new Date(b.publishAt).getTime() <= Date.now())));
     return blog ? json(res, 200, { blog }) : json(res, 404, { error: 'Blog not found.' });
   }
+  if (method === 'GET' && pathname === '/api/public/site-images') {
+    const manifest = readJsonFile(SITE_IMAGE_MANIFEST, []);
+    const overrides = await listRecords('siteImages');
+    return json(res, 200, { images: overrides.map(({ id, url }) => ({ id, url })) });
+  }
   if (method === 'GET' && pathname === '/api/public/seo') {
     const pagePath = clean(url.searchParams.get('path') || '/', 300);
     const seo = (await listRecords('seo')).find(item => item.path === pagePath);
@@ -381,6 +387,24 @@ async function handleApi(req, res, url) {
     const canContent = ['super_admin','marketing'].includes(user.role);
     const isSuper = user.role === 'super_admin';
 
+    if (method === 'GET' && pathname === '/api/admin/site-images') {
+      if (!canContent) return json(res,403,{error:'Content management permission required.'});
+      const manifest = readJsonFile(SITE_IMAGE_MANIFEST, []);
+      const overrides = await listRecords('siteImages');
+      return json(res,200,{ images: manifest.map(item => ({ ...item, url: overrides.find(entry => entry.id === item.id)?.url || '' })) });
+    }
+    if (method === 'PUT' && pathname === '/api/admin/site-images') {
+      if (!canContent) return json(res,403,{error:'Content management permission required.'});
+      const body = await readBody(req); const id = clean(body.id,240); const urlValue = clean(body.url,800);
+      const manifest = readJsonFile(SITE_IMAGE_MANIFEST, []);
+      if (!manifest.some(item => item.id === id)) return json(res,404,{error:'Image slot not found.'});
+      if (urlValue && !/^\/api\/uploads\/[a-f0-9-]{20,80}$/i.test(urlValue)) return json(res,400,{error:'Choose an image uploaded to the media library.'});
+      const existing = await getRecord('siteImages', id);
+      const record = { id, url: urlValue, updatedAt: new Date().toISOString(), updatedBy: user.email };
+      if (urlValue) await putRecord('siteImages',record); else if (existing) await deleteRecord('siteImages',id);
+      await logActivity(user, urlValue ? 'updated' : 'reset', 'site_image', id);
+      return json(res,200,{ok:true,id,url:urlValue});
+    }
     if (method === 'GET' && pathname === '/api/admin/settings') {
       return json(res, 200, { notifyTo: NOTIFY_TO, emailConfigured: Boolean(transporter), database: useDatabase ? 'PostgreSQL' : 'Local JSON (development only)', roles: ['super_admin','sales','marketing'] });
     }

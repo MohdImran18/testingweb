@@ -1,7 +1,6 @@
 "use client";
 import { useEffect } from "react";
 import PremiumEffects from "./PremiumEffects";
-import AssessmentCTA from "./AssessmentCTA";
 
 type Props = {
   body: string;
@@ -42,8 +41,53 @@ export default function LegacyDocument({ body, styles, links, scripts }: Props) 
     const nodes: HTMLScriptElement[] = [];
     let cancelled = false;
 
-    // All legacy website enquiries are submitted through the same API used by
-    // Project Assessment. Capture phase prevents old page scripts from opening mailto.
+    // Apply admin-managed image replacements to every authored image slot.
+    fetch("/api/public/site-images", { credentials: "same-origin" })
+      .then((response) => response.ok ? response.json() : null)
+      .then((result) => {
+        if (cancelled || !Array.isArray(result?.images)) return;
+        const replacements = new Map<string, string>(result.images.filter((item: any) => item.url).map((item: any) => [item.id, item.url]));
+        document.querySelectorAll<HTMLImageElement>(".legacy-site img[data-cb-image-key]").forEach((img) => {
+          const replacement = replacements.get(img.dataset.cbImageKey || "");
+          if (replacement) img.src = replacement;
+        });
+      }).catch(() => {});
+
+    // Remove obsolete floating WhatsApp / call conversion buttons.
+    const removeLegacyFloatingActions = () => {
+      document.querySelectorAll<HTMLAnchorElement>(".legacy-site a[href]").forEach((link) => {
+        const href = (link.getAttribute("href") || "").toLowerCase();
+        const cls = (link.className || "").toString().toLowerCase();
+        const floating = /float|fixed|whatsapp|wa-float|call-float/.test(cls) || /position\s*:\s*fixed/i.test(link.getAttribute("style") || "");
+        if (floating && (href.includes("wa.me") || href.includes("whatsapp") || href.startsWith("tel:"))) link.remove();
+        if (href.includes("assessment")) link.remove();
+      });
+    };
+    removeLegacyFloatingActions();
+
+    // Keep a short contact form directly on every legacy page, not only Contact.
+    const legacyRoot = document.querySelector<HTMLElement>(".legacy-site");
+    if (legacyRoot && !legacyRoot.querySelector("form")) {
+      const section = document.createElement("section");
+      section.className = "cb-global-contact";
+      section.id = "contact-form";
+      section.innerHTML = `
+        <div class="cb-global-contact-inner">
+          <span class="cb-global-contact-kicker">START A CONVERSATION</span>
+          <h2>Tell us about your waterway project.</h2>
+          <p>Share your contact details and our team will get in touch.</p>
+          <form id="cb-page-contact-form" data-enquiry-form="website" data-enquiry-type="page-contact">
+            <label><span>Full name</span><input name="Full Name" type="text" autocomplete="name" placeholder="Your full name" required></label>
+            <label><span>Business email</span><input name="Business Email" type="email" autocomplete="email" placeholder="name@company.com" required></label>
+            <label><span>Phone number</span><input name="Phone Number" type="tel" autocomplete="tel" placeholder="Include country code" required></label>
+            <button type="submit">Send enquiry ↗</button>
+          </form>
+        </div>`;
+      const footer = legacyRoot.querySelector("footer");
+      if (footer) footer.before(section); else legacyRoot.appendChild(section);
+    }
+
+    // Capture legacy enquiry forms and submit them through the website enquiry API.
     const submitEnquiry = async (event: Event) => {
       const form = event.target;
       if (!(form instanceof HTMLFormElement)) return;
@@ -227,7 +271,6 @@ export default function LegacyDocument({ body, styles, links, scripts }: Props) 
       {links.map((href, i) => <link key={`${href}-${i}`} rel="stylesheet" href={href} />)}
       {styles.map((css, i) => <style key={i} dangerouslySetInnerHTML={{ __html: css }} />)}
       <div className="legacy-site" dangerouslySetInnerHTML={{ __html: body }} />
-      <AssessmentCTA />
       <PremiumEffects />
     </>
   );

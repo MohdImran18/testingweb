@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import LegacyDocument from '@/components/LegacyDocument';
+import QuickContactForm from '@/components/QuickContactForm';
 
 export const dynamic = 'force-dynamic';
 const ROOT = path.join(process.cwd(), 'public', 'original');
@@ -29,7 +30,13 @@ async function getPage(file: string) {
       const type = m[1].match(/type=["']([^"']+)["']/i)?.[1];
       return src ? { src, id, type } : { code: m[2], id, type };
     });
-    const body = rawBody.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '');
+    let imageIndex = 0;
+    const body = rawBody.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '').replace(/<img\b[^>]*>/gi, (tag) => {
+      const srcMatch = tag.match(/\bsrc\s*=\s*([\"'])(.*?)\1/i);
+      if (!srcMatch) return tag;
+      const key = `${safe}::${imageIndex++}`;
+      return /data-cb-image-key=/i.test(tag) ? tag : tag.replace(/>$/, ` data-cb-image-key=\"${key}\">`);
+    });
     const title = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]?.replace(/<[^>]+>/g, '').trim() || 'Clear Robotics';
     const description = head.match(/<meta\s+name=["']description["']\s+content=["']([^"']*)["'][^>]*>/i)?.[1] || '';
     return { body, styles, links, scripts, title, description };
@@ -66,6 +73,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug?: st
 
 export default async function Page({ params }: { params: Promise<{ slug?: string[] }> }) {
   const { slug = [] } = await params;
+  if (slug.length === 1 && slug[0] === 'news.html') redirect('/blog.html');
   if (slug.length >= 2 && slug[0] === 'blog') {
     const result = await apiJson(`/api/public/blog/${encodeURIComponent(slug.slice(1).join('/'))}`);
     const blog = result?.blog;
@@ -80,6 +88,7 @@ export default async function Page({ params }: { params: Promise<{ slug?: string
         <div className="cb-published-blog-content" dangerouslySetInnerHTML={{ __html: blog.content || '' }}/>
         <a className="cb-published-blog-back" href="/blog.html">← Back to all insights</a>
       </article>
+      <QuickContactForm />
       <footer className="cb-published-blog-footer">© {new Date().getFullYear()} Clear Robotics · Cleaner Waterways for a Healthier Planet</footer>
     </main>;
   }
