@@ -728,6 +728,80 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
   }
 }
 </style>
+<style id="about-timeline-content-fit-fix">
+/* Compact milestone cards: height follows actual content, not the tallest grid row */
+.about-timeline-section .milestone-list {
+  gap: 10px !important;
+  padding: 4px 0 !important;
+}
+.about-timeline-section .milestone-list > .milestone {
+  align-items: start !important;
+  align-content: start !important;
+  grid-template-rows: auto !important;
+  grid-auto-rows: auto !important;
+  min-height: 0 !important;
+  height: auto !important;
+}
+.about-timeline-section .milestone-year {
+  align-self: start !important;
+  height: auto !important;
+  padding-top: 17px !important;
+}
+.about-timeline-section .milestone-year::after {
+  top: 20px !important;
+}
+.about-timeline-section .milestone-card {
+  align-self: start !important;
+  display: flow-root !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  padding: 16px 22px 17px !important;
+  margin: 0 !important;
+  overflow: visible !important;
+}
+.about-timeline-section .milestone-topline {
+  margin-bottom: 6px !important;
+}
+.about-timeline-section .milestone-type {
+  padding: 4px 9px !important;
+  font-size: 8px !important;
+}
+.about-timeline-section .milestone-card h3 {
+  margin: 0 !important;
+  font-size: clamp(16px, 1.45vw, 19px) !important;
+  line-height: 1.28 !important;
+}
+.about-timeline-section .milestone-card p {
+  margin: 7px 0 0 !important;
+  font-size: 12px !important;
+  line-height: 1.62 !important;
+}
+.about-timeline-section .milestone-source {
+  margin-top: 9px !important;
+}
+@media (max-width: 760px) {
+  .about-timeline-section .milestone-list {
+    gap: 11px !important;
+  }
+  .about-timeline-section .milestone-list > .milestone {
+    align-items: start !important;
+    height: auto !important;
+  }
+  .about-timeline-section .milestone-year {
+    padding-top: 0 !important;
+  }
+  .about-timeline-section .milestone-year::after {
+    top: 2px !important;
+  }
+  .about-timeline-section .milestone-card {
+    align-self: start !important;
+    height: auto !important;
+    min-height: 0 !important;
+    padding: 15px 17px !important;
+  }
+}
+</style>
 </head><body><header class="site-header">
 <div class="container nav">
 <a aria-label="Clear Robotics home" class="brand" href="index.html#home"><img alt="Clear Robotics" class="brand-logo" src="assets/clear-robotics-logo.png"/></a>
