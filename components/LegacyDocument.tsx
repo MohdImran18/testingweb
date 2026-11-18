@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent, type TouchEvent } from "react";
 import PremiumEffects from "./PremiumEffects";
 
 type Props = {
@@ -8,6 +8,7 @@ type Props = {
   links: string[];
   scripts: { src?: string; code?: string; id?: string; type?: string }[];
   title: string;
+  heroSlides?: string[];
 };
 
 type SubmitControl = HTMLButtonElement | HTMLInputElement;
@@ -36,85 +37,145 @@ function pickField(values: Record<string, string>, ...aliases: string[]) {
   return "";
 }
 
-export default function LegacyDocument({ body, styles, links, scripts }: Props) {
-  // Initialise the homepage carousel only after the original page HTML is in the DOM.
-  // Keeping the carousel in its original document position preserves header/hero layout.
+
+type SlideDirection = "next" | "prev";
+
+function HomeHeroCarousel({ slides }: { slides: string[] }) {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [direction, setDirection] = useState<SlideDirection>("next");
+  const touchStartX = useRef<number | null>(null);
+
+  // Reset a five-second timer after every automatic or manual slide change.
   useEffect(() => {
-    const hero = document.querySelector<HTMLElement>(".legacy-site .hero.hero-carousel");
-    if (!hero) return;
-
-    const slides = Array.from(hero.querySelectorAll<HTMLElement>(".hero-slide"));
-    const dots = Array.from(hero.querySelectorAll<HTMLButtonElement>(".hero-slide-dot, [data-hero-dot]"));
-    const previous = hero.querySelector<HTMLButtonElement>("[data-hero-prev], .hero-slide-arrow[aria-label='Previous slide']");
-    const next = hero.querySelector<HTMLButtonElement>("[data-hero-next], .hero-slide-arrow[aria-label='Next slide']");
-    const current = hero.querySelector<HTMLElement>("[data-hero-current], .hero-slide-current");
-
     if (slides.length < 2) return;
-
-    let activeIndex = Math.max(0, slides.findIndex((slide) => slide.classList.contains("is-active")));
-    let touchStartX: number | null = null;
-
-    const showSlide = (requestedIndex: number) => {
-      activeIndex = (requestedIndex + slides.length) % slides.length;
-      slides.forEach((slide, index) => {
-        const active = index === activeIndex;
-        slide.classList.toggle("is-active", active);
-        slide.setAttribute("aria-hidden", active ? "false" : "true");
-      });
-      dots.forEach((dot, index) => {
-        const active = index === activeIndex;
-        dot.classList.toggle("is-active", active);
-        dot.setAttribute("aria-pressed", active ? "true" : "false");
-      });
-      if (current) current.textContent = String(activeIndex + 1).padStart(2, "0");
-    };
-
-    const onPrevious = () => showSlide(activeIndex - 1);
-    const onNext = () => showSlide(activeIndex + 1);
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "ArrowLeft") { event.preventDefault(); onPrevious(); }
-      if (event.key === "ArrowRight") { event.preventDefault(); onNext(); }
-    };
-    const onTouchStart = (event: TouchEvent) => {
-      touchStartX = event.touches[0]?.clientX ?? null;
-    };
-    const onTouchEnd = (event: TouchEvent) => {
-      const endX = event.changedTouches[0]?.clientX;
-      if (touchStartX !== null && typeof endX === "number") {
-        const distance = endX - touchStartX;
-        if (Math.abs(distance) > 45) distance < 0 ? onNext() : onPrevious();
-      }
-      touchStartX = null;
-    };
-
-    previous?.addEventListener("click", onPrevious);
-    next?.addEventListener("click", onNext);
-    const dotHandlers = dots.map((dot, index) => {
-      const handler = () => showSlide(index);
-      dot.addEventListener("click", handler);
-      return handler;
-    });
-    hero.addEventListener("keydown", onKeyDown);
-    hero.addEventListener("touchstart", onTouchStart, { passive: true });
-    hero.addEventListener("touchend", onTouchEnd, { passive: true });
-
-    // Always advance on a predictable timer; manual interaction does not disable autoplay.
-    showSlide(activeIndex);
-    const intervalId = window.setInterval(() => {
-      if (!document.hidden) showSlide(activeIndex + 1);
+    const timerId = window.setTimeout(() => {
+      setDirection("next");
+      setActiveIndex((current) => (current + 1) % slides.length);
     }, 5000);
+    return () => window.clearTimeout(timerId);
+  }, [activeIndex, slides.length]);
 
-    return () => {
-      window.clearInterval(intervalId);
-      previous?.removeEventListener("click", onPrevious);
-      next?.removeEventListener("click", onNext);
-      dots.forEach((dot, index) => dot.removeEventListener("click", dotHandlers[index]));
-      hero.removeEventListener("keydown", onKeyDown);
-      hero.removeEventListener("touchstart", onTouchStart);
-      hero.removeEventListener("touchend", onTouchEnd);
-    };
-  }, [body]);
+  const goTo = (requestedIndex: number, requestedDirection?: SlideDirection) => {
+    if (slides.length < 2) return;
+    const nextIndex = ((requestedIndex % slides.length) + slides.length) % slides.length;
+    if (nextIndex === activeIndex) return;
+    setDirection(requestedDirection || (nextIndex > activeIndex ? "next" : "prev"));
+    setActiveIndex(nextIndex);
+  };
 
+  const handleTouchEnd = (event: TouchEvent<HTMLElement>) => {
+    const start = touchStartX.current;
+    const end = event.changedTouches[0]?.clientX;
+    if (start !== null && typeof end === "number") {
+      const delta = end - start;
+      if (Math.abs(delta) > 45) {
+        goTo(activeIndex + (delta < 0 ? 1 : -1), delta < 0 ? "next" : "prev");
+      }
+    }
+    touchStartX.current = null;
+  };
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+    if (event.key === "ArrowRight") {
+      event.preventDefault();
+      goTo(activeIndex + 1, "next");
+    } else if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      goTo(activeIndex - 1, "prev");
+    }
+  };
+
+  if (!slides.length) return null;
+
+  return (
+    <section
+      aria-label="Featured Clear Robotics solutions"
+      aria-roledescription="carousel"
+      className="hero hero-carousel"
+      id="home"
+      data-cb-react-carousel="true"
+      data-slide-direction={direction}
+      onKeyDown={handleKeyDown}
+      onTouchStart={(event) => { touchStartX.current = event.touches[0]?.clientX ?? null; }}
+      onTouchEnd={handleTouchEnd}
+      tabIndex={0}
+    >
+      <div className="hero-slides">
+        {slides.map((slide, index) => (
+          <article
+            key={`home-hero-slide-${index + 1}`}
+            aria-hidden={index !== activeIndex}
+            className={`hero-slide${index === activeIndex ? " is-active" : ""}`}
+            dangerouslySetInnerHTML={{ __html: slide }}
+          />
+        ))}
+      </div>
+
+      <div className="hero-carousel-controls">
+        <div className="hero-slide-progress" aria-live="polite" aria-atomic="true">
+          <span className="hero-slide-current">{String(activeIndex + 1).padStart(2, "0")}</span>
+          <span className="hero-slide-divider" />
+          <span className="hero-slide-total">{String(slides.length).padStart(2, "0")}</span>
+        </div>
+
+        <div aria-label="Choose a slide" className="hero-slide-dots" role="group">
+          {slides.map((_, index) => (
+            <button
+              key={`home-hero-dot-${index + 1}`}
+              aria-label={`Show slide ${index + 1}`}
+              aria-pressed={index === activeIndex}
+              className={`hero-slide-dot${index === activeIndex ? " is-active" : ""}`}
+              onClick={() => goTo(index)}
+              type="button"
+            />
+          ))}
+        </div>
+
+        <button
+          aria-label="Previous slide"
+          className="hero-slide-arrow"
+          onClick={() => goTo(activeIndex - 1, "prev")}
+          type="button"
+        >‹</button>
+        <button
+          aria-label="Next slide"
+          className="hero-slide-arrow"
+          onClick={() => goTo(activeIndex + 1, "next")}
+          type="button"
+        >›</button>
+      </div>
+    </section>
+  );
+}
+
+const HERO_SLIDE_MOTION_CSS = `
+.legacy-site .hero.hero-carousel .hero-slide {
+  transform: translate3d(42px, 0, 0);
+  transition:
+    opacity .72s ease,
+    visibility .72s ease,
+    transform .72s cubic-bezier(.22,.68,.2,1);
+  will-change: opacity, transform;
+}
+.legacy-site .hero.hero-carousel[data-slide-direction="prev"] .hero-slide:not(.is-active) {
+  transform: translate3d(-42px, 0, 0);
+}
+.legacy-site .hero.hero-carousel[data-slide-direction="next"] .hero-slide:not(.is-active) {
+  transform: translate3d(42px, 0, 0);
+}
+.legacy-site .hero.hero-carousel .hero-slide.is-active {
+  transform: translate3d(0, 0, 0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .legacy-site .hero.hero-carousel .hero-slide {
+    transform: none !important;
+    transition: none !important;
+    will-change: auto;
+  }
+}
+`;
+
+export default function LegacyDocument({ body, styles, links, scripts, heroSlides = [] }: Props) {
   useEffect(() => {
     const nodes: HTMLScriptElement[] = [];
     let cancelled = false;
@@ -222,7 +283,11 @@ export default function LegacyDocument({ body, styles, links, scripts }: Props) 
       const fullName = pickField(raw, "Full Name", "Name", "Your Name", "Contact Name", "fullName", "fullname")
         || [pickField(raw, "First Name", "firstName"), pickField(raw, "Last Name", "lastName")].filter(Boolean).join(" ");
       const email = pickField(raw, "Business Email", "Email", "Email Address", "Work Email", "Your Email", "emailAddress", "email");
-      const phone = pickField(raw, "Phone Number", "Phone", "Mobile", "Mobile Number", "Telephone", "Contact Number", "phone");
+      const phoneNumber = pickField(raw, "Phone Number", "Phone", "Mobile", "Mobile Number", "Telephone", "Contact Number", "phone");
+      const phoneCountryCode = pickField(raw, "Phone Country Code", "Country Calling Code", "Dial Code");
+      const phone = phoneNumber
+        ? (phoneNumber.trim().startsWith("+") ? phoneNumber : `${phoneCountryCode} ${phoneNumber}`.trim())
+        : "";
       const company = pickField(raw, "Company Name", "Company", "Organisation", "Organization", "Organisation Name", "company");
       const jobTitle = pickField(raw, "Job Title", "Designation", "Role", "Position", "jobTitle");
       const country = pickField(raw, "Country", "country");
@@ -365,8 +430,29 @@ export default function LegacyDocument({ body, styles, links, scripts }: Props) 
       {links.map((href, i) => <link key={`${href}-${i}`} rel="stylesheet" href={href} />)}
       {styles.map((css, i) => <style key={i} dangerouslySetInnerHTML={{ __html: css }} />)}
       <div className="legacy-site">
-        <div dangerouslySetInnerHTML={{ __html: body }} />
+        {(() => {
+          const marker = "<!--CB_HOME_HERO_CAROUSEL_SLOT-->";
+          const markerIndex = body.indexOf(marker);
+          const headerClose = body.toLowerCase().indexOf("</header>");
+          const headerEnd = headerClose >= 0 ? headerClose + "</header>".length : -1;
+          const splitAt = markerIndex >= 0
+            ? markerIndex
+            : (heroSlides.length > 0 && headerEnd >= 0 ? headerEnd : -1);
+          const before = splitAt >= 0 ? body.slice(0, splitAt) : body;
+          const after = splitAt >= 0
+            ? body.slice(splitAt + (markerIndex >= 0 ? marker.length : 0))
+            : "";
+
+          return (
+            <>
+              {before && <div dangerouslySetInnerHTML={{ __html: before }} />}
+              {heroSlides.length > 0 && <HomeHeroCarousel slides={heroSlides} />}
+              {splitAt >= 0 && after && <div dangerouslySetInnerHTML={{ __html: after }} />}
+            </>
+          );
+        })()}
       </div>
+      <style id="cb-react-hero-slide-motion" dangerouslySetInnerHTML={{ __html: HERO_SLIDE_MOTION_CSS }} />
       <PremiumEffects/>
     </>
   );
