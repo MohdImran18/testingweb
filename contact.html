@@ -335,6 +335,9 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
  .site-header .nav-link,.site-header .nav-products-toggle,.site-header .nav-insights-toggle{font-size:11px}
  .site-header .nav-cta{padding:11px 12px;font-size:10px}
 }
+
+.phone-number-group{display:grid;grid-template-columns:138px minmax(0,1fr);gap:8px;width:100%}.phone-number-group select,.phone-number-group input{min-width:0}.phone-number-group select{padding-right:8px}.contact-form .form-feedback:empty{display:none}
+@media(max-width:390px){.phone-number-group{grid-template-columns:112px minmax(0,1fr);gap:6px}.phone-number-group select,.phone-number-group input{padding-left:9px;padding-right:8px;font-size:11px}}
 </style>
 </head>
 <body>
@@ -382,18 +385,59 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
 </div>
 <div class="contact-form-card" id="contact-form">
 <div class="form-heading"><div><h2>Talk to our team</h2><p>Share a few details and tell us what you’re looking to achieve.</p></div></div>
-<form class="contact-form" id="clearbotContactForm" data-enquiry-form="website" data-enquiry-type="contact">
-<div class="field"><label for="fullName">Full Name <em>*</em></label><input autocomplete="name" id="fullName" name="Full Name" placeholder="Your full name" maxlength="120" required="" type="text"/></div>
-<div class="field"><label for="businessEmail">Business Email <em>*</em></label><input autocomplete="email" id="businessEmail" name="Business Email" placeholder="name@company.com" maxlength="254" required="" type="email"/></div>
-<div class="field"><label for="phone">Phone Number <em>*</em></label><input autocomplete="tel" id="phone" name="Phone Number" placeholder="Include country code" maxlength="40" required="" type="tel"/></div>
-<div class="field"><label for="company">Company Name <em>*</em></label><input autocomplete="organization" id="company" name="Company Name" placeholder="Your organisation" maxlength="160" required="" type="text"/></div>
-<div class="field"><label for="jobTitle">Job Title</label><input autocomplete="organization-title" id="jobTitle" name="Job Title" placeholder="Your role" maxlength="120" type="text"/></div>
-<div class="field"><label for="country">Country <em>*</em></label><input autocomplete="country-name" id="country" name="Country" placeholder="Country" maxlength="100" required="" type="text"/></div>
-<div class="field"><label for="region">State / Region <em>*</em></label><input autocomplete="address-level1" id="region" name="State / Region" placeholder="State or region" maxlength="100" required="" type="text"/></div>
-<div class="field"><label for="industry">Industry <em>*</em></label><input id="industry" name="Industry" placeholder="e.g. Government, Ports, Utilities" maxlength="120" required="" type="text"/></div>
-<div class="field full"><label for="useCase">Use Case</label><textarea id="useCase" name="Use Case" maxlength="5000" placeholder="Tell us about your waterbody, operational challenge or project requirements."></textarea></div>
+<form class="contact-form" data-enquiry-form="website" data-enquiry-type="contact" id="clearbotContactForm">
+<div class="field"><label for="fullName">Full Name <em>*</em></label><input autocomplete="name" id="fullName" maxlength="120" name="Full Name" placeholder="Your full name" required="" type="text"/></div>
+<div class="field"><label for="businessEmail">Business Email <em>*</em></label><input autocomplete="email" id="businessEmail" maxlength="254" name="Business Email" placeholder="name@company.com" required="" type="email"/></div>
+<div class="field full"><label for="phone">Phone Number <em>*</em></label><div class="phone-number-group"><select aria-label="Country calling code" autocomplete="tel-country-code" id="phoneCountryCode" name="Phone Country Code" required=""><option value="+91" selected="selected">India (+91)</option>
+<option value="+1">United States (+1)</option>
+<option value="+1">Canada (+1)</option>
+<option value="+44">United Kingdom (+44)</option>
+<option value="+971">United Arab Emirates (+971)</option>
+<option value="+966">Saudi Arabia (+966)</option>
+<option value="+974">Qatar (+974)</option>
+<option value="+968">Oman (+968)</option>
+<option value="+965">Kuwait (+965)</option>
+<option value="+973">Bahrain (+973)</option>
+<option value="+65">Singapore (+65)</option>
+<option value="+852">Hong Kong (+852)</option>
+<option value="+61">Australia (+61)</option>
+<option value="+64">New Zealand (+64)</option>
+<option value="+63">Philippines (+63)</option>
+<option value="+62">Indonesia (+62)</option>
+<option value="+60">Malaysia (+60)</option>
+<option value="+66">Thailand (+66)</option>
+<option value="+84">Vietnam (+84)</option>
+<option value="+81">Japan (+81)</option>
+<option value="+82">South Korea (+82)</option>
+<option value="+86">China (+86)</option>
+<option value="+880">Bangladesh (+880)</option>
+<option value="+92">Pakistan (+92)</option>
+<option value="+94">Sri Lanka (+94)</option>
+<option value="+977">Nepal (+977)</option>
+<option value="+254">Kenya (+254)</option>
+<option value="+27">South Africa (+27)</option>
+<option value="+234">Nigeria (+234)</option>
+<option value="+233">Ghana (+233)</option>
+<option value="+20">Egypt (+20)</option>
+<option value="+212">Morocco (+212)</option>
+<option value="+33">France (+33)</option>
+<option value="+49">Germany (+49)</option>
+<option value="+31">Netherlands (+31)</option>
+<option value="+34">Spain (+34)</option>
+<option value="+39">Italy (+39)</option>
+<option value="+41">Switzerland (+41)</option>
+<option value="+46">Sweden (+46)</option>
+<option value="+47">Norway (+47)</option>
+<option value="+45">Denmark (+45)</option>
+<option value="+48">Poland (+48)</option>
+<option value="+90">Turkey (+90)</option>
+<option value="+55">Brazil (+55)</option>
+<option value="+52">Mexico (+52)</option>
+<option value="+353">Ireland (+353)</option>
+<option value="+351">Portugal (+351)</option>
+<option value="+32">Belgium (+32)</option></select><input autocomplete="tel-national" id="phone" inputmode="tel" maxlength="25" name="Phone Number" placeholder="Enter phone number" required="" type="tel"/></div></div>
 <div class="form-feedback" id="formFeedback" role="status" aria-live="polite" aria-atomic="true"></div>
-<div class="form-submit"><button class="btn btn-primary" type="submit">Send Project Enquiry ↗</button><small>Your enquiry is submitted securely to our team. We will contact you using the details provided.</small></div>
+<div class="form-submit"><button class="btn btn-primary" type="submit">Send enquiry ↗</button><small>Your enquiry is submitted securely to our team. We will contact you using the details provided.</small></div>
 </form>
 </div>
 </div>
@@ -454,7 +498,7 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
     const get = (...keys) => { for (const key of keys) { const found = Object.keys(values).find(name => name.toLowerCase() === key.toLowerCase()); if (found && values[found]) return values[found]; } return ''; };
     try {
       const response = await fetch('/api/enquiries', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, credentials: 'same-origin', body: JSON.stringify({
-        fullName: get('Full Name'), email: get('Business Email'), phone: get('Phone Number'), company: get('Company Name'),
+        fullName: get('Full Name'), email: get('Business Email'), phone: [get('Phone Country Code'), get('Phone Number')].filter(Boolean).join(' '), company: get('Company Name'),
         jobTitle: get('Job Title'), country: get('Country'), region: get('State / Region'), industry: get('Industry'), useCase: get('Use Case'),
         source: 'website', sourcePage: window.location.pathname, formId: form.id, formType: 'contact', formFields: values
       }) });

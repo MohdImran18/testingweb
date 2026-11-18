@@ -219,7 +219,11 @@ export default function LegacyDocument({ body, styles, links, scripts, heroSlide
       const fullName = pickField(raw, "Full Name", "Name", "Your Name", "Contact Name", "fullName", "fullname")
         || [pickField(raw, "First Name", "firstName"), pickField(raw, "Last Name", "lastName")].filter(Boolean).join(" ");
       const email = pickField(raw, "Business Email", "Email", "Email Address", "Work Email", "Your Email", "emailAddress", "email");
-      const phone = pickField(raw, "Phone Number", "Phone", "Mobile", "Mobile Number", "Telephone", "Contact Number", "phone");
+      const phoneNumber = pickField(raw, "Phone Number", "Phone", "Mobile", "Mobile Number", "Telephone", "Contact Number", "phone");
+      const phoneCountryCode = pickField(raw, "Phone Country Code", "Country Calling Code", "Dial Code");
+      const phone = phoneNumber
+        ? (phoneNumber.trim().startsWith("+") ? phoneNumber : `${phoneCountryCode} ${phoneNumber}`.trim())
+        : "";
       const company = pickField(raw, "Company Name", "Company", "Organisation", "Organization", "Organisation Name", "company");
       const jobTitle = pickField(raw, "Job Title", "Designation", "Role", "Position", "jobTitle");
       const country = pickField(raw, "Country", "country");
