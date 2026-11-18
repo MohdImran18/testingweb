@@ -384,6 +384,64 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
 .phone-number-group{display:grid;grid-template-columns:138px minmax(0,1fr);gap:8px;width:100%}.phone-number-group select,.phone-number-group input{min-width:0}.phone-number-group select{padding-right:8px}.contact-form .form-feedback:empty{display:none}
 @media(max-width:390px){.phone-number-group{grid-template-columns:112px minmax(0,1fr);gap:6px}.phone-number-group select,.phone-number-group input{padding-left:9px;padding-right:8px;font-size:11px}}
 </style>
+
+<style id="contact-layout-final-fix">
+/* Final override: full-width 38/62 desktop split, with readable process cards */
+@media (min-width: 761px) {
+  .contact-hero.contact-combined { width: 100%; }
+  .contact-hero.contact-combined > .container.contact-combined-grid,
+  .contact-hero.contact-combined .contact-combined-grid {
+    width: min(100% - 64px, 1290px) !important;
+    max-width: 1290px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 38fr) minmax(0, 62fr) !important;
+    align-items: center !important;
+    justify-content: stretch !important;
+    gap: 28px !important;
+  }
+  .contact-hero.contact-combined .contact-form-card {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    justify-self: stretch !important;
+    box-sizing: border-box !important;
+  }
+  .contact-process-content {
+    width: 100%;
+    min-width: 0;
+  }
+  .contact-process-content .process-card {
+    background: #fff !important;
+    color: #102c3d !important;
+  }
+  .contact-process-content .process-card h3 {
+    color: #102c3d !important;
+  }
+  .contact-process-content .process-card p {
+    color: #647985 !important;
+    opacity: 1 !important;
+  }
+}
+@media (max-width: 760px) {
+  .contact-hero.contact-combined .contact-combined-grid {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 22px !important;
+  }
+  .contact-hero.contact-combined .contact-form-card {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+  }
+  .contact-process-content .process-card p {
+    color: #647985 !important;
+    opacity: 1 !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <header class="site-header">
