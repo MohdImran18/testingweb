@@ -15,13 +15,6 @@ async function apiJson(route: string) {
 }
 function pagePath(slug: string[] = []) { return slug.length ? `/${slug.join('/')}` : '/'; }
 
-function extractHomeHeroSlides(body: string) {
-  const sectionMatch = body.match(/<section\b(?=[^>]*\bclass=["'][^"']*\bhero-carousel\b[^"']*["'])[^>]*>[\s\S]*?<\/section>/i);
-  if (!sectionMatch) return { body, slides: [] as string[] };
-  const section = sectionMatch[0];
-  const slides = [...section.matchAll(/<article\b[^>]*>([\s\S]*?)<\/article>/gi)].map((match) => match[1]);
-  return { body: body.replace(section, ''), slides };
-}
 
 async function getPage(file: string) {
   const safe = path.basename(file);
@@ -103,9 +96,5 @@ export default async function Page({ params }: { params: Promise<{ slug?: string
   const file = slug.length ? slug.join('/') : 'index.html';
   const page = await getPage(file);
   if (!page) { notFound(); throw new Error('Requested website page was not found.'); }
-  if (slug.length === 0) {
-    const extracted = extractHomeHeroSlides(page.body);
-    return <LegacyDocument {...page} body={extracted.body} heroSlides={extracted.slides}/>;
-  }
   return <LegacyDocument {...page}/>;
 }
