@@ -41,6 +41,20 @@ export default function LegacyDocument({ body, styles, links, scripts }: Props) 
     const nodes: HTMLScriptElement[] = [];
     let cancelled = false;
 
+    // Keep external image failures from leaving empty holes in the website layout.
+    const imageFallback = (event: Event) => {
+      const img = event.currentTarget as HTMLImageElement;
+      if (img.dataset.cbFallbackApplied === "true") return;
+      img.dataset.cbFallbackApplied = "true";
+      const alt = (img.alt || "").toLowerCase();
+      img.src = /logo|client|partner/.test(alt)
+        ? "/assets/clear-robotics-logo.png"
+        : "/assets/home-hero-waterway-cleanup.jpg";
+      img.classList.add("cb-image-fallback");
+    };
+    const legacyImages = Array.from(document.querySelectorAll<HTMLImageElement>(".legacy-site img"));
+    legacyImages.forEach((img) => img.addEventListener("error", imageFallback));
+
     // Apply admin-managed image replacements to every authored image slot.
     fetch("/api/public/site-images", { credentials: "same-origin" })
       .then((response) => response.ok ? response.json() : null)
@@ -260,6 +274,7 @@ export default function LegacyDocument({ body, styles, links, scripts }: Props) 
     void load();
     return () => {
       cancelled = true;
+      legacyImages.forEach((img) => img.removeEventListener("error", imageFallback));
       document.removeEventListener("submit", submitEnquiry, true);
       addedBlogNodes.forEach((node) => node.remove());
       nodes.forEach((node) => node.remove());

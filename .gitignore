@@ -9,9 +9,13 @@ data/admin-store.json
 backup-*/
 
 # Local data and sensitive records
-data/
+data/*
+!data/site-image-manifest.json
 
 # Local backups
 *.backup
 *.pre-bom-backup
 tsconfig.json.backup
+
+# TypeScript incremental build output
+*.tsbuildinfo
