@@ -88,7 +88,7 @@ footer{background:#031923;color:#b6c8d0;padding:38px 0 22px}.footer-top{display:
 
 /* Contact layout: process content left, enquiry form right */
 .contact-combined{padding:48px 0 54px}
-.contact-combined-grid{grid-template-columns:minmax(0,.62fr) minmax(0,1.38fr);align-items:center;gap:30px}
+.contact-combined-grid{grid-template-columns:minmax(0,38fr) minmax(0,62fr);align-items:center;gap:28px}
 .contact-process-content .section-head{margin:0 0 17px;max-width:100%}
 .contact-process-content .section-head h2{font-size:clamp(25px,2.45vw,35px);line-height:1.08;letter-spacing:-1.2px;margin:9px 0 10px;color:#fff}
 .contact-process-content .section-head p{font-size:12px;line-height:1.6;color:rgba(255,255,255,.78)}
@@ -101,7 +101,7 @@ footer{background:#031923;color:#b6c8d0;padding:38px 0 22px}.footer-top{display:
 .contact-combined .contact-form-card{padding:26px}
 .contact-combined .contact-form{gap:12px}
 @media(max-width:900px){
- .contact-combined-grid{grid-template-columns:minmax(0,.72fr) minmax(0,1.28fr);gap:18px}
+ .contact-combined-grid{grid-template-columns:minmax(0,38fr) minmax(0,62fr);gap:18px}
  .contact-combined .contact-form-card{padding:19px}
  .contact-process-content .section-head h2{font-size:26px}
 }
@@ -111,6 +111,16 @@ footer{background:#031923;color:#b6c8d0;padding:38px 0 22px}.footer-top{display:
  .contact-process-content .section-head h2{font-size:30px}
  .contact-process-content .process-grid{grid-template-columns:1fr}
  .contact-combined .contact-form-card{padding:20px}
+}
+
+
+/* Final desktop proportion: project process 38%, enquiry form 62% */
+@media(min-width:761px){
+ .contact-combined-grid{display:grid;grid-template-columns:minmax(0,38fr) minmax(0,62fr);gap:clamp(18px,2vw,28px);align-items:center}
+ .contact-process-content{min-width:0}
+ .contact-process-content .section-head h2{font-size:clamp(24px,2.35vw,34px)}
+ .contact-process-content .process-card{padding:11px 13px}
+ .contact-combined .contact-form-card{width:100%;min-width:0}
 }
 
 </style>
