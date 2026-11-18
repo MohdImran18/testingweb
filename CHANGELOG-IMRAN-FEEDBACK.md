@@ -98,3 +98,6 @@ For production image persistence, keep the Render PostgreSQL `DATABASE_URL` conf
 - Reduced the founder and product-story copy by more than 50% while retaining the founders, Clearbot Neo, product family and operating-tool details.
 - Expanded About Us deployment locations to Hong Kong, India, Philippines, Armenia, UAE, Nigeria and Singapore.
 - Added responsive styling for the deployment-location chips.
+
+- Updated About Us field-video section to a desktop 28% copy / 72% YouTube layout with responsive 16:9 video framing.
+- Reworked About Us milestone timeline styling into full-width vertical rows with a dedicated year column and responsive mobile layout.
