@@ -84,6 +84,34 @@ footer{background:#031923;color:#b6c8d0;padding:38px 0 22px}.footer-top{display:
 .contact-process{padding:66px 0}
 @media(max-width:760px){.contact-hero{padding:38px 0 48px}.contact-hero-grid{grid-template-columns:minmax(0,1fr)}.contact-form-card{max-width:none}.contact-process{padding:48px 0}}
 
+
+/* Contact layout: process content left, enquiry form right */
+.contact-combined{padding:48px 0 54px}
+.contact-combined-grid{grid-template-columns:minmax(0,.62fr) minmax(0,1.38fr);align-items:center;gap:30px}
+.contact-process-content .section-head{margin:0 0 17px;max-width:100%}
+.contact-process-content .section-head h2{font-size:clamp(25px,2.45vw,35px);line-height:1.08;letter-spacing:-1.2px;margin:9px 0 10px;color:#fff}
+.contact-process-content .section-head p{font-size:12px;line-height:1.6;color:rgba(255,255,255,.78)}
+.contact-process-content .kicker{color:#67e1d9}
+.contact-process-content .process-grid{grid-template-columns:1fr;gap:9px}
+.contact-process-content .process-card{min-height:0;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.98);box-shadow:0 7px 18px rgba(0,0,0,.09)}
+.contact-process-content .process-number{width:25px;height:25px;border-radius:8px;font-size:9px}
+.contact-process-content .process-card h3{font-size:13px;margin:7px 0 3px}
+.contact-process-content .process-card p{font-size:10px;line-height:1.45}
+.contact-combined .contact-form-card{padding:26px}
+.contact-combined .contact-form{gap:12px}
+@media(max-width:900px){
+ .contact-combined-grid{grid-template-columns:minmax(0,.72fr) minmax(0,1.28fr);gap:18px}
+ .contact-combined .contact-form-card{padding:19px}
+ .contact-process-content .section-head h2{font-size:26px}
+}
+@media(max-width:760px){
+ .contact-combined{padding:38px 0 44px}
+ .contact-combined-grid{grid-template-columns:1fr;gap:22px}
+ .contact-process-content .section-head h2{font-size:30px}
+ .contact-process-content .process-grid{grid-template-columns:1fr}
+ .contact-combined .contact-form-card{padding:20px}
+}
+
 </style>
 <style id="clear-robotics-premium-overrides">
 /* Clear Robotics premium visual system */
@@ -382,18 +410,16 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
 </header>
 <main>
 <div class="container breadcrumb"><a href="index.html#home">Home</a><span>›</span>Contact Us</div>
-<section class="contact-process" id="next-steps">
-<div class="container">
-<div class="section-head"><div class="kicker">YOUR PROJECT, OUR PROCESS</div><h2>Let’s find the right solution for your waterway.</h2><p>Every site has its own operational needs. We work with you to understand the challenge and identify a practical Clearbot solution for your location.</p></div>
+<section class="contact-hero contact-combined" id="top">
+<div class="container contact-hero-grid contact-combined-grid">
+<div class="contact-process-content">
+<div class="section-head"><div class="kicker">YOUR PROJECT, OUR PROCESS</div>
 <div class="process-grid">
 <article class="process-card"><div class="process-number">01</div><h3>Share your project</h3><p>Tell us about your waterbody, port or location, the challenge you want to address and your operational goals.</p></article>
 <article class="process-card"><div class="process-number">02</div><h3>Explore the right technology</h3><p>Our team will review your requirements and introduce the most suitable unmanned electric and solar-powered Clearbot platform.</p></article>
 <article class="process-card"><div class="process-number">03</div><h3>Plan the way forward</h3><p>We’ll discuss site conditions, technical requirements and the next steps towards a practical deployment plan.</p></article>
 </div>
 </div>
-</section>
-<section class="contact-hero" id="top">
-<div class="container contact-hero-grid">
 <div class="contact-form-card" id="contact-form">
 <div class="form-heading"><div><h2>Talk to our team</h2><p>Share a few details and tell us what you’re looking to achieve.</p></div></div>
 <form class="contact-form" data-enquiry-form="website" data-enquiry-type="contact" id="clearbotContactForm">
