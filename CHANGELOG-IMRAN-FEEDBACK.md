@@ -25,3 +25,14 @@
 
 ## Deployment note
 For production image persistence, keep the Render PostgreSQL `DATABASE_URL` configured. The local JSON fallback is for development only. Configure SMTP environment variables for actual email forwarding from the three-field Contact form.
+
+
+## Homepage hero carousel repair (18 November 2026)
+- Fixed the root cause of the non-working hero carousel: the homepage had five pagination dots and navigation controls, but only one actual `data-hero-slide` article. The old initializer correctly returned early when fewer than two slides existed.
+- Added five full hero slides using the five local homepage hero images already present in `public/assets`.
+- Added matching slide copy and relevant links for the homepage, Alligator Neo, Class 2 fleet, Class 3 and global projects.
+- Replaced the initializer with a ready-state-safe script that runs correctly when legacy scripts are dynamically inserted by the Next.js `LegacyDocument` component.
+- Autoplay advances every 5 seconds; next/previous buttons, pagination dots, swipe navigation and hidden-tab timer handling are enabled.
+- Preserved the requested 2/3 text + 1/3 YouTube video layout and its responsive stacking on mobile.
+- Regenerated `data/site-image-manifest.json` against the current served HTML so the five hero images have valid Admin Image Manager slots. Total slots: 149.
+- Validation: 5 slides / 5 dots, video layout CSS and 16:9 aspect ratio confirmed; `node --check` passed for the carousel initializer. A full Next.js build was not rerun in this container.
