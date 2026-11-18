@@ -92,3 +92,9 @@ For production image persistence, keep the Render PostgreSQL `DATABASE_URL` conf
 - Moved the “Your Project, Our Process” section above the contact enquiry form.
 - Moved the three-field contact form below the process cards.
 - Preserved the Full Name, Business Email, and Phone Number fields with country calling-code selector.
+
+
+## 18 November 2026 — About Us content update
+- Reduced the founder and product-story copy by more than 50% while retaining the founders, Clearbot Neo, product family and operating-tool details.
+- Expanded About Us deployment locations to Hong Kong, India, Philippines, Armenia, UAE, Nigeria and Singapore.
+- Added responsive styling for the deployment-location chips.

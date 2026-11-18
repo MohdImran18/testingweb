@@ -499,176 +499,50 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
  .site-header .nav-cta{padding:11px 12px;font-size:10px}
 }
 </style>
-
-<style id="about-page-layout-final-fix">
-/* ABOUT VIDEO: 25% copy + 75% YouTube embed */
-@media (min-width: 761px) {
-  .cb-about-video > .container {
-    display: grid !important;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 3fr) !important;
-    align-items: center !important;
-    gap: clamp(22px, 3vw, 46px) !important;
-    width: min(100% - 64px, 1290px) !important;
-    max-width: 1290px !important;
-  }
-  .cb-about-video .section-heading {
-    grid-column: 1 !important;
-    width: 100% !important;
-    max-width: none !important;
-    margin: 0 !important;
-    text-align: left !important;
-    align-self: center !important;
-  }
-  .cb-about-video .section-heading h2 {
-    max-width: 100% !important;
-    font-size: clamp(25px, 2.5vw, 38px) !important;
-    line-height: 1.12 !important;
-  }
-  .cb-about-video .cb-video-frame {
-    grid-column: 2 !important;
-    position: relative !important;
-    display: block !important;
-    width: 100% !important;
-    min-width: 0 !important;
-    aspect-ratio: 16 / 9 !important;
-    height: auto !important;
-    overflow: hidden !important;
-    border-radius: 20px !important;
-    background: #061e29 !important;
-    box-shadow: 0 18px 42px rgba(4,35,48,.15) !important;
-  }
-  .cb-about-video .cb-video-frame iframe {
-    position: absolute !important;
-    inset: 0 !important;
-    display: block !important;
-    width: 100% !important;
-    height: 100% !important;
-    border: 0 !important;
-  }
+<style id="about-deployment-location-polish">
+.cb-locations {
+  background: #f3f8f9 !important;
 }
-
-/* ABOUT TIMELINE: readable full-width rows, never squeezed into narrow columns */
-.about-timeline-section .milestone-list {
-  display: block !important;
-  position: relative !important;
-  width: 100% !important;
-  max-width: 1160px !important;
-  margin: 24px auto 0 !important;
-  padding: 8px 0 !important;
-  overflow: visible !important;
+.cb-locations .section-heading {
+  max-width: 760px;
+  margin: 0 auto 28px;
 }
-.about-timeline-section .milestone-list::before {
-  content: "" !important;
-  position: absolute !important;
-  left: 140px !important;
-  top: 22px !important;
-  bottom: 22px !important;
-  width: 2px !important;
-  background: linear-gradient(180deg, #8ddfda, #c5dadd 78%, transparent) !important;
+.cb-locations .section-heading h2 {
+  color: #102c3d;
+  margin: 10px 0;
 }
-.about-timeline-section .milestone {
-  display: grid !important;
-  grid-template-columns: minmax(92px, 120px) minmax(0, 1fr) !important;
-  width: 100% !important;
-  min-width: 0 !important;
-  gap: 44px !important;
-  align-items: start !important;
-  padding: 13px 0 !important;
-  margin: 0 !important;
+.cb-locations .section-heading p {
+  color: #647985;
+  line-height: 1.7;
 }
-.about-timeline-section .milestone-year {
-  position: relative !important;
+.cb-locations .location-chips {
   display: flex !important;
-  justify-content: flex-end !important;
-  align-items: flex-start !important;
-  width: 100% !important;
-  min-width: 0 !important;
-  padding: 23px 12px 0 0 !important;
-  white-space: nowrap !important;
-  color: #078b94 !important;
-  font-size: 14px !important;
-  line-height: 1.2 !important;
-  letter-spacing: .1em !important;
+  flex-wrap: wrap !important;
+  justify-content: center;
+  gap: 12px !important;
+  max-width: 980px;
+  margin: 0 auto;
 }
-.about-timeline-section .milestone-year::after {
-  position: absolute !important;
-  right: -29px !important;
-  top: 25px !important;
-  left: auto !important;
-  width: 13px !important;
-  height: 13px !important;
+.cb-locations .location-chips span {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 10px 20px;
+  border: 1px solid #d9e8eb;
+  border-radius: 999px;
+  background: #fff;
+  color: #12384a;
+  font-size: 13px;
+  font-weight: 750;
+  letter-spacing: .01em;
+  box-shadow: 0 7px 20px rgba(4,35,48,.055);
 }
-.about-timeline-section .milestone-card {
-  display: block !important;
-  width: 100% !important;
-  max-width: none !important;
-  min-width: 0 !important;
-  box-sizing: border-box !important;
-  padding: 22px 26px !important;
-  overflow: visible !important;
-}
-.about-timeline-section .milestone-card h3 {
-  font-size: clamp(17px, 1.7vw, 21px) !important;
-  line-height: 1.35 !important;
-  overflow-wrap: break-word !important;
-  word-break: normal !important;
-}
-.about-timeline-section .milestone-card p {
-  font-size: 13px !important;
-  line-height: 1.7 !important;
-}
-
-/* Tablet and mobile: stack the video and use a compact vertical timeline */
-@media (max-width: 760px) {
-  .cb-about-video > .container {
-    display: grid !important;
-    grid-template-columns: minmax(0, 1fr) !important;
-    gap: 20px !important;
-  }
-  .cb-about-video .section-heading,
-  .cb-about-video .cb-video-frame {
-    grid-column: 1 !important;
-    width: 100% !important;
-    max-width: none !important;
-  }
-  .cb-about-video .cb-video-frame {
-    position: relative !important;
-    aspect-ratio: 16 / 9 !important;
-    height: auto !important;
-    overflow: hidden !important;
-    border-radius: 16px !important;
-  }
-  .cb-about-video .cb-video-frame iframe {
-    position: absolute !important;
-    inset: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-  }
-  .about-timeline-section .milestone-list::before {
-    left: 7px !important;
-    top: 22px !important;
-    bottom: 22px !important;
-  }
-  .about-timeline-section .milestone {
-    grid-template-columns: minmax(0, 1fr) !important;
-    gap: 8px !important;
-    padding: 12px 0 14px 32px !important;
-  }
-  .about-timeline-section .milestone-year {
-    justify-content: flex-start !important;
-    padding: 0 !important;
-  }
-  .about-timeline-section .milestone-year::after {
-    left: -30px !important;
-    right: auto !important;
-    top: 1px !important;
-  }
-  .about-timeline-section .milestone-card {
-    padding: 18px 19px !important;
-  }
+@media(max-width:600px) {
+  .cb-locations .location-chips { gap: 9px !important; }
+  .cb-locations .location-chips span { min-height: 40px; padding: 8px 15px; font-size: 12px; }
 }
 </style>
-
 </head><body><header class="site-header">
 <div class="container nav">
 <a aria-label="Clear Robotics home" class="brand" href="index.html#home"><img alt="Clear Robotics" class="brand-logo" src="assets/clear-robotics-logo.png"/></a>
@@ -733,9 +607,7 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
 <div class="section-kicker">Where it began</div>
 <h2>We started with a simple question: can waterway cleanups work better?</h2>
 <p class="story-lead">In 2019, a student project inspired by the waste seen along Bali’s coastline set us on the path to rethink how floating debris could be collected.</p>
-<p>Our co-founders, Sidhant Gupta and Utkarsh Goel, began exploring a small robotic vessel that could collect floating waste without placing people in the water to do the work. The early idea moved from a hands-on prototype to a marine technology venture, and the first Clearbot Neo was developed as a solar-powered, AI-enabled vessel.</p>
-<p>Since then, we have expanded from a single early concept into a family of electric platforms for different operational needs—from the Fetch, Class 2 and Class 3 Skimmers to the Alligator Neo Harvester for dense aquatic vegetation.</p>
-<p>Our focus remains practical: bring together the right vessel, mission planning, live camera and remote-operation workflows, and a Smart Dashboard so local teams can monitor work and use operational data to make better decisions.</p>
+<p>Co-founders Sidhant Gupta and Utkarsh Goel set out to collect floating waste without putting people in the water. That idea became the solar-powered, AI-enabled Clearbot Neo and a fleet of electric platforms—from Fetch and Class 2/3 Skimmers to the Alligator Neo Harvester. Mission planning, live cameras, remote operation and our Smart Dashboard help teams monitor and manage waterway operations.</p>
 <a class="insight-link" href="https://www.eco-business.com/ms/news/ai-powered-solutions-can-turn-tide-for-once-futile-fight-against-marine-pollution-hong-kong-start-up-founder-sidhant-gupta/" rel="noopener noreferrer" target="_blank">Read the founder story at Eco-Business ↗</a>
 </div>
 <div class="story-visual">
@@ -799,6 +671,18 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
 </article>
 </div>
 <p class="achievement-note">Timeline note: published profiles use 2019 for the student-project origin and 2020 for the venture’s establishment. Fleet totals are snapshots that can vary by reporting date and definition; the 26-vessel figure above is from NUSX’s 2026 milestone summary. Impact and operating figures are reported by the cited sources and are not represented as independently audited totals.</p>
+</div>
+</section>
+<section class="content-section pale cb-locations" id="locations">
+<div class="container">
+<div class="section-heading">
+<span class="section-kicker">WHERE WE WORK</span>
+<h2>Locations &amp; deployments</h2>
+<p>Our work spans diverse waterway environments and operating partners.</p>
+</div>
+<div class="location-chips">
+<span>Hong Kong</span><span>India</span><span>Philippines</span><span>Armenia</span><span>UAE</span><span>Nigeria</span><span>Singapore</span>
+</div>
 </div>
 </section>
 <section class="content-section">
