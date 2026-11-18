@@ -78,3 +78,11 @@ For production image persistence, keep the Render PostgreSQL `DATABASE_URL` conf
 - Replaced the social-follow panel with “What to include in your enquiry” guidance.
 - Updated the lower CTA to “Start an enquiry” linking back to the three-field contact form.
 - Updated Contact page title and Open Graph copy.
+
+
+## Contact page simplification (18 Nov 2026)
+- Removed the left-side “LET'S START A CONVERSATION” headline, supporting paragraph, reply-time promise, and direct corporate email block from the contact hero.
+- Retained the three-field enquiry form (Full Name, Business Email, Phone Number with country calling-code selector).
+- Retained the “Your Project, Our Process” section and its three process cards.
+- Removed the extra direct-contact/help panels and bottom CTA from the contact page.
+- Centered the enquiry form and adjusted responsive spacing.
