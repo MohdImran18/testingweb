@@ -86,3 +86,9 @@ For production image persistence, keep the Render PostgreSQL `DATABASE_URL` conf
 - Retained the “Your Project, Our Process” section and its three process cards.
 - Removed the extra direct-contact/help panels and bottom CTA from the contact page.
 - Centered the enquiry form and adjusted responsive spacing.
+
+
+## Contact page layout update — 18 November 2026
+- Moved the “Your Project, Our Process” section above the contact enquiry form.
+- Moved the three-field contact form below the process cards.
+- Preserved the Full Name, Business Email, and Phone Number fields with country calling-code selector.
