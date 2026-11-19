@@ -854,6 +854,17 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
   }
 }
 </style>
+<style id="clearbot-team-photos-manager">
+.about-team-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));align-items:stretch;gap:18px}
+.about-team-card{min-width:0;height:100%;padding:14px 14px 20px;overflow:hidden;display:flex;flex-direction:column}
+.about-team-image{width:calc(100% + 28px);margin:-14px -14px 18px;aspect-ratio:4/4.25;overflow:hidden;background:#eaf1f3;border-radius:16px 16px 0 0}
+.about-team-image img{display:block;width:100%;height:100%;object-fit:cover;object-position:center 20%;transition:transform .35s ease}
+.about-team-card:hover .about-team-image img{transform:scale(1.035)}
+.about-team-card h3{margin:0 0 7px;color:#15394a;font-size:16px;line-height:1.35}
+.about-team-card p{margin:0;color:#748891;font-size:11px;line-height:1.65}
+@media(max-width:1050px){.about-team-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.about-team-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.about-team-card{padding:10px 10px 15px}.about-team-image{width:calc(100% + 20px);margin:-10px -10px 14px;aspect-ratio:4/4.5}.about-team-card h3{font-size:14px}}
+</style>
 </head><body><header class="site-header">
 <div class="container nav">
 <a aria-label="Clear Robotics home" class="brand" href="index.html#home"><img alt="Clear Robotics" class="brand-logo" src="assets/clear-robotics-logo.png"/></a>
@@ -1034,12 +1045,28 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
 </section>
 <section class="content-section">
 <div class="container">
-<div class="section-intro"><div class="section-kicker">People behind the work</div><h2>A team bringing engineering, operations and partnerships together.</h2><p>Our work depends on collaboration across product development, field operations and the organisations responsible for local waterways.</p></div>
+<div class="section-intro"><div class="section-kicker">OUR PEOPLE</div><h2>Meet the Team Behind Clearbot</h2><p>The people bringing engineering, field operations and partnerships together to help keep waterways cleaner.</p></div>
 <div class="about-team-grid">
-<article class="about-team-card"><div class="about-team-avatar">SG</div><h3>Sidhant Gupta</h3><p>Co-Founder &amp; CEO</p></article>
-<article class="about-team-card"><div class="about-team-avatar">UG</div><h3>Utkarsh Goel</h3><p>Co-Founder &amp; CTO</p></article>
-<article class="about-team-card"><div class="about-team-avatar">SS</div><h3>Samyuktha Sriram</h3><p>Head of Business Development and Marketing</p></article>
-<article class="about-team-card"><div class="about-team-avatar">DB</div><h3>Dylan Bentulan</h3><p>Head of Operations</p></article>
+<article class="about-team-card">
+  <div class="about-team-image"><img src="https://cdn.prod.website-files.com/61a489c699dcac373eae3b8b/6776175bb1ec11891a87cf44_Sidhant.jpg" alt="Sidhant Gupta, Co-Founder of Clearbot" loading="lazy"/></div>
+  <h3>Sidhant Gupta</h3>
+  <p>Co-Founder</p>
+</article>
+<article class="about-team-card">
+  <div class="about-team-image"><img src="https://cdn.prod.website-files.com/61a489c699dcac373eae3b8b/6776175b077aeaa313d052f5_Utkarsh.jpg" alt="Utkarsh Goel, Co-Founder of Clearbot" loading="lazy"/></div>
+  <h3>Utkarsh Goel</h3>
+  <p>Co-Founder</p>
+</article>
+<article class="about-team-card">
+  <div class="about-team-image"><img src="https://cdn.prod.website-files.com/61a489c699dcac373eae3b8b/6776175b7172d5876d94c245_Samyuktha.jpg" alt="Samyuktha Sriram, Head of Business Development and Marketing at Clearbot" loading="lazy"/></div>
+  <h3>Samyuktha Sriram</h3>
+  <p>Head of Business Development and Marketing</p>
+</article>
+<article class="about-team-card">
+  <div class="about-team-image"><img src="https://cdn.prod.website-files.com/61a489c699dcac373eae3b8b/6776175b9533c6c3d026ae21_Dylan.jpg" alt="Dylan Bentulan, Head of Operations at Clearbot" loading="lazy"/></div>
+  <h3>Dylan Bentulan</h3>
+  <p>Head of Operations</p>
+</article>
 </div>
 <div class="about-sources"><h3>Explore the sources behind our story</h3><div class="about-sources-list">
 <a href="https://nusx.edu.sg/startups/stories/clear-robotics" rel="noopener noreferrer" target="_blank">NUSX · Business milestones ↗</a>

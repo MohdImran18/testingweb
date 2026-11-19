@@ -855,6 +855,17 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
   }
 }
 </style>
+<style id="clearbot-team-photos-manager">
+.about-team-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));align-items:stretch;gap:18px}
+.about-team-card{min-width:0;height:100%;padding:14px 14px 20px;overflow:hidden;display:flex;flex-direction:column}
+.about-team-image{width:calc(100% + 28px);margin:-14px -14px 18px;aspect-ratio:4/4.25;overflow:hidden;background:#eaf1f3;border-radius:16px 16px 0 0}
+.about-team-image img{display:block;width:100%;height:100%;object-fit:cover;object-position:center 20%;transition:transform .35s ease}
+.about-team-card:hover .about-team-image img{transform:scale(1.035)}
+.about-team-card h3{margin:0 0 7px;color:#15394a;font-size:16px;line-height:1.35}
+.about-team-card p{margin:0;color:#748891;font-size:11px;line-height:1.65}
+@media(max-width:1050px){.about-team-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.about-team-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.about-team-card{padding:10px 10px 15px}.about-team-image{width:calc(100% + 20px);margin:-10px -10px 14px;aspect-ratio:4/4.5}.about-team-card h3{font-size:14px}}
+</style>
 </head><body><header class="site-header">
 <div class="container nav">
 <a aria-label="Clear Robotics home" class="brand" href="index.html#home"><img alt="Clear Robotics" class="brand-logo" src="assets/clear-robotics-logo.png"/></a>
@@ -1012,6 +1023,37 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
 <article class="about-proof-card"><div class="about-proof-image"><img alt="Clearbot aquatic vegetation removal project" loading="lazy" src="https://i.ytimg.com/vi/z3_DOddjR2U/hqdefault.jpg"/></div><div class="about-proof-body"><span class="about-proof-tag">Kerala · India</span><h3>Aquatic vegetation management</h3><p>Our vegetation-management work in Kerala focused on clearing dense invasive growth from a local waterbody with municipal partners.</p><strong class="about-proof-metric">14,164 m² area cleared</strong><a class="about-proof-link" href="project-putiya-kavin-chira-kerala.html">View project details ↗</a></div></article>
 </div>
 </div>
+</section>
+<section class="content-section" id="about-team">
+  <div class="container">
+    <div class="section-intro">
+      <div class="section-kicker">OUR PEOPLE</div>
+      <h2>Meet the Team Behind Clearbot</h2>
+      <p>The people bringing engineering, field operations and partnerships together to help keep waterways cleaner.</p>
+    </div>
+    <div class="about-team-grid">
+<article class="about-team-card">
+  <div class="about-team-image"><img data-cb-image-key="about.html::5" src="https://cdn.prod.website-files.com/61a489c699dcac373eae3b8b/6776175bb1ec11891a87cf44_Sidhant.jpg" alt="Sidhant Gupta, Co-Founder of Clearbot" loading="lazy"/></div>
+  <h3>Sidhant Gupta</h3>
+  <p>Co-Founder</p>
+</article>
+<article class="about-team-card">
+  <div class="about-team-image"><img data-cb-image-key="about.html::6" src="https://cdn.prod.website-files.com/61a489c699dcac373eae3b8b/6776175b077aeaa313d052f5_Utkarsh.jpg" alt="Utkarsh Goel, Co-Founder of Clearbot" loading="lazy"/></div>
+  <h3>Utkarsh Goel</h3>
+  <p>Co-Founder</p>
+</article>
+<article class="about-team-card">
+  <div class="about-team-image"><img data-cb-image-key="about.html::7" src="https://cdn.prod.website-files.com/61a489c699dcac373eae3b8b/6776175b7172d5876d94c245_Samyuktha.jpg" alt="Samyuktha Sriram, Head of Business Development and Marketing at Clearbot" loading="lazy"/></div>
+  <h3>Samyuktha Sriram</h3>
+  <p>Head of Business Development and Marketing</p>
+</article>
+<article class="about-team-card">
+  <div class="about-team-image"><img data-cb-image-key="about.html::8" src="https://cdn.prod.website-files.com/61a489c699dcac373eae3b8b/6776175b9533c6c3d026ae21_Dylan.jpg" alt="Dylan Bentulan, Head of Operations at Clearbot" loading="lazy"/></div>
+  <h3>Dylan Bentulan</h3>
+  <p>Head of Operations</p>
+</article>
+    </div>
+  </div>
 </section>
 <section class="content-section pale">
 <div class="container"><div class="about-final-cta"><div><div class="eyebrow">Start a conversation</div><h2>Let’s work on your waterway challenge.</h2><p>Tell us about your site, operating conditions and objectives. We’ll help you explore the right vessel platform and a practical deployment approach.</p></div><a class="btn btn-light" href="contact.html#contact-form">Discuss your project ↗</a></div></div>

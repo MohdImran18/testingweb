@@ -34,6 +34,7 @@ function dateText(value?:string) { if(!value) return "—"; const d=new Date(val
 function makeSlug(value:string) { return value.toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""); }
 function imagePageTitle(page:string) {
   if(page === "index.html") return "Homepage";
+  if(page === "about.html" ) return "About Us";
   const base=page.replace(/\.html$/i,"").replace(/^(project|service)-/i,"$1 — ").replace(/-/g," ");
   return base.replace(/\b\w/g,letter=>letter.toUpperCase());
 }
