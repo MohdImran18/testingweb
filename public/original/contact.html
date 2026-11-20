@@ -701,6 +701,17 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
   }
 }
 </style>
+<style id="clearbot-contact-cleanup-style">
+/* Single-column contact enquiry layout and optional suggestions field. */
+.contact-hero-grid{grid-template-columns:minmax(0,1fr)!important;max-width:1040px;margin-inline:auto;gap:0!important}
+.contact-form-card{width:100%;max-width:1040px;margin-inline:auto}
+.contact-hero{padding-top:56px;padding-bottom:62px}
+.suggestions-field{grid-column:1/-1;display:flex;flex-direction:column;gap:7px}
+.suggestions-field label{font-size:11px;font-weight:750;color:#345366}
+.suggestions-field textarea{width:100%;min-height:112px;line-height:1.6;border:1px solid #dce7eb;border-radius:10px;padding:12px 13px;background:#fbfdfe;color:#163b4b;font:inherit;font-size:13px;resize:vertical}
+.suggestions-field textarea:focus{outline:0;border-color:#13aeb0;box-shadow:0 0 0 3px rgba(22,199,194,.12);background:#fff}
+@media(max-width:760px){.contact-hero{padding-top:38px;padding-bottom:46px}}
+</style>
 </head>
 <body>
 <header class="site-header">
@@ -814,6 +825,10 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
 <option value="+353">Ireland (+353)</option>
 <option value="+351">Portugal (+351)</option>
 <option value="+32">Belgium (+32)</option></select><input autocomplete="tel-national" id="phone" inputmode="tel" maxlength="25" name="Phone Number" placeholder="Enter phone number" required="" type="tel"/></div></div>
+<div class="field full suggestions-field">
+  <label for="suggestions">Any additional details or suggestions?</label>
+  <textarea id="suggestions" name="Suggestions / Additional details" rows="4" placeholder="Share any additional requirements, questions or suggestions for our team."></textarea>
+</div>
 <div class="form-feedback" id="formFeedback" role="status" aria-live="polite" aria-atomic="true"></div>
 <div class="form-submit"><button class="btn btn-primary" type="submit">Send enquiry ↗</button><small>Your enquiry is submitted securely to our team. We will contact you using the details provided.</small></div>
 </form>

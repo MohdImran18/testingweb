@@ -588,6 +588,153 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
 .cb-intro-video .cb-video-frame iframe{display:block;width:100%;height:100%;min-height:0;border:0}
 @media(max-width:900px){.cb-intro-video .cb-intro-layout{grid-template-columns:minmax(0,1fr) minmax(0,1.8fr);gap:24px}}@media(max-width:760px){.cb-intro-video .cb-intro-layout{grid-template-columns:1fr;gap:26px}.cb-intro-video .cb-intro-copy h2{font-size:clamp(30px,8vw,40px)}.cb-intro-video .cb-video-frame{max-width:100%}}
 </style>
+<style id="clearbot-home-hero-side-transition-v2">
+/* Slides enter gently from the side; the active slide settles into the frame. */
+.hero.hero-carousel .hero-slide {
+  transform: translate3d(42px, 0, 0);
+  transition:
+    opacity .72s ease,
+    visibility .72s ease,
+    transform .72s cubic-bezier(.22,.68,.2,1);
+  will-change: opacity, transform;
+}
+.hero.hero-carousel[data-slide-direction="prev"] .hero-slide:not(.is-active) {
+  transform: translate3d(-42px, 0, 0);
+}
+.hero.hero-carousel[data-slide-direction="next"] .hero-slide:not(.is-active) {
+  transform: translate3d(42px, 0, 0);
+}
+.hero.hero-carousel .hero-slide.is-active {
+  transform: translate3d(0, 0, 0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero.hero-carousel .hero-slide {
+    transform: none !important;
+    transition: none !important;
+    will-change: auto;
+  }
+}
+</style>
+<script id="clearbot-home-hero-carousel-init">
+(function () {
+  function initialiseClearbotHeroCarousel() {
+    var hero = document.querySelector(".legacy-site .hero.hero-carousel");
+    if (!hero) return;
+
+    // If React development mode re-runs effects, dispose of the previous controller first.
+    if (typeof hero.__clearbotSliderCleanup === "function") {
+      hero.__clearbotSliderCleanup();
+    }
+
+    var slides = Array.prototype.slice.call(hero.querySelectorAll(".hero-slides > .hero-slide"));
+    var dots = Array.prototype.slice.call(hero.querySelectorAll(".hero-slide-dot, [data-hero-dot]"));
+    var previous = hero.querySelector("[data-hero-prev], .hero-slide-arrow[aria-label='Previous slide']");
+    var next = hero.querySelector("[data-hero-next], .hero-slide-arrow[aria-label='Next slide']");
+    var current = hero.querySelector("[data-hero-current], .hero-slide-current");
+
+    if (slides.length < 2) return;
+
+    var activeIndex = slides.findIndex(function (slide) { return slide.classList.contains("is-active"); });
+    if (activeIndex < 0) activeIndex = 0;
+    var touchStartX = null;
+
+    function showSlide(requestedIndex, requestedDirection) {
+      var nextIndex = ((requestedIndex % slides.length) + slides.length) % slides.length;
+      if (nextIndex === activeIndex) return;
+
+      var forwardDistance = (nextIndex - activeIndex + slides.length) % slides.length;
+      var backwardDistance = (activeIndex - nextIndex + slides.length) % slides.length;
+      var direction = requestedDirection || (forwardDistance <= backwardDistance ? "next" : "prev");
+      hero.setAttribute("data-slide-direction", direction);
+      activeIndex = nextIndex;
+
+      slides.forEach(function (slide, index) {
+        var isActive = index === activeIndex;
+        slide.classList.toggle("is-active", isActive);
+        slide.setAttribute("aria-hidden", isActive ? "false" : "true");
+      });
+
+      dots.forEach(function (dot, index) {
+        var isActive = index === activeIndex;
+        dot.classList.toggle("is-active", isActive);
+        dot.setAttribute("aria-pressed", isActive ? "true" : "false");
+      });
+
+      if (current) current.textContent = String(activeIndex + 1).padStart(2, "0");
+    }
+
+    function goNext() { showSlide(activeIndex + 1, "next"); }
+    function goPrevious() { showSlide(activeIndex - 1, "prev"); }
+    function onKeyDown(event) {
+      if (event.key === "ArrowLeft") { event.preventDefault(); goPrevious(); }
+      if (event.key === "ArrowRight") { event.preventDefault(); goNext(); }
+    }
+    function onTouchStart(event) {
+      touchStartX = event.touches && event.touches.length ? event.touches[0].clientX : null;
+    }
+    function onTouchEnd(event) {
+      var endX = event.changedTouches && event.changedTouches.length ? event.changedTouches[0].clientX : null;
+      if (touchStartX !== null && typeof endX === "number") {
+        var distance = endX - touchStartX;
+        if (Math.abs(distance) > 45) distance < 0 ? goNext() : goPrevious();
+      }
+      touchStartX = null;
+    }
+
+    if (previous) previous.addEventListener("click", goPrevious);
+    if (next) next.addEventListener("click", goNext);
+    var dotHandlers = dots.map(function (dot, index) {
+      var handler = function () { showSlide(index); };
+      dot.addEventListener("click", handler);
+      return handler;
+    });
+    hero.addEventListener("keydown", onKeyDown);
+    hero.addEventListener("touchstart", onTouchStart, { passive: true });
+    hero.addEventListener("touchend", onTouchEnd, { passive: true });
+
+    hero.setAttribute("data-slide-direction", "next");
+    // Keep the first active slide and its controls in sync before starting autoplay.
+    slides.forEach(function (slide, index) {
+      var isActive = index === activeIndex;
+      slide.classList.toggle("is-active", isActive);
+      slide.setAttribute("aria-hidden", isActive ? "false" : "true");
+    });
+    dots.forEach(function (dot, index) {
+      var isActive = index === activeIndex;
+      dot.classList.toggle("is-active", isActive);
+      dot.setAttribute("aria-pressed", isActive ? "true" : "false");
+    });
+    if (current) current.textContent = String(activeIndex + 1).padStart(2, "0");
+
+    // Advance every 5 seconds, regardless of mouse hover or focus.
+    var intervalId = window.setInterval(function () {
+      if (!document.hidden) goNext();
+    }, 5000);
+
+    function cleanup() {
+      window.clearInterval(intervalId);
+      if (previous) previous.removeEventListener("click", goPrevious);
+      if (next) next.removeEventListener("click", goNext);
+      dots.forEach(function (dot, index) { dot.removeEventListener("click", dotHandlers[index]); });
+      hero.removeEventListener("keydown", onKeyDown);
+      hero.removeEventListener("touchstart", onTouchStart);
+      hero.removeEventListener("touchend", onTouchEnd);
+      window.removeEventListener("pagehide", cleanup);
+      if (hero.__clearbotSliderCleanup === cleanup) delete hero.__clearbotSliderCleanup;
+    }
+
+    hero.__clearbotSliderCleanup = cleanup;
+    window.addEventListener("pagehide", cleanup, { once: true });
+  }
+
+  // LegacyDocument injects this script after the page body has been mounted.
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initialiseClearbotHeroCarousel, { once: true });
+  } else {
+    initialiseClearbotHeroCarousel();
+  }
+})();
+</script>
 </head>
 <body>
 <header class="site-header">
@@ -756,9 +903,7 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
 </div>
 </div>
 </section>
-<section class="cta" id="contact">
-<div class="container cta-wrap"><div><h2>Have a Waterway Cleaning Challenge?</h2><p>Let’s explore the right vessel or service for your operational requirements.</p></div><div class="actions"><a class="btn btn-primary" href="contact.html#contact-form">Request a Quote  →</a><a class="btn btn-ghost" href="contact.html#contact-form">Book a Technical Demo</a></div></div>
-</section>
+
 </main>
 <footer class="site-footer"><div class="container">
 <div class="footer-main">
