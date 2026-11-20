@@ -527,6 +527,157 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
     .cb-project-feature-video .section-heading { text-align: left !important; }
 }
 </style>
+<style>
+/* Clearbot project layout V2: restore centered container, balance 30/70 columns, compact summary */
+.cb-project-feature-layout {
+    display: grid !important;
+    grid-template-columns: minmax(270px, 30fr) minmax(0, 70fr) !important;
+    align-items: start !important;
+    gap: clamp(24px, 3vw, 44px) !important;
+    width: min(1280px, calc(100% - 72px)) !important;
+    max-width: 1280px !important;
+    margin: 44px auto 76px !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+}
+.cb-project-summary {
+    min-width: 0 !important;
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 18px !important;
+    align-self: start !important;
+}
+.cb-project-summary > div:first-child {
+    min-width: 0 !important;
+    width: 100% !important;
+}
+.cb-project-summary .kicker,
+.cb-project-summary .section-kicker {
+    font-size: 10px !important;
+    letter-spacing: .15em !important;
+    line-height: 1.4 !important;
+    margin-bottom: 8px !important;
+}
+.cb-project-summary h1,
+.cb-project-summary h2 {
+    font-size: clamp(29px, 2.45vw, 39px) !important;
+    line-height: 1.12 !important;
+    letter-spacing: -.035em !important;
+    margin: 8px 0 14px !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    max-width: 100% !important;
+}
+.cb-project-summary p {
+    font-size: 13px !important;
+    line-height: 1.7 !important;
+    margin: 0 0 11px !important;
+}
+.cb-project-summary .project-meta-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+    margin-top: 18px !important;
+}
+.cb-project-summary .project-meta-card {
+    min-width: 0 !important;
+    padding: 13px !important;
+    border-radius: 12px !important;
+}
+.cb-project-summary .project-meta-card strong {
+    font-size: 12px !important;
+    line-height: 1.45 !important;
+    overflow-wrap: anywhere !important;
+}
+.cb-project-summary aside.project-facts {
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    padding: 19px !important;
+    border-radius: 16px !important;
+    margin: 0 !important;
+}
+.cb-project-summary .project-facts h3 {
+    font-size: 17px !important;
+    margin-bottom: 12px !important;
+}
+.cb-project-summary .project-facts ul { gap: 9px !important; }
+.cb-project-summary .project-facts li {
+    font-size: 12px !important;
+    line-height: 1.55 !important;
+}
+.cb-project-feature-video {
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    align-self: start !important;
+}
+.cb-project-feature-video .container {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+.cb-project-feature-video .section-heading {
+    text-align: left !important;
+    margin: 0 0 16px !important;
+}
+.cb-project-feature-video .section-heading .section-kicker {
+    font-size: 10px !important;
+    letter-spacing: .15em !important;
+}
+.cb-project-feature-video .section-heading h2 {
+    font-size: clamp(26px, 2.7vw, 40px) !important;
+    line-height: 1.12 !important;
+    letter-spacing: -.035em !important;
+    margin: 5px 0 0 !important;
+}
+.cb-project-feature-video .cb-video-frame {
+    position: relative !important;
+    width: 100% !important;
+    max-width: none !important;
+    aspect-ratio: 16 / 9 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border-radius: 18px !important;
+    box-shadow: 0 16px 42px rgba(3, 35, 48, .14) !important;
+}
+.cb-project-feature-video .cb-video-frame iframe,
+.cb-project-feature-video iframe {
+    position: absolute !important;
+    inset: 0 !important;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    aspect-ratio: auto !important;
+    border: 0 !important;
+    border-radius: inherit !important;
+}
+.project-detail-cta,
+.project-source-actions { display: none !important; }
+@media (max-width: 900px) {
+    .cb-project-feature-layout {
+        grid-template-columns: minmax(0, 1fr) !important;
+        width: calc(100% - 36px) !important;
+        margin: 28px auto 52px !important;
+        gap: 28px !important;
+    }
+    .cb-project-summary h1,
+    .cb-project-summary h2 { font-size: clamp(28px, 6vw, 38px) !important; }
+    .cb-project-feature-video .section-heading h2 { font-size: clamp(25px, 5.5vw, 34px) !important; }
+}
+@media (max-width: 520px) {
+    .cb-project-feature-layout { width: calc(100% - 28px) !important; }
+    .cb-project-summary .project-meta-grid { grid-template-columns: 1fr 1fr !important; }
+    .cb-project-summary aside.project-facts { padding: 16px !important; }
+}
+</style>
 </head><body>
 <header class="site-header">
 <div class="container nav">
