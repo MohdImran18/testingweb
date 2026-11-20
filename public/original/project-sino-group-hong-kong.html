@@ -463,6 +463,70 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
  .site-header .nav-cta{padding:11px 12px;font-size:10px}
 }
 </style>
+<style>
+/* Clearbot project detail pages: 30% project summary / 70% video */
+.cb-project-feature-layout {
+    display: grid !important;
+    grid-template-columns: minmax(250px, 30fr) minmax(0, 70fr) !important;
+    align-items: start !important;
+    gap: clamp(18px, 2.2vw, 34px) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+}
+.cb-project-summary {
+    min-width: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 18px !important;
+}
+.cb-project-feature-video {
+    min-width: 0 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+.cb-project-feature-video .container {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+.cb-project-feature-video .section-heading {
+    margin: 0 0 16px !important;
+    text-align: left !important;
+}
+.cb-project-feature-video .section-heading h2 {
+    font-size: clamp(25px, 2.6vw, 38px) !important;
+    line-height: 1.12 !important;
+    margin: 0 !important;
+}
+.cb-project-feature-video .cb-video-frame,
+.cb-project-feature-video .cb-video-frame iframe,
+.cb-project-feature-video iframe {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    aspect-ratio: 16 / 9 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    border: 0 !important;
+    border-radius: 18px !important;
+    overflow: hidden !important;
+}
+.cb-project-feature-video .cb-video-frame {
+    box-shadow: 0 16px 42px rgba(3, 35, 48, .14) !important;
+}
+.project-detail-cta,
+.project-source-actions {
+    display: none !important;
+}
+@media (max-width: 900px) {
+    .cb-project-feature-layout {
+        grid-template-columns: minmax(0, 1fr) !important;
+    }
+    .cb-project-feature-video .section-heading { text-align: left !important; }
+}
+</style>
 </head><body>
 <header class="site-header">
 <div class="container nav">
@@ -533,4 +597,50 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
  document.querySelectorAll('.nav-products-toggle,.nav-insights-toggle').forEach(btn=>btn.addEventListener('click',e=>{e.stopPropagation();const wrap=btn.closest('.nav-dropdown');const open=wrap.classList.toggle('open');btn.setAttribute('aria-expanded',String(open));}));
  document.addEventListener('click',e=>{document.querySelectorAll('.nav-dropdown.open').forEach(w=>{if(!w.contains(e.target)){w.classList.remove('open');const b=w.querySelector('button[aria-haspopup="true"]');if(b)b.setAttribute('aria-expanded','false');}});});
  document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.nav-dropdown.open').forEach(w=>{w.classList.remove('open');const b=w.querySelector('button[aria-haspopup="true"]');if(b)b.setAttribute('aria-expanded','false');});if(nav&&menu){nav.classList.remove('open');menu.setAttribute('aria-expanded','false');menu.textContent='☰';}}});
-})();</script></body></html>
+})();</script><script>
+(function () {
+  function arrangeProjectFeature() {
+    var facts = document.querySelector('aside.project-facts');
+    var videoSection = document.querySelector('section.cb-project-video');
+    if (!facts || !videoSection || document.querySelector('.cb-project-feature-layout')) return;
+
+    var videoContainer = videoSection.querySelector('.container');
+    if (!videoContainer) return;
+
+    // Find the nearest wrapper whose direct children include the facts panel and the main project copy.
+    var layout = facts.parentElement;
+    var depth = 0;
+    while (layout && depth < 7) {
+      var children = Array.prototype.slice.call(layout.children || []);
+      var hasFacts = children.indexOf(facts) !== -1;
+      var hasCopy = children.some(function (el) {
+        return el !== facts && /^(DIV|ARTICLE|SECTION)$/i.test(el.tagName) && (el.innerText || el.textContent || '').trim().length > 80;
+      });
+      if (hasFacts && hasCopy) break;
+      layout = layout.parentElement;
+      depth++;
+    }
+    if (!layout || depth >= 7) return;
+
+    var summary = document.createElement('div');
+    summary.className = 'cb-project-summary';
+    while (layout.firstChild) summary.appendChild(layout.firstChild);
+    layout.appendChild(summary);
+
+    videoContainer.classList.add('cb-project-feature-video');
+    layout.appendChild(videoContainer);
+    layout.classList.add('cb-project-feature-layout');
+
+    // Remove the old standalone section wrapper after moving its content.
+    videoSection.remove();
+    document.querySelectorAll('.project-source-actions, .project-detail-cta').forEach(function (el) { el.remove(); });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', arrangeProjectFeature, { once: true });
+  } else {
+    arrangeProjectFeature();
+  }
+})();
+</script>
+</body></html>
