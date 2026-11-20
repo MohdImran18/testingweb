@@ -477,6 +477,16 @@ a.card-link.project-details-button:focus-visible {
     outline-offset: 3px !important;
 }
 </style>
+<style id="project-pagination-styles">
+.project-card[hidden]{display:none!important}
+.project-pagination{display:flex;align-items:center;justify-content:center;gap:18px;margin:38px auto 12px;padding:10px 0;flex-wrap:wrap}
+.project-pagination[hidden]{display:none!important}
+.pagination-btn{appearance:none;border:1px solid #c9dfe3;background:#fff;color:#073b4c;border-radius:999px;padding:12px 22px;font-family:inherit;font-size:14px;font-weight:700;line-height:1.2;cursor:pointer;transition:background .2s ease,color .2s ease,transform .2s ease,box-shadow .2s ease}
+.pagination-btn:hover:not(:disabled){background:#16c7c2;color:#062b3a;transform:translateY(-1px);box-shadow:0 8px 20px rgba(4,90,100,.14)}
+.pagination-btn:disabled{opacity:.38;cursor:not-allowed}
+.pagination-status{min-width:92px;text-align:center;color:#526b78;font-size:13px;font-weight:700;letter-spacing:.04em}
+@media(max-width:767px){.project-pagination{gap:10px;margin:26px auto 8px}.pagination-btn{padding:11px 16px;font-size:13px}.pagination-status{min-width:76px;font-size:12px}}
+</style>
 </head>
 <body>
 <header class="site-header">
@@ -559,6 +569,12 @@ a.card-link.project-details-button:focus-visible {
 <div class="project-body"><div class="project-meta"><span class="tag">Floating waste recovery</span><span class="location">Umiam Lake, Meghalaya · India</span></div><h3>Umiam Lake Waste Removal</h3><p>With Smart Village Movement, we supported lake restoration through repeated electric-vessel cleanup operations and trained local teams for sustained project management.</p><div class="result-row"><span class="result-number">42 tonnes</span><span class="result-copy">of waste removed<br/>across 100+ cleanup operations</span></div><div class="partner">Project partner: <b>Smart Village Movement (SVM)</b></div><a class="card-link project-details-button" href="project-umiam-lake-meghalaya.html" rel="" target="_self">View project details</a></div>
 </article>
 </div>
+<nav class="project-pagination" id="projectPagination" aria-label="Project pages">
+  <button type="button" class="pagination-btn" id="projectPrev" aria-label="Previous page">← Previous</button>
+  <span class="pagination-status" id="projectPageStatus" aria-live="polite">Page 1</span>
+  <button type="button" class="pagination-btn" id="projectNext" aria-label="Next page">Next →</button>
+</nav>
+
 </div>
 </section>
 
@@ -577,13 +593,66 @@ a.card-link.project-details-button:focus-visible {
  const toggle=document.getElementById('menuToggle');
  const nav=document.getElementById('navlinks');
  if(toggle&&nav){toggle.addEventListener('click',()=>{const open=nav.classList.toggle('open');toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-label',open?'Close navigation':'Open navigation');toggle.textContent=open?'×':'☰';});}
- const buttons=[...document.querySelectorAll('.filter-btn')];
- const cards=[...document.querySelectorAll('.project-card')];
- buttons.forEach(button=>button.addEventListener('click',()=>{
-  const filter=button.dataset.filter;
-  buttons.forEach(b=>{const active=b===button;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});
-  cards.forEach(card=>{card.hidden=filter!=='all'&&card.dataset.category!==filter;});
+
+ const filterButtons=Array.from(document.querySelectorAll('.filter-btn'));
+ const cards=Array.from(document.querySelectorAll('#projectGrid .project-card'));
+ const pagination=document.getElementById('projectPagination');
+ const previous=document.getElementById('projectPrev');
+ const next=document.getElementById('projectNext');
+ const status=document.getElementById('projectPageStatus');
+
+ if(!cards.length||!pagination||!previous||!next||!status)return;
+
+ let activeFilter='all';
+ let currentPage=1;
+ let pageSize=window.matchMedia('(max-width: 767px)').matches?2:4;
+ let visibleCards=cards.slice();
+
+ function updatePageSize(){
+   const newSize=window.matchMedia('(max-width: 767px)').matches?2:4;
+   if(newSize!==pageSize){pageSize=newSize;currentPage=1;render();}
+ }
+
+ function render(){
+   visibleCards=cards.filter(card=>activeFilter==='all'||card.dataset.category===activeFilter);
+   const pageCount=Math.max(1,Math.ceil(visibleCards.length/pageSize));
+   currentPage=Math.min(Math.max(1,currentPage),pageCount);
+   const start=(currentPage-1)*pageSize;
+   const end=start+pageSize;
+   const pageCards=new Set(visibleCards.slice(start,end));
+
+   cards.forEach(card=>{card.hidden=!pageCards.has(card);});
+   pagination.hidden=pageCount<=1;
+   previous.disabled=currentPage===1;
+   next.disabled=currentPage===pageCount;
+   status.textContent='Page '+currentPage+' of '+pageCount;
+ }
+
+ filterButtons.forEach(button=>button.addEventListener('click',()=>{
+   activeFilter=button.dataset.filter||'all';
+   currentPage=1;
+   filterButtons.forEach(item=>{
+     const active=item===button;
+     item.classList.toggle('active',active);
+     item.setAttribute('aria-pressed',String(active));
+   });
+   render();
  }));
+
+ previous.addEventListener('click',()=>{
+   if(currentPage>1){currentPage--;render();}
+ });
+ next.addEventListener('click',()=>{
+   const pageCount=Math.max(1,Math.ceil(visibleCards.length/pageSize));
+   if(currentPage<pageCount){currentPage++;render();}
+ });
+
+ if(window.matchMedia){
+   const media=window.matchMedia('(max-width: 767px)');
+   if(media.addEventListener)media.addEventListener('change',updatePageSize);
+   else if(media.addListener)media.addListener(updatePageSize);
+ }
+ render();
 })();
 </script>
 <aside aria-label="Quick contact options" class="floating-contact-rail">
