@@ -871,6 +871,30 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
 @media(max-width:900px){.about-impact-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 @media(max-width:520px){.about-impact-grid{grid-template-columns:1fr!important}}
 </style>
+
+<style id="clearbot-explore-projects-button">
+.cb-explore-projects-button {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 9px !important;
+    background: linear-gradient(135deg, #65DED0 0%, #13A9B5 55%, #087F9B 100%) !important;
+    color: #032F40 !important;
+    border: 1px solid #65DED0 !important;
+    border-radius: 999px !important;
+    padding: 15px 30px !important;
+    font-weight: 800 !important;
+    letter-spacing: .2px !important;
+    text-decoration: none !important;
+    box-shadow: 0 8px 22px rgba(8, 127, 155, .22) !important;
+    cursor: pointer;
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+.cb-explore-projects-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 26px rgba(8, 127, 155, .30) !important;
+}
+</style>
 </head><body><header class="site-header">
 <div class="container nav">
 <a aria-label="Clear Robotics home" class="brand" href="index.html#home"><img alt="Clear Robotics" class="brand-logo" src="assets/clear-robotics-logo.png"/></a>
@@ -904,7 +928,7 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
 <h1>From a Bali idea to a growing fleet for cleaner waterways.</h1>
 <p>We are Clear Robotics, the team behind Clearbot. We build unmanned electric vessels and intelligent operating tools that help ports, municipalities and waterway teams recover floating waste, manage aquatic vegetation and run more informed waterway programmes.</p>
 <div class="hero-actions">
-<a class="btn btn-light" href="projects.html">Explore our projects <span aria-hidden="true">↗</span></a>
+<a class="btn btn-light cb-explore-projects-button" href="projects.html">Explore our projects <span aria-hidden="true">↗</span></a>
 <a class="btn btn-outline" href="contact.html#contact-form">Talk to our team <span aria-hidden="true">↗</span></a>
 </div>
 </div>
