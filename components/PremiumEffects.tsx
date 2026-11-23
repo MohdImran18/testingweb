@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowUp, Waves } from 'lucide-react';
+import { ArrowUp } from 'lucide-react';
 export default function PremiumEffects() {
   const [progress, setProgress] = useState(0);
   const [showTop, setShowTop] = useState(false);
@@ -22,7 +22,6 @@ export default function PremiumEffects() {
   }, []);
   return <>
     <div className="cb-scroll-progress" aria-hidden="true"><motion.div animate={{ width: `${progress}%` }} transition={{ type: 'tween', ease: 'linear', duration: .08 }} /></div>
-    <div className="cb-brand-mark" aria-hidden="true"><Waves size={15} strokeWidth={2.2}/><span>CLEANER WATERWAYS</span></div>
     {showTop && <motion.button className="cb-back-top" type="button" aria-label="Back to top" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 12 }}><ArrowUp size={18}/></motion.button>}
   </>;
 }
