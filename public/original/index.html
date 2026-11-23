@@ -759,6 +759,35 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
     box-shadow: 0 12px 26px rgba(8, 127, 155, .30) !important;
 }
 </style>
+<style id="clearbot-project-explore-buttons">
+a.cb-project-explore-button {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 10px !important;
+    padding: 12px 24px !important;
+    margin-top: 12px !important;
+    border-radius: 999px !important;
+    background: linear-gradient(135deg, #65DED0 0%, #13A9B5 55%, #087F9B 100%) !important;
+    color: #032F40 !important;
+    border: 1px solid #13A9B5 !important;
+    font-weight: 800 !important;
+    font-size: 14px !important;
+    text-decoration: none !important;
+    box-shadow: 0 5px 14px rgba(19,169,181,.20) !important;
+    transition: all .25s ease !important;
+}
+
+a.cb-project-explore-button:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 9px 20px rgba(19,169,181,.30) !important;
+}
+
+a.cb-project-explore-button:focus-visible {
+    outline: 3px solid #087F9B !important;
+    outline-offset: 3px !important;
+}
+</style>
 </head>
 <body>
 <header class="site-header">
@@ -946,4 +975,13 @@ document.addEventListener('DOMContentLoaded',function(){
 });
 </script>
 
+<script id="clearbot-project-explore-button-script">
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll("a").forEach(function (link) {
+        if (link.textContent.trim().toLowerCase().startsWith("explore project")) {
+            link.classList.add("cb-project-explore-button");
+        }
+    });
+});
+</script>
 </body></html>
