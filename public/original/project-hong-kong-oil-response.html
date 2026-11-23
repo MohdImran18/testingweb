@@ -889,7 +889,37 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
     .cb-project-details-below aside.project-facts { padding: 19px !important; }
 }
 </style>
-<style id="clearbot-project-video-heading-fix">.project-video-heading,.project-video-title,.project-video h2,.project-video h3,.project-source-actions{text-align:center!important;margin-left:auto!important;margin-right:auto!important}.project-source-actions{display:flex!important;justify-content:center!important}.project-facts li:before{font-family:Arial,sans-serif!important}</style></head><body>
+<style id="clearbot-project-video-heading-fix">.project-video-heading,.project-video-title,.project-video h2,.project-video h3,.project-source-actions{text-align:center!important;margin-left:auto!important;margin-right:auto!important}.project-source-actions{display:flex!important;justify-content:center!important}.project-facts li:before{font-family:Arial,sans-serif!important}</style>
+<style id="clearbot-project-overview-center">
+.project-overview-grid > div:first-child > .kicker,
+.project-overview-grid > div:first-child > h2,
+.project-overview-grid > div:first-child > p {
+    text-align: center !important;
+}
+
+.project-overview-grid > div:first-child > p {
+    max-width: 760px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.project-overview-grid > div:first-child > .project-meta-grid {
+    text-align: left;
+}
+
+.project-overview-grid > div:first-child > .project-meta-grid .project-meta-card {
+    text-align: left;
+}
+
+@media (max-width: 768px) {
+    .project-overview-grid > div:first-child > h2,
+    .project-overview-grid > div:first-child > p {
+        text-align: center !important;
+    }
+}
+</style>
+
+</head><body>
 <header class="site-header">
 <div class="container nav">
 <a aria-label="Clear Robotics home" class="brand" href="index.html#home"><img alt="Clear Robotics" class="brand-logo" src="assets/clear-robotics-logo.png"/></a>
