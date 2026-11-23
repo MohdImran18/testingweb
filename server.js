@@ -34,7 +34,7 @@ const transporter = mailConfigured ? nodemailer.createTransport({
 
 fs.mkdirSync(DATA_DIR, { recursive: true });
 if (!fs.existsSync(ENQUIRIES_FILE)) fs.writeFileSync(ENQUIRIES_FILE, '[]\n');
-if (!fs.existsSync(STORE_FILE)) fs.writeFileSync(STORE_FILE, JSON.stringify({ users: [], leads: [], blogs: [], categories: [], seo: [], activity: [], media: [], siteImages: [] }, null, 2));
+if (!fs.existsSync(STORE_FILE)) fs.writeFileSync(STORE_FILE, JSON.stringify({ users: [], leads: [], blogs: [], projects: [], categories: [], seo: [], activity: [], media: [], siteImages: [] }, null, 2));
 
 function json(res, status, payload, extraHeaders = {}) {
   res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', ...extraHeaders });
@@ -42,6 +42,7 @@ function json(res, status, payload, extraHeaders = {}) {
 }
 function clean(value, max = 1000) { return String(value ?? '').trim().slice(0, max); }
 function safeSlug(value) { return clean(value, 180).toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
+function safeContentUrl(value) { const url = clean(value, 1200); if (!url) return ''; return /^(https?:\/\/|\/(?!\/)|[a-z0-9][a-z0-9._/-]*(?:[?#][^<>\"']*)?)$/i.test(url) ? url : ''; }
 function readBody(req) {
   return new Promise((resolve, reject) => {
     let body = ''; let failed = false;
@@ -60,7 +61,7 @@ function readBody(req) {
 function readJsonFile(file, fallback) {
   try { return JSON.parse(fs.readFileSync(file, 'utf8')); } catch { return fallback; }
 }
-function readFallbackStore() { return readJsonFile(STORE_FILE, { users: [], leads: [], blogs: [], categories: [], seo: [], activity: [], media: [], siteImages: [] }); }
+function readFallbackStore() { return readJsonFile(STORE_FILE, { users: [], leads: [], blogs: [], projects: [], categories: [], seo: [], activity: [], media: [], siteImages: [] }); }
 function writeFallbackStore(store) { fs.writeFileSync(STORE_FILE, JSON.stringify(store, null, 2) + '\n'); }
 
 async function initStorage() {
@@ -80,6 +81,7 @@ async function initStorage() {
   await pool.query('CREATE INDEX IF NOT EXISTS admin_records_collection_idx ON admin_records(collection, created_at DESC)');
   await pool.query(`CREATE UNIQUE INDEX IF NOT EXISTS admin_users_email_idx ON admin_records ((lower(data->>'email'))) WHERE collection = 'users'`);
   await pool.query(`CREATE UNIQUE INDEX IF NOT EXISTS admin_blogs_slug_idx ON admin_records ((data->>'slug')) WHERE collection = 'blogs'`);
+  await pool.query(`CREATE UNIQUE INDEX IF NOT EXISTS admin_projects_slug_idx ON admin_records ((data->>'slug')) WHERE collection = 'projects'`);
   await pool.query(`CREATE TABLE IF NOT EXISTS admin_media (
     id TEXT PRIMARY KEY, filename TEXT NOT NULL, mime_type TEXT NOT NULL, data BYTEA NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -94,7 +96,7 @@ async function initStorage() {
   }
   // If a local development store is deliberately copied to production during migration, preserve its records too.
   const localStore = readJsonFile(STORE_FILE, {});
-  for (const collection of ['leads','blogs','categories','seo','activity','users','siteImages']) {
+  for (const collection of ['leads','blogs','projects','categories','seo','activity','users','siteImages']) {
     for (const item of (Array.isArray(localStore[collection]) ? localStore[collection] : [])) {
       if (!item?.id) continue;
       await pool.query('INSERT INTO admin_records(id, collection, data) VALUES($1,$2,$3::jsonb) ON CONFLICT(id) DO NOTHING', [item.id, collection, JSON.stringify(item)]);
@@ -347,6 +349,12 @@ async function handleApi(req, res, url) {
     clearSessionCookie(res); return json(res, 200, { ok: true });
   }
 
+  if (method === 'GET' && pathname === '/api/public/projects') {
+    const projects = (await listRecords('projects'))
+      .filter(p => p.status === 'published')
+      .sort((a,b) => String(b.updatedAt || b.createdAt || '').localeCompare(String(a.updatedAt || a.createdAt || '')));
+    return json(res, 200, { projects: projects.map(({ internalNotes, ...item }) => item) });
+  }
   if (method === 'GET' && pathname === '/api/public/blogs') {
     const blogs = (await listRecords('blogs')).filter(b => b.status === 'published' || (b.status === 'scheduled' && b.publishAt && new Date(b.publishAt).getTime() <= Date.now())).sort((a,b) => String(b.publishAt || b.updatedAt).localeCompare(String(a.publishAt || a.updatedAt)));
     return json(res, 200, { blogs: blogs.map(({ content, ...item }) => item) });
@@ -440,6 +448,57 @@ async function handleApi(req, res, url) {
       const body = await readBody(req); const updated = normalizeLeadUpdate(body, current);
       await saveLeadRecord(updated); await logActivity(user, 'updated', 'lead', id, { status: updated.status });
       return json(res, 200, { lead: updated });
+    }
+    if (pathname === '/api/admin/projects' && method === 'GET') {
+      if (!canContent) return json(res, 403, { error: 'Content management permission required.' });
+      return json(res, 200, { projects: await listRecords('projects') });
+    }
+    if (pathname === '/api/admin/projects' && method === 'POST') {
+      if (!canContent) return json(res, 403, { error: 'Content management permission required.' });
+      const body = await readBody(req);
+      const title = clean(body.title, 220);
+      const slug = safeSlug(body.slug || title);
+      if (!title || !slug) return json(res, 400, { error: 'Project title is required.' });
+      if ((await listRecords('projects')).some(p => p.slug === slug)) return json(res, 409, { error: 'This project URL already exists. Choose another slug.' });
+      const status = body.status === 'published' ? 'published' : 'draft';
+      const project = {
+        id: crypto.randomUUID(), title, slug,
+        location: clean(body.location, 180), category: clean(body.category, 120),
+        summary: clean(body.summary, 1200), image: safeContentUrl(body.image),
+        videoUrl: safeContentUrl(body.videoUrl), detailUrl: safeContentUrl(body.detailUrl),
+        status, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(),
+        createdBy: user.email
+      };
+      await putRecord('projects', project);
+      await logActivity(user, 'created', 'project', project.id, { title, status });
+      return json(res, 201, { project });
+    }
+    const projectMatch = pathname.match(/^\/api\/admin\/projects\/([^/]+)$/);
+    if (projectMatch && ['PATCH', 'DELETE'].includes(method)) {
+      if (!canContent) return json(res, 403, { error: 'Content management permission required.' });
+      const id = decodeURIComponent(projectMatch[1]);
+      const current = await getRecord('projects', id);
+      if (!current) return json(res, 404, { error: 'Project not found.' });
+      if (method === 'DELETE') {
+        await deleteRecord('projects', id);
+        await logActivity(user, 'deleted', 'project', id, { title: current.title });
+        return json(res, 200, { ok: true });
+      }
+      const body = await readBody(req);
+      const updated = { ...current, updatedAt: new Date().toISOString() };
+      for (const key of ['title','location','category','summary','image','videoUrl','detailUrl']) {
+        if (body[key] !== undefined) updated[key] = ['image','videoUrl','detailUrl'].includes(key) ? safeContentUrl(body[key]) : clean(body[key], 1200);
+      }
+      if (body.slug !== undefined) {
+        const slug = safeSlug(body.slug);
+        if (!slug) return json(res, 400, { error: 'Project URL slug is required.' });
+        if ((await listRecords('projects')).some(p => p.id !== id && p.slug === slug)) return json(res, 409, { error: 'This project URL already exists.' });
+        updated.slug = slug;
+      }
+      if (body.status !== undefined) updated.status = body.status === 'published' ? 'published' : 'draft';
+      await putRecord('projects', updated);
+      await logActivity(user, 'updated', 'project', id, { title: updated.title, status: updated.status });
+      return json(res, 200, { project: updated });
     }
     if (pathname === '/api/admin/blogs' && method === 'GET') {
       if (!canContent) return json(res, 403, { error: 'Content management permission required.' });

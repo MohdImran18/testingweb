@@ -586,7 +586,7 @@ a.card-link.project-details-button:focus-visible {
  if(toggle&&nav){toggle.addEventListener('click',()=>{const open=nav.classList.toggle('open');toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-label',open?'Close navigation':'Open navigation');toggle.textContent=open?'×':'☰';});}
 
  const filterButtons=Array.from(document.querySelectorAll('.filter-btn'));
- const cards=Array.from(document.querySelectorAll('#projectGrid .project-card'));
+ let cards=Array.from(document.querySelectorAll('#projectGrid .project-card'));
  const pagination=document.getElementById('projectPagination');
  const previous=document.getElementById('projectPrev');
  const next=document.getElementById('projectNext');
@@ -644,7 +644,27 @@ a.card-link.project-details-button:focus-visible {
    else if(media.addListener)media.addListener(updatePageSize);
  }
  render();
-})();
+ fetch('/api/public/projects',{headers:{Accept:'application/json'}}).then(r=>r.ok?r.json():{projects:[]}).then(payload=>{
+   const grid=document.getElementById('projectGrid');
+   (payload.projects||[]).forEach(p=>{
+     const card=document.createElement('article');card.className='project-card';
+     const cat=/weed|hyacinth|vegetation|aquatic/i.test(p.category||'')?'weed':'waste';card.dataset.category=cat;
+     const media=document.createElement('a');media.className='project-media';media.href=p.detailUrl||'#';
+     if(p.image){const img=document.createElement('img');img.src=p.image;img.alt=p.title||'Clearbot project';img.loading='lazy';media.appendChild(img);}
+     const badge=document.createElement('span');badge.className='media-label';badge.textContent=p.category||'Clearbot project';media.appendChild(badge);
+     const body=document.createElement('div');body.className='project-body';
+     const meta=document.createElement('div');meta.className='project-meta';
+     const tag=document.createElement('span');tag.className='tag';tag.textContent=p.category||'Project';meta.appendChild(tag);
+     const loc=document.createElement('span');loc.className='location';loc.textContent=p.location||'';meta.appendChild(loc);
+     const title=document.createElement('h3');title.textContent=p.title||'Clearbot project';
+     const summary=document.createElement('p');summary.textContent=p.summary||'Explore this Clearbot waterway project.';
+     body.append(meta,title,summary);
+     if(p.detailUrl){const link=document.createElement('a');link.className='card-link project-details-button';link.href=p.detailUrl;link.textContent='View project details';body.appendChild(link);}
+     card.append(media,body);grid.appendChild(card);
+   });
+   cards=Array.from(document.querySelectorAll('#projectGrid .project-card'));currentPage=1;render();
+ }).catch(error=>console.warn('Admin projects could not be loaded',error));
+})(); 
 </script>
 <aside aria-label="Quick contact options" class="floating-contact-rail">
 <a aria-label="Chat with Clear Robotics on WhatsApp" class="floating-contact whatsapp" href="https://wa.me/85251385925?text=Hello%20Clearbot%20team%2C%20I%20would%20like%20to%20discuss%20a%20waterway%20project." rel="noopener noreferrer" target="_blank" title="Chat on WhatsApp">
