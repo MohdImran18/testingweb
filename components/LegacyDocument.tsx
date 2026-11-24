@@ -603,6 +603,20 @@ export default function LegacyDocument({ body, styles, links, scripts, title }: 
   return (
     <>
       {links.map((href, i) => <link key={`${href}-${i}`} rel="stylesheet" href={href} />)}
+      <style id="cb-hide-floating-contact-before-paint">{`
+        .legacy-site .floating-contact-rail,
+        .legacy-site .floating-contact,
+        .legacy-site .quick-contact-rail,
+        .legacy-site .quick-contact-link,
+        .legacy-site .floating-contact-container,
+        .legacy-site .whatsapp-float,
+        .legacy-site .call-float {
+          display: none !important;
+          visibility: hidden !important;
+          opacity: 0 !important;
+          pointer-events: none !important;
+        }
+      `}</style>
       {styles.map((css, i) => <style key={i} dangerouslySetInnerHTML={{ __html: css }} />)}
       <div className="legacy-site" dangerouslySetInnerHTML={{ __html: body }} />
       <style id="cb-dom-hero-slide-motion" dangerouslySetInnerHTML={{ __html: LEGACY_HERO_SLIDER_CSS }} />
