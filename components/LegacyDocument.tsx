@@ -377,8 +377,11 @@ export default function LegacyDocument({ body, styles, links, scripts, title }: 
       field.className = "cb-comment-suggestion-field";
       field.innerHTML = '<span>Any comments or suggestions? <small>(Optional)</small></span><textarea name="comments" rows="3" maxlength="3000" placeholder="Share any additional comments, questions or suggestions..."></textarea>';
       const submitButton = form.querySelector('button[type="submit"], input[type="submit"]');
-      if (submitButton) form.insertBefore(field, submitButton);
-      else form.appendChild(field);
+      if (submitButton && submitButton.parentNode) {
+        submitButton.parentNode.insertBefore(field, submitButton);
+      } else {
+        form.appendChild(field);
+      }
     });
 
     // Capture legacy enquiry forms and submit them through the website enquiry API.
