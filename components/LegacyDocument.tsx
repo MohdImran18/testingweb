@@ -372,7 +372,7 @@ export default function LegacyDocument({ body, styles, links, scripts, title }: 
 
     // Add a separate optional comments field to every public enquiry form.
     legacyRoot?.querySelectorAll<HTMLFormElement>("form[data-enquiry-form]").forEach((form) => {
-      if (form.querySelector('[name="comments"]')) return;
+      if (form.querySelector('textarea, [name="comments"]')) return;
       const field = document.createElement("label");
       field.className = "cb-comment-suggestion-field";
       field.innerHTML = '<span>Any comments or suggestions? <small>(Optional)</small></span><textarea name="comments" rows="3" maxlength="3000" placeholder="Share any additional comments, questions or suggestions..."></textarea>';

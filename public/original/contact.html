@@ -712,6 +712,58 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
 .suggestions-field textarea:focus{outline:0;border-color:#13aeb0;box-shadow:0 0 0 3px rgba(22,199,194,.12);background:#fff}
 @media(max-width:760px){.contact-hero{padding-top:38px;padding-bottom:46px}}
 </style>
+
+<style id="clearbot-contact-submit-final-fix">
+.contact-hero.contact-combined #contact-form .form-submit {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  flex-wrap: nowrap !important;
+  gap: 14px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+.contact-hero.contact-combined #contact-form .form-submit button.btn {
+  display: inline-flex !important;
+  flex: 0 0 160px !important;
+  width: 160px !important;
+  min-width: 160px !important;
+  max-width: 160px !important;
+  height: 54px !important;
+  min-height: 54px !important;
+  padding: 0 16px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 12px !important;
+  white-space: nowrap !important;
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+  text-align: center !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  line-height: 1.2 !important;
+  box-sizing: border-box !important;
+}
+.contact-hero.contact-combined #contact-form .form-submit small {
+  display: block !important;
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  font-size: 10px !important;
+  line-height: 1.5 !important;
+}
+@media(max-width: 760px) {
+  .contact-hero.contact-combined #contact-form .form-submit {
+    flex-wrap: wrap !important;
+  }
+  .contact-hero.contact-combined #contact-form .form-submit button.btn {
+    flex-basis: 160px !important;
+  }
+  .contact-hero.contact-combined #contact-form .form-submit small {
+    flex-basis: 100% !important;
+  }
+}
+</style>
 </head>
 <body>
 <header class="site-header">
