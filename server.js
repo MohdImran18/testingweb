@@ -249,7 +249,7 @@ async function sendEnquiryEmail(enquiry, channel = 'Website') {
     ['Country', enquiry.country], ['Region / City', enquiry.region], ['Industry', enquiry.industry],
     ['Waterbody type', enquiry.waterbodyType], ['Cleaning needs', Array.isArray(enquiry.cleaningNeeds) ? enquiry.cleaningNeeds.join(', ') : ''],
     ['Waterbody name', enquiry.waterbodyName], ['Area', enquiry.area ? `${enquiry.area} ${enquiry.areaUnit || ''}` : ''],
-    ['Project timeline', enquiry.projectTimeline], ['Project details', enquiry.projectDetails],
+    ['Project timeline', enquiry.projectTimeline], ['Project details', enquiry.projectDetails], ['Any comments or suggestions', enquiry.comments],
     ['Interest / message', enquiry.useCase || enquiry.projectDetails || enquiry.formType || 'General enquiry'],
     ['Form type', enquiry.formType], ['Form ID', enquiry.formId],
     ['Source page', enquiry.sourcePage || 'Manual entry'], ['Received at', enquiry.createdAt],
@@ -284,7 +284,7 @@ function leadFromPayload(body, source = 'website') {
     waterbodyType: clean(body.waterbodyType, 100), cleaningNeeds: Array.isArray(body.cleaningNeeds) ? body.cleaningNeeds.map(v => clean(v,120)).slice(0,10) : [],
     waterbodyName: clean(body.waterbodyName, 200), area: clean(body.area, 40), areaUnit: clean(body.areaUnit, 40),
     projectTimeline: clean(body.projectTimeline, 100), projectDetails: clean(body.projectDetails, 3000),
-    consent: body.consent === true, useCase: clean(body.useCase || body.message, 5000),
+    consent: body.consent === true, useCase: clean(body.useCase || body.message, 5000), comments: clean(body.comments, 3000),
     sourcePage: clean(body.sourcePage, 300), formId: clean(body.formId, 120), formType: clean(body.formType, 120) || 'website-enquiry',
     formFields: cleanFields, source, status: 'new', assignedTo: '', followUpAt: '', notes: [], emailNotification: 'pending'
   };

@@ -18,8 +18,8 @@ export default function QuickContactForm() {
         credentials: "same-origin",
         body: JSON.stringify({
           fullName: data.get("fullName"), email: data.get("email"), phone: data.get("phone"),
-          useCase: "Website contact enquiry", source: "website", sourcePage: window.location.pathname,
-          formType: "blog-contact", formFields: { "Full Name": data.get("fullName"), "Business Email": data.get("email"), "Phone Number": data.get("phone") },
+          useCase: "Website contact enquiry", comments: String(data.get("comments") || "").trim(), source: "website", sourcePage: window.location.pathname,
+          formType: "blog-contact", formFields: { "Full Name": data.get("fullName"), "Business Email": data.get("email"), "Phone Number": data.get("phone"), "Comments / Suggestions": data.get("comments") },
         }),
       });
       const result = await response.json().catch(() => ({}));
@@ -39,6 +39,7 @@ export default function QuickContactForm() {
       <label><span>Full name</span><input name="fullName" type="text" autoComplete="name" placeholder="Your full name" required /></label>
       <label><span>Business email</span><input name="email" type="email" autoComplete="email" placeholder="name@company.com" required /></label>
       <label><span>Phone number</span><input name="phone" type="tel" autoComplete="tel" placeholder="Include country code" required /></label>
+      <label className="cb-comment-suggestion-field"><span>Any comments or suggestions? <small>(Optional)</small></span><textarea name="comments" rows={3} maxLength={3000} placeholder="Share any additional comments, questions or suggestions..." /></label>
       <button type="submit" disabled={busy}>{busy ? "Sending…" : "Send enquiry ↗"}</button>
       {message && <p className={`form-feedback ${error ? "is-error" : "is-success"}`} role="status">{message}</p>}
     </form>

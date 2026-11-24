@@ -19,6 +19,7 @@ type FormState = {
   areaUnit: string;
   projectTimeline: string;
   projectDetails: string;
+  comments: string;
   fullName: string;
   company: string;
   jobTitle: string;
@@ -31,7 +32,7 @@ type FormState = {
 const initial: FormState = {
   waterbodyType: "", cleaningNeeds: [], country: "", region: "",
   waterbodyName: "", area: "", areaUnit: " hectares",
-  projectTimeline: "", projectDetails: "", fullName: "", company: "",
+  projectTimeline: "", projectDetails: "", comments: "", fullName: "", company: "",
   jobTitle: "", email: "", phone: "", industry: "", consent: false
 };
 
@@ -119,6 +120,7 @@ export default function AssessmentPage() {
             "Approximate Area": form.area ? `${form.area} ${form.areaUnit}` : "",
             "Project Timeline": form.projectTimeline,
             "Project Details": form.projectDetails,
+            "Any comments or suggestions": form.comments,
             "Full Name": form.fullName,
             "Company": form.company,
             "Job Title": form.jobTitle,
@@ -134,6 +136,7 @@ export default function AssessmentPage() {
             `Estimated area: ${form.area ? `${form.area} ${form.areaUnit}` : "Not provided"}`,
             `Project timeline: ${form.projectTimeline || "Not provided"}`,
             `Project details: ${form.projectDetails || "Not provided"}`,
+            `Additional comments: ${form.comments || "Not provided"}`,
           ].join("\n"),
         }),
       });
@@ -236,6 +239,7 @@ export default function AssessmentPage() {
                 <label className="assessment-input-wrap"><span><Briefcase size={15}/> Job title</span><input value={form.jobTitle} onChange={e => update("jobTitle", e.target.value)} placeholder="e.g. Project Manager"/></label>
                 <label className="assessment-input-wrap"><span>Industry / organisation type *</span><select required value={form.industry} onChange={e => update("industry", e.target.value)}><option value="">Select industry</option><option>Government / Municipality</option><option>Port / Maritime</option><option>Environmental services</option><option>Infrastructure / Engineering</option><option>Industrial / Commercial</option><option>NGO / Non-profit</option><option>Consultant / Contractor</option><option>Other</option></select></label>
               </div>
+              <label className="assessment-input-wrap"><span>Any comments or suggestions? (Optional)</span><textarea rows={3} maxLength={3000} value={form.comments} onChange={e => update("comments", e.target.value)} placeholder="Share any additional comments, questions or suggestions..."/></label>
               <label className="assessment-consent"><input type="checkbox" checked={form.consent} onChange={e => update("consent", e.target.checked)}/><span>I agree that Clear Robotics may contact me about this project assessment and use the information provided to respond to my enquiry. *</span></label>
             </div>}
 

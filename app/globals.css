@@ -124,3 +124,42 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* Optional comments and suggestions field across public enquiry forms */
+.cb-global-contact .cb-comment-suggestion-field,
+.legacy-site .cb-comment-suggestion-field {
+  grid-column: 1 / -1;
+}
+.cb-comment-suggestion-field {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+}
+.cb-comment-suggestion-field span {
+  font-size: 12px;
+  font-weight: 700;
+}
+.cb-comment-suggestion-field small {
+  opacity: .7;
+  font-weight: 400;
+}
+.cb-comment-suggestion-field textarea {
+  width: 100%;
+  min-height: 88px;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border: 1px solid rgba(128,150,160,.4);
+  border-radius: 9px;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.5;
+  resize: vertical;
+}
+.cb-global-contact .cb-comment-suggestion-field textarea {
+  color: #fff;
+  background: rgba(255,255,255,.1);
+  border-color: rgba(255,255,255,.2);
+}
+.cb-global-contact .cb-comment-suggestion-field textarea::placeholder {
+  color: rgba(255,255,255,.58);
+}

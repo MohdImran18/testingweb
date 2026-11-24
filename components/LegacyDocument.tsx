@@ -370,6 +370,17 @@ export default function LegacyDocument({ body, styles, links, scripts, title }: 
       if (footer) footer.before(section); else legacyRoot.appendChild(section);
     }
 
+    // Add a separate optional comments field to every public enquiry form.
+    legacyRoot?.querySelectorAll<HTMLFormElement>("form[data-enquiry-form]").forEach((form) => {
+      if (form.querySelector('[name="comments"]')) return;
+      const field = document.createElement("label");
+      field.className = "cb-comment-suggestion-field";
+      field.innerHTML = '<span>Any comments or suggestions? <small>(Optional)</small></span><textarea name="comments" rows="3" maxlength="3000" placeholder="Share any additional comments, questions or suggestions..."></textarea>';
+      const submitButton = form.querySelector('button[type="submit"], input[type="submit"]');
+      if (submitButton) form.insertBefore(field, submitButton);
+      else form.appendChild(field);
+    });
+
     // Capture legacy enquiry forms and submit them through the website enquiry API.
     const submitEnquiry = async (event: Event) => {
       const form = event.target;
@@ -423,7 +434,7 @@ export default function LegacyDocument({ body, styles, links, scripts, title }: 
       const country = pickField(raw, "Country", "country");
       const region = pickField(raw, "State / Region", "State", "Region", "City", "Location", "region");
       const industry = pickField(raw, "Industry", "Sector", "Business Type", "industry");
-      const useCase = pickField(raw, "Use Case", "Message", "Project Details", "Enquiry", "Enquiry Details", "Requirements", "Comments", "How can we help", "useCase");
+      const useCase = pickField(raw, "Use Case", "Message", "Project Details", "Enquiry", "Enquiry Details", "Requirements", "How can we help", "useCase");
 
       if (!fullName || !email || !phone) {
         feedback.classList.add("is-error");
@@ -437,7 +448,7 @@ export default function LegacyDocument({ body, styles, links, scripts, title }: 
       }
 
       const payload = {
-        fullName, email, phone, company, jobTitle, country, region, industry, useCase,
+        fullName, email, phone, company, jobTitle, country, region, industry, useCase, comments: pickField(raw, "comments"),
         source: "website",
         sourcePage: `${window.location.pathname}${window.location.hash || ""}`,
         formId: form.id || "",
