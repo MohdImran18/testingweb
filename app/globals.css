@@ -223,3 +223,21 @@
     width: 100%;
   }
 }
+
+/* GLOBAL FLOATING CONTACT BUTTON REMOVAL */
+a[href*="wa.me" i],
+a[href*="whatsapp" i],
+a[href*="api.whatsapp" i],
+a[href^="tel:" i],
+.quick-contact-rail,
+.quick-contact-link,
+.floating-contact-rail,
+.floating-contact,
+.floating-contact-container,
+.whatsapp-float,
+.call-float {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
