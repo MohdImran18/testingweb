@@ -334,17 +334,42 @@ export default function LegacyDocument({ body, styles, links, scripts, title }: 
         });
       }).catch(() => {});
 
-    // Remove obsolete floating WhatsApp / call conversion buttons.
+    // Remove all floating Call / WhatsApp controls, including their rails.
     const removeLegacyFloatingActions = () => {
+      document.querySelectorAll<HTMLElement>(
+        ".quick-contact-rail, .floating-contact-rail, .floating-contact-container, .whatsapp-float, .call-float"
+      ).forEach((node) => node.remove());
+
       document.querySelectorAll<HTMLAnchorElement>(".legacy-site a[href]").forEach((link) => {
         const href = (link.getAttribute("href") || "").toLowerCase();
         const cls = (link.className || "").toString().toLowerCase();
-        const floating = /float|fixed|whatsapp|wa-float|call-float/.test(cls) || /position\s*:\s*fixed/i.test(link.getAttribute("style") || "");
-        if (floating && (href.includes("wa.me") || href.includes("whatsapp") || href.startsWith("tel:"))) link.remove();
+        const isCallOrWhatsApp =
+          href.startsWith("tel:") ||
+          href.includes("wa.me") ||
+          href.includes("whatsapp") ||
+          href.includes("api.whatsapp");
+
+        const floatingClass = /float|fixed|whatsapp|quick-contact|call-contact/.test(cls);
+        const floatingParent = !!link.closest(
+          ".quick-contact-rail, .floating-contact-rail, .floating-contact-container, .floating-contact, .quick-contact-link"
+        );
+        const fixedStyle = /position\s*:\s*fixed/i.test(link.getAttribute("style") || "");
+
+        if (isCallOrWhatsApp && (floatingClass || floatingParent || fixedStyle)) {
+          link.remove();
+        }
+
         if (href.includes("assessment")) link.remove();
       });
     };
+
     removeLegacyFloatingActions();
+
+    // Remove controls injected later by page scripts as well.
+    const floatingActionsObserver = new MutationObserver(() => {
+      removeLegacyFloatingActions();
+    });
+    floatingActionsObserver.observe(document.body, { childList: true, subtree: true });
 
     // Keep a short contact form directly on every legacy page, not only Contact.
     const legacyRoot = document.querySelector<HTMLElement>(".legacy-site");
@@ -564,6 +589,7 @@ export default function LegacyDocument({ body, styles, links, scripts, title }: 
     void load();
     return () => {
       cancelled = true;
+      floatingActionsObserver.disconnect();
       cleanupHeroCarousel?.();
       cleanupClientLogoMarquee?.();
       legacyImages.forEach((img) => img.removeEventListener("error", imageFallback));
