@@ -70,3 +70,57 @@
 .cb-site-image-hero-card{border-color:rgba(22,174,176,.34)!important}
 
 .cb-site-image-group-note{margin:-2px 0 13px;padding:11px 14px;border:1px solid #bce4e2;border-radius:9px;background:#f1fbfa;color:#17666d;font-size:11px;line-height:1.5}
+
+
+/* CB_CLIENT_LOGO_PINGPONG_V1 - Client and Project Partners */
+.legacy-site #partners .client-logo-grid {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  justify-content: flex-start !important;
+  align-items: center;
+  gap: 26px;
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: auto !important;
+  scroll-snap-type: none !important;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  overscroll-behavior-x: contain;
+  touch-action: pan-x;
+  padding: 18px 0 26px;
+  cursor: grab;
+}
+
+.legacy-site #partners .client-logo-grid::-webkit-scrollbar {
+  display: none;
+}
+
+.legacy-site #partners .client-logo-grid .client-logo {
+  flex: 0 0 150px;
+  min-width: 150px;
+  min-height: 82px;
+  display: grid;
+  place-items: center;
+  scroll-snap-align: none;
+}
+
+.legacy-site #partners .client-logo-grid .client-logo img {
+  max-width: 140px;
+  max-height: 68px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+@media (max-width: 600px) {
+  .legacy-site #partners .client-logo-grid {
+    gap: 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .legacy-site #partners .client-logo-grid {
+    scroll-behavior: auto !important;
+  }
+}

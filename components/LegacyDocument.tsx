@@ -192,6 +192,117 @@ const LEGACY_HERO_SLIDER_CSS = `
 @media (prefers-reduced-motion: reduce) { .legacy-site .hero.hero-carousel .hero-slides > .hero-slide { transition-duration: .01ms; } }
 `;
 
+
+// CB_CLIENT_LOGO_PINGPONG_V1
+function installClientLogoMarquee(root: HTMLElement) {
+  const section = root.querySelector<HTMLElement>("#partners");
+  const track = section?.querySelector<HTMLElement>(".client-logo-grid");
+
+  if (!section || !track) return () => {};
+
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let direction = 1;
+  let frame = 0;
+  let previousTime = 0;
+  let paused = false;
+  let destroyed = false;
+
+  const maxScroll = () =>
+    Math.max(0, track.scrollWidth - track.clientWidth);
+
+  const stop = () => {
+    if (frame) window.cancelAnimationFrame(frame);
+    frame = 0;
+    previousTime = 0;
+  };
+
+  const tick = (time: number) => {
+    if (destroyed || paused || document.hidden || reducedMotion.matches) {
+      stop();
+      return;
+    }
+
+    if (!previousTime) previousTime = time;
+
+    const delta = Math.min((time - previousTime) / 1000, 0.05);
+    previousTime = time;
+
+    const max = maxScroll();
+
+    if (max > 1) {
+      let next = track.scrollLeft + direction * 38 * delta;
+
+      if (next >= max) {
+        next = max;
+        direction = -1;
+      } else if (next <= 0) {
+        next = 0;
+        direction = 1;
+      }
+
+      track.scrollLeft = next;
+    }
+
+    frame = window.requestAnimationFrame(tick);
+  };
+
+  const start = () => {
+    if (destroyed || paused || document.hidden || reducedMotion.matches) return;
+    if (!frame) frame = window.requestAnimationFrame(tick);
+  };
+
+  const pause = () => {
+    paused = true;
+    stop();
+  };
+
+  const resume = () => {
+    paused = false;
+    start();
+  };
+
+  const onVisibility = () => {
+    if (document.hidden) stop();
+    else start();
+  };
+
+  const onMotionChange = () => {
+    if (reducedMotion.matches) stop();
+    else start();
+  };
+
+  track.addEventListener("mouseenter", pause);
+  track.addEventListener("mouseleave", resume);
+  track.addEventListener("focusin", pause);
+  track.addEventListener("focusout", resume);
+  track.addEventListener("pointerdown", pause, { passive: true });
+  track.addEventListener("pointerup", resume, { passive: true });
+  track.addEventListener("pointercancel", resume, { passive: true });
+
+  document.addEventListener("visibilitychange", onVisibility);
+  reducedMotion.addEventListener("change", onMotionChange);
+  window.addEventListener("resize", start);
+
+  start();
+
+  return () => {
+    destroyed = true;
+    stop();
+
+    track.removeEventListener("mouseenter", pause);
+    track.removeEventListener("mouseleave", resume);
+    track.removeEventListener("focusin", pause);
+    track.removeEventListener("focusout", resume);
+    track.removeEventListener("pointerdown", pause);
+    track.removeEventListener("pointerup", resume);
+    track.removeEventListener("pointercancel", resume);
+
+    document.removeEventListener("visibilitychange", onVisibility);
+    reducedMotion.removeEventListener("change", onMotionChange);
+    window.removeEventListener("resize", start);
+  };
+}
+
 export default function LegacyDocument({ body, styles, links, scripts, title }: Props) {
   useEffect(() => {
     const nodes: HTMLScriptElement[] = [];
@@ -238,6 +349,7 @@ export default function LegacyDocument({ body, styles, links, scripts, title }: 
     // Keep a short contact form directly on every legacy page, not only Contact.
     const legacyRoot = document.querySelector<HTMLElement>(".legacy-site");
     const cleanupHeroCarousel = legacyRoot ? installLegacyHeroCarousel(legacyRoot) : undefined;
+    const cleanupClientLogoMarquee = legacyRoot ? installClientLogoMarquee(legacyRoot) : undefined;
     if (legacyRoot && !legacyRoot.querySelector("form")) {
       const section = document.createElement("section");
       section.className = "cb-global-contact";
@@ -439,6 +551,7 @@ export default function LegacyDocument({ body, styles, links, scripts, title }: 
     return () => {
       cancelled = true;
       cleanupHeroCarousel?.();
+      cleanupClientLogoMarquee?.();
       legacyImages.forEach((img) => img.removeEventListener("error", imageFallback));
       document.removeEventListener("submit", submitEnquiry, true);
       addedBlogNodes.forEach((node) => node.remove());
