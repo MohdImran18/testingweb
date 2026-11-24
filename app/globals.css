@@ -163,3 +163,63 @@
 .cb-global-contact .cb-comment-suggestion-field textarea::placeholder {
   color: rgba(255,255,255,.58);
 }
+
+/* Clearbot compact single-row enquiry form */
+.cb-global-contact form {
+  display: grid;
+  grid-template-columns: 1.05fr 1.15fr 0.95fr 1.4fr auto;
+  align-items: end;
+  gap: 12px;
+}
+
+.cb-global-contact form > label,
+.cb-global-contact .cb-comment-suggestion-field {
+  grid-column: auto;
+  min-width: 0;
+  margin: 0;
+}
+
+.cb-global-contact .cb-comment-suggestion-field textarea {
+  height: 48px;
+  min-height: 48px;
+  resize: none;
+}
+
+.cb-global-contact form > label input {
+  min-width: 0;
+  height: 48px;
+}
+
+.cb-global-contact form > button {
+  height: 48px;
+  min-width: 145px;
+  white-space: nowrap;
+  margin: 0;
+}
+
+.cb-global-contact form > .form-feedback {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 900px) {
+  .cb-global-contact form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cb-global-contact .cb-comment-suggestion-field {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 560px) {
+  .cb-global-contact form {
+    grid-template-columns: 1fr;
+  }
+
+  .cb-global-contact form > label,
+  .cb-global-contact .cb-comment-suggestion-field,
+  .cb-global-contact form > button {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+}

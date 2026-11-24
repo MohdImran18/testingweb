@@ -196,6 +196,19 @@ footer .cb-brand-lockup{margin-bottom:12px}
 .links{gap:clamp(7px,.85vw,13px)!important}.links a{font-size:11.5px!important;white-space:nowrap}.links a.active{color:#078f98!important;font-weight:800!important}
 @media(max-width:1050px){.links{gap:7px!important}.links a{font-size:10.5px!important}}
 @media(max-width:760px){header{height:72px}.links{display:none;position:absolute;top:72px;left:0;right:0;background:#fff;padding:18px 24px 24px;box-shadow:0 15px 25px rgba(0,0,0,.1);flex-direction:column;align-items:flex-start;gap:14px!important}.links.open{display:flex}.links a{font-size:14px!important}.menu{display:block}.nav-cta{display:none}}
+
+
+.hero-carousel .actions .btn-download {
+  background: rgba(255,255,255,.12);
+  border: 1px solid #55e4dd;
+  color: #fff;
+  backdrop-filter: blur(8px);
+}
+.hero-carousel .actions .btn-download:hover {
+  background: #16c7c2;
+  color: #032b38;
+  transform: translateY(-2px);
+}
 </style>
 <style id="clear-robotics-premium-overrides">
 /* Clear Robotics premium visual system */
@@ -269,9 +282,11 @@ section{scroll-margin-top:110px}
 @media(max-width:780px){.container{width:min(100% - 36px,1280px)}.site-header{height:76px!important}.site-header .nav{gap:12px}.site-header .brand{min-width:150px;max-width:175px}.site-header .brand-logo{max-height:50px}.site-header .menu{display:block;margin-left:auto}.site-header .nav-cta{display:none}.site-header .links{display:none;position:absolute;top:calc(100% + 1px);left:-18px;right:-18px;background:#fff;border-top:1px solid #e3ecef;border-bottom:1px solid #e3ecef;box-shadow:0 20px 35px rgba(3,37,50,.12);padding:16px 20px 22px;flex-direction:column;align-items:stretch;gap:5px;max-height:calc(100vh - 80px);overflow:auto}.site-header .links.open{display:flex}.site-header .nav-link,.site-header .nav-products-toggle{display:flex;width:100%;justify-content:space-between;padding:13px 7px;font-size:14px}.nav-dropdown{display:block;height:auto}.nav-dropdown-menu{position:static;width:100%;box-shadow:none;border:0;border-radius:0;padding:0 0 7px 12px;display:none}.nav-dropdown:hover .nav-dropdown-menu,.nav-dropdown:focus-within .nav-dropdown-menu{display:none}.nav-dropdown.open .nav-dropdown-menu{display:grid}.nav-dropdown-menu a{padding:11px 10px}.mobile-nav-cta{display:flex;justify-content:center;align-items:center;gap:10px;background:#062b3a;color:#fff;border-radius:9px;padding:14px;margin-top:10px;font-size:13px;font-weight:800}.site-footer .footer-main{grid-template-columns:1fr 1fr;gap:30px}.footer-brand-block{grid-column:1/-1}.footer-contact-block{grid-column:1/-1}.footer-bottom{flex-direction:column;gap:8px}.floating-contact-rail{right:12px;top:auto;bottom:18px;transform:none;flex-direction:row}.floating-contact{width:58px;height:58px;border-radius:15px}.floating-contact span{display:none}h1,.hero h1{font-size:clamp(42px,11vw,60px);line-height:1.1}.section-head h2,.copy h2,h2{font-size:clamp(31px,8vw,42px);line-height:1.18}}
 @media(max-width:480px){.container{width:calc(100% - 30px)}.site-footer .footer-main{grid-template-columns:1fr 1fr;gap:24px}.footer-column{gap:9px}.footer-contact-block{grid-column:1/-1}.hero{padding-top:64px;padding-bottom:70px}.hero-actions .btn{width:100%}.floating-contact-rail{bottom:13px;right:13px}}
 :focus-visible{outline:3px solid rgba(21,159,162,.5);outline-offset:3px}
+
 </style><meta content="#062b3a" name="theme-color"/><link href="assets/clear-robotics-logo.png" rel="icon" type="image/png"/><style>
 /* Footer contrast treatment for the supplied dark-teal logo */
 .footer-logo-link{background:#f2fbfa;padding:10px 14px;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.12)}
+
 </style>
 <style id="clear-robotics-insights-overrides">
 /* About, Blog and News page system */
@@ -365,6 +380,7 @@ section{scroll-margin-top:110px}
   }
   .hero p { max-width: 100%; font-size: 15px; }
 }
+
 </style>
 <style id="clearbot-alignment-fix">
 /* Global alignment and header CTA correction */
@@ -402,6 +418,7 @@ body{margin:0!important;min-width:320px;width:100%;overflow-x:hidden}
   .site-header .links{left:0!important;right:0!important}
   .site-header .mobile-nav-cta{display:flex!important;min-height:48px}
 }
+
 </style>
 <style id="clearbot-centered-header-logo-v2">
 /* Unified header: centred container, balanced logo / navigation / CTA */
@@ -513,6 +530,7 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
   .site-header .brand-logo{width:100%!important;max-width:198px!important}
   .site-header .menu{width:42px!important;height:42px!important}
 }
+
 </style>
 <style id="clearbot-home-hero-carousel-v1">
 /* Five-slide responsive product and deployment hero carousel */
@@ -548,6 +566,7 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
 @media(max-width:1000px){.hero.hero-carousel{height:620px;min-height:620px}.hero-carousel .hero-carousel-content{width:calc(100% - 56px);padding:70px 0 90px}.hero-carousel .hero-content{width:min(760px,82%)}.hero-carousel h1{font-size:clamp(40px,5.8vw,58px)}.hero-carousel-controls{width:calc(100% - 56px)}}
 @media(max-width:680px){.hero.hero-carousel{height:auto;min-height:650px;max-height:760px}.hero-carousel .hero-slide-image{object-position:58% center}.hero-carousel .hero-slide-shade{background:linear-gradient(90deg,rgba(2,25,35,.91),rgba(2,33,44,.66)),linear-gradient(0deg,rgba(2,25,35,.34),transparent 70%)}.hero-carousel .hero-carousel-content{width:calc(100% - 40px);padding:62px 0 100px}.hero-carousel .hero-content{width:100%;max-width:100%}.hero-carousel .eyebrow{font-size:9px;letter-spacing:1.5px;line-height:1.7}.hero-carousel h1{font-size:clamp(34px,9vw,46px);line-height:1.06;letter-spacing:-1.55px;margin:15px 0}.hero-carousel p{font-size:14px;line-height:1.7;margin-bottom:22px}.hero-carousel .actions{gap:9px}.hero-carousel .actions .btn{min-height:48px;padding:12px 14px;font-size:11px}.hero-carousel-controls{width:calc(100% - 40px);bottom:20px;gap:8px}.hero-slide-progress{font-size:10px}.hero-slide-arrow{width:35px;height:35px}.hero-slide-dots{gap:6px}.hero-slide-dot{width:7px;height:7px}.hero-slide-dot.is-active{width:19px}}
 @media(prefers-reduced-motion:reduce){.hero-carousel .hero-slide,.hero-carousel .hero-slide-image,.hero-slide-dot,.hero-slide-arrow{transition:none!important}.hero-carousel .hero-slide-image{transform:none!important}}
+
 </style>
 <style id="clearbot-hero-slide-text-transition-fix">
 /* Keep the image crossfade, but never crossfade two sets of hero copy. */
@@ -564,6 +583,7 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
 @media(prefers-reduced-motion:reduce){
   .hero-carousel .hero-slide.is-active .hero-carousel-content{transition:none!important}
 }
+
 </style>
 <style id="services-nav-responsive-adjustment">
 @media (min-width:781px) and (max-width:1040px){
@@ -574,6 +594,7 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
  .site-header .nav-link,.site-header .nav-products-toggle,.site-header .nav-insights-toggle{font-size:11px}
  .site-header .nav-cta{padding:11px 12px;font-size:10px}
 }
+
 </style>
 <style id="clearbot-intro-video-split-v2">
 .cb-intro-video{padding:clamp(54px,7vw,88px) 0!important;background:#f5f9fa}
@@ -587,6 +608,7 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
 .cb-intro-video .cb-video-frame{width:100%;aspect-ratio:16/9;min-height:0;overflow:hidden;border-radius:18px;background:#082d3b;box-shadow:0 18px 44px rgba(5,39,53,.16)}
 .cb-intro-video .cb-video-frame iframe{display:block;width:100%;height:100%;min-height:0;border:0}
 @media(max-width:900px){.cb-intro-video .cb-intro-layout{grid-template-columns:minmax(0,1fr) minmax(0,1.8fr);gap:24px}}@media(max-width:760px){.cb-intro-video .cb-intro-layout{grid-template-columns:1fr;gap:26px}.cb-intro-video .cb-intro-copy h2{font-size:clamp(30px,8vw,40px)}.cb-intro-video .cb-video-frame{max-width:100%}}
+
 </style>
 <style id="clearbot-home-hero-side-transition-v2">
 /* Slides enter gently from the side; the active slide settles into the frame. */
@@ -614,6 +636,7 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
     will-change: auto;
   }
 }
+
 </style>
 <script id="clearbot-home-hero-carousel-init">
 (function () {
@@ -758,6 +781,7 @@ main>.container,.site-footer>.container,.site-footer .footer-main.container{
     transform: translateY(-2px);
     box-shadow: 0 12px 26px rgba(8, 127, 155, .30) !important;
 }
+
 </style>
 <style id="clearbot-project-explore-buttons">
 a.cb-project-explore-button {
@@ -787,6 +811,7 @@ a.cb-project-explore-button:focus-visible {
     outline: 3px solid #087F9B !important;
     outline-offset: 3px !important;
 }
+
 </style>
 </head>
 <body>
@@ -824,7 +849,7 @@ a.cb-project-explore-button:focus-visible {
 <div class="eyebrow">UNMANNED  |  ELECTRIC  |  SOLAR-POWERED  |  AI-DRIVEN</div>
 <h1>Cleaner Waterways<br/>for a <span>Healthier Planet.</span></h1>
 <p>We develop unmanned electric vessels to help municipalities, ports and environmental teams collect floating waste, manage aquatic vegetation and improve waterway operations.</p>
-<div class="actions"><a class="btn btn-primary" href="contact.html#contact-form">Request a Quote <span aria-hidden="true">→</span></a><a class="btn btn-ghost" href="projects.html">Explore Real Projects <span aria-hidden="true">↗</span></a></div>
+<div class="actions"><a class="btn btn-primary" href="contact.html#contact-form">Request a Quote <span aria-hidden="true">→</span></a><a class="btn btn-ghost" href="projects.html">Explore Real Projects <span aria-hidden="true">↗</span></a><a class="btn btn-download" href="/downloads/Brochure_Clear Robotics_India_2026.pdf" download="Clear-Robotics-India-2026-Brochure.pdf" aria-label="Download Clear Robotics brochure">Download Brochure <span aria-hidden="true">↓</span></a></div>
 </div></div>
 </article>
 <article aria-hidden="true" class="hero-slide" data-hero-slide="">
@@ -834,7 +859,7 @@ a.cb-project-explore-button:focus-visible {
 <div class="eyebrow">AQUATIC VEGETATION MANAGEMENT</div>
 <h1>Restore Waterways.<br/><span>Clear Aquatic Weeds.</span></h1>
 <p>Our Alligator Neo platform is designed for targeted aquatic vegetation collection, helping waterway teams manage invasive growth and maintain healthier waterbodies.</p>
-<div class="actions"><a class="btn btn-primary" href="alligator.html">Explore Alligator Neo <span aria-hidden="true">→</span></a><a class="btn btn-ghost" href="contact.html#contact-form">Discuss Your Project <span aria-hidden="true">↗</span></a></div>
+<div class="actions"><a class="btn btn-primary" href="alligator.html">Explore Alligator Neo <span aria-hidden="true">→</span></a><a class="btn btn-ghost" href="contact.html#contact-form">Discuss Your Project <span aria-hidden="true">↗</span></a><a class="btn btn-download" href="/downloads/Brochure_Clear Robotics_India_2026.pdf" download="Clear-Robotics-India-2026-Brochure.pdf" aria-label="Download Clear Robotics brochure">Download Brochure <span aria-hidden="true">↓</span></a></div>
 </div></div>
 </article>
 <article aria-hidden="true" class="hero-slide" data-hero-slide="">
@@ -844,7 +869,7 @@ a.cb-project-explore-button:focus-visible {
 <div class="eyebrow">ELECTRIC SKIMMER FLEET</div>
 <h1>Purpose-Built Vessels.<br/><span>Ready for Real Work.</span></h1>
 <p>Explore our fleet of unmanned electric skimmers engineered for floating-waste collection, practical field operations and different waterway environments.</p>
-<div class="actions"><a class="btn btn-primary" href="class-2.html">Explore the Fleet <span aria-hidden="true">→</span></a><a class="btn btn-ghost" href="deployment-models.html">View Deployment Models <span aria-hidden="true">↗</span></a></div>
+<div class="actions"><a class="btn btn-primary" href="class-2.html">Explore the Fleet <span aria-hidden="true">→</span></a><a class="btn btn-ghost" href="deployment-models.html">View Deployment Models <span aria-hidden="true">↗</span></a><a class="btn btn-download" href="/downloads/Brochure_Clear Robotics_India_2026.pdf" download="Clear-Robotics-India-2026-Brochure.pdf" aria-label="Download Clear Robotics brochure">Download Brochure <span aria-hidden="true">↓</span></a></div>
 </div></div>
 </article>
 <article aria-hidden="true" class="hero-slide" data-hero-slide="">
@@ -854,7 +879,7 @@ a.cb-project-explore-button:focus-visible {
 <div class="eyebrow">SMARTER FIELD OPERATIONS</div>
 <h1>Work Smarter on the Water.<br/><span>Make Every Mission Count.</span></h1>
 <p>Combine mission planning, AI-driven vision and live operational insights to support consistent collection performance and help teams upskill manpower.</p>
-<div class="actions"><a class="btn btn-primary" href="class-3.html">Explore Class 3 <span aria-hidden="true">→</span></a><a class="btn btn-ghost" href="contact.html#contact-form">Talk to Our Team <span aria-hidden="true">↗</span></a></div>
+<div class="actions"><a class="btn btn-primary" href="class-3.html">Explore Class 3 <span aria-hidden="true">→</span></a><a class="btn btn-ghost" href="contact.html#contact-form">Talk to Our Team <span aria-hidden="true">↗</span></a><a class="btn btn-download" href="/downloads/Brochure_Clear Robotics_India_2026.pdf" download="Clear-Robotics-India-2026-Brochure.pdf" aria-label="Download Clear Robotics brochure">Download Brochure <span aria-hidden="true">↓</span></a></div>
 </div></div>
 </article>
 <article aria-hidden="true" class="hero-slide" data-hero-slide="">
@@ -864,7 +889,7 @@ a.cb-project-explore-button:focus-visible {
 <div class="eyebrow">BUILT AROUND YOUR WATERWAY</div>
 <h1>From Rivers to Ports.<br/><span>One Cleaner Future.</span></h1>
 <p>Whether you manage an urban lake, river, port or industrial waterbody, we help identify the right vessel and deployment approach for your operating needs.</p>
-<div class="actions"><a class="btn btn-primary" href="projects.html">Explore Global Projects <span aria-hidden="true">→</span></a><a class="btn btn-ghost" href="contact.html#contact-form">Start a Conversation <span aria-hidden="true">↗</span></a></div>
+<div class="actions"><a class="btn btn-primary" href="projects.html">Explore Global Projects <span aria-hidden="true">→</span></a><a class="btn btn-ghost" href="contact.html#contact-form">Start a Conversation <span aria-hidden="true">↗</span></a><a class="btn btn-download" href="/downloads/Brochure_Clear Robotics_India_2026.pdf" download="Clear-Robotics-India-2026-Brochure.pdf" aria-label="Download Clear Robotics brochure">Download Brochure <span aria-hidden="true">↓</span></a></div>
 </div></div>
 </article>
 </div>
