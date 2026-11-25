@@ -12,14 +12,14 @@ html{scroll-behavior:smooth;scroll-padding-top:95px}
 body{margin:0;font-family:Inter,Arial,sans-serif;color:var(--ink);background:#fff}
 a{text-decoration:none;color:inherit}
 .container{width:min(1240px,calc(100% - 48px));margin:auto}
-header{height:82px;background:#fff;border-bottom:1px solid #e7eef0;position:sticky;top:0;z-index:50}
-.nav{height:100%;display:flex;align-items:center;justify-content:space-between;gap:24px}
-.brand img{width:205px;max-height:58px;object-fit:contain}
-.navlinks{display:flex;align-items:center;gap:28px;font-size:13px;font-weight:750}
-.navlinks a:hover{color:#078e96}
-.navcta,.btn{display:inline-flex;align-items:center;justify-content:center;padding:15px 21px;border-radius:12px;background:var(--navy);color:#fff;font-weight:800;font-size:12px;transition:.2s}
-.navcta:hover,.btn:hover{background:#0b5665;transform:translateY(-2px)}
-.menu{display:none;border:1px solid var(--line);background:white;border-radius:9px;padding:10px;font-size:22px}
+
+
+
+
+
+
+
+
 .hero{background:radial-gradient(circle at 85% 20%,#126171 0,transparent 34%),linear-gradient(115deg,#031c29,#064457 70%,#087a7d);color:#fff;padding:88px 0 80px;overflow:hidden}
 .eyebrow,.kicker{font-size:10px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;color:#62ded8}
 .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:55px;align-items:center}
@@ -213,14 +213,77 @@ footer .container{display:flex;justify-content:space-between;gap:20px;flex-wrap:
   }
 }
 </style>
+<style id="shared-site-navbar">
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:15px 21px;border-radius:12px;background:var(--navy);color:#fff;font-weight:800;font-size:12px;transition:.2s}
+.btn:hover{background:#0b5665;transform:translateY(-2px)}
+.site-header{height:84px!important;min-height:84px;position:sticky;top:0;left:0;right:0;width:100%;z-index:100;background:rgba(255,255,255,.98);border-bottom:1px solid #dce7eb;box-shadow:0 7px 28px rgba(3,37,50,.055);backdrop-filter:blur(18px)}
+.site-header .container.nav{width:min(1280px,calc(100% - 72px));max-width:1280px;height:100%;margin:auto;padding:0;display:grid;grid-template-columns:210px minmax(0,1fr) 205px;align-items:center;gap:22px;position:relative}
+.site-header .brand{display:flex;align-items:center;width:210px;min-width:0;max-width:210px}
+.site-header .brand-logo{display:block;width:210px;height:auto;max-height:60px;object-fit:contain}
+.site-header .links{display:flex;align-items:center;justify-content:center;gap:clamp(12px,1.35vw,20px);min-width:0;width:100%;white-space:nowrap}
+.site-header .nav-link,.site-header .nav-products-toggle{color:#18384c;font-size:12.5px;font-weight:700;text-decoration:none;white-space:nowrap}
+.site-header .nav-link:hover,.site-header .nav-link.active,.site-header .nav-products-toggle:hover,.site-header .nav-products-toggle.active{color:#07969c}
+.site-header .nav-dropdown{position:relative;display:flex;align-items:center}
+.site-header .nav-products-toggle{border:0;background:transparent;padding:10px 0;display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-family:inherit}
+.site-header .nav-products-toggle svg{width:13px;height:13px}
+.site-header .nav-dropdown.open .nav-products-toggle svg{transform:rotate(180deg)}
+.site-header .nav-dropdown-menu{position:absolute;top:calc(100% - 3px);left:-22px;width:302px;background:#fff;border:1px solid #dce7eb;border-radius:16px;padding:10px;box-shadow:0 24px 60px rgba(3,35,48,.17);display:none;z-index:120}
+.site-header .nav-dropdown:hover .nav-dropdown-menu,.site-header .nav-dropdown:focus-within .nav-dropdown-menu,.site-header .nav-dropdown.open .nav-dropdown-menu{display:grid}
+.site-header .nav-dropdown-menu a{display:flex;align-items:center;gap:13px;padding:13px 12px;border-radius:11px;text-decoration:none}
+.site-header .nav-dropdown-menu a:hover{background:#f0f8f8}
+.site-header .nav-dropdown-menu strong{display:block;font-size:13px;color:#163b4b}
+.site-header .nav-dropdown-menu small{display:block;font-size:10px;color:#7a8d96;margin-top:3px}
+.site-header .menu-number{font-size:11px;font-weight:850;color:#0b9298;background:#e8f7f6;border-radius:8px;width:31px;height:31px;display:grid;place-items:center;flex:0 0 31px}
+.site-header .nav-cta{display:inline-flex;align-items:center;justify-content:center;justify-self:end;min-width:190px;min-height:48px;padding:13px 17px;border-radius:12px;background:#062b3a;color:#fff;text-decoration:none;font-size:12.5px;font-weight:800;white-space:nowrap}
+.site-header .mobile-nav-cta{display:none}
+.site-header .menu{display:none}
+@media(max-width:1100px){
+.site-header{height:78px!important;min-height:78px}
+.site-header .container.nav{width:calc(100% - 56px);display:flex;justify-content:space-between;gap:16px}
+.site-header .brand{width:min(210px,48vw);max-width:210px}
+.site-header .nav-cta{display:none}
+.site-header .menu{display:flex;align-items:center;justify-content:center;width:44px;height:44px;margin-left:auto;border:1px solid #dce7eb;border-radius:10px;background:#fff;color:#062b3a;font-size:24px;cursor:pointer}
+.site-header .links{display:none;position:absolute;top:calc(100% + 1px);left:0;right:0;width:100%;padding:15px 20px 20px;background:#fff;border:1px solid #e2ebef;border-top:0;border-radius:0 0 14px 14px;box-shadow:0 18px 34px rgba(5,42,58,.14);flex-direction:column;align-items:stretch;gap:4px;white-space:normal;max-height:calc(100vh - 90px);overflow:auto}
+.site-header .links.open{display:flex}
+.site-header .nav-link,.site-header .nav-products-toggle{display:flex;width:100%;justify-content:space-between;padding:12px 4px;font-size:14px}
+.site-header .nav-dropdown{display:block;width:100%}
+.site-header .nav-dropdown-menu{display:none;position:static;width:100%;padding:5px 0 8px 10px;border:0;border-radius:0;box-shadow:none;background:#f7fafb}
+.site-header .nav-dropdown.open .nav-dropdown-menu{display:grid}
+.site-header .mobile-nav-cta{display:flex;align-items:center;justify-content:center;width:100%;margin-top:10px;padding:14px 16px;border-radius:10px;background:#062b3a;color:#fff;text-decoration:none;font-size:13px;font-weight:800}
+}
+@media(max-width:520px){
+.site-header{height:72px!important;min-height:72px}
+.site-header .container.nav{width:calc(100% - 36px)}
+.site-header .brand{width:min(198px,calc(100vw - 104px))}
+.site-header .menu{width:42px;height:42px}
+}
+</style>
 </head>
 <body>
-<header><div class="container nav">
-<a class="brand" href="index.html#home"><img src="assets/clear-robotics-logo.png" alt="Clear Robotics"></a>
-<nav class="navlinks"><a href="index.html#home">Home</a><a href="about.html">About Us</a><a href="projects.html">Projects</a><a href="products.html">Products</a><a href="blog.html">Blog &amp; News</a><a href="contact.html">Contact</a></nav>
-<a class="navcta" href="contact.html#contact-form">Discuss Your Project ↗</a>
-<button class="menu" type="button" onclick="document.querySelector('.navlinks').classList.toggle('mobile-open')">☰</button>
-</div></header>
+<header class="site-header">
+<div class="container nav">
+<a aria-label="Clear Robotics home" class="brand" href="index.html#home"><img alt="Clear Robotics" class="brand-logo" src="assets/clear-robotics-logo.png"/></a>
+<nav aria-label="Main navigation" class="links" id="navlinks">
+<a class="nav-link" href="index.html#home">Home</a>
+<a class="nav-link" href="about.html">About Us</a>
+<a class="nav-link" href="projects.html">Projects</a>
+<div class="nav-dropdown">
+<button aria-expanded="false" aria-haspopup="true" class="nav-products-toggle active" type="button">Products <svg aria-hidden="true" viewbox="0 0 16 16"><path d="m3 6 5 5 5-5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"></path></svg></button>
+<div class="nav-dropdown-menu" role="menu">
+<a href="products.html#fetch-skimmer" role="menuitem"><span class="menu-number">01</span><span><strong>Fetch Skimmer</strong><small>Compact unmanned vessel</small></span></a>
+<a href="products.html#class-2" role="menuitem"><span class="menu-number">02</span><span><strong>Class 2 Skimmer</strong><small>Mid-size collection platform</small></span></a>
+<a href="products.html#class-3" role="menuitem"><span class="menu-number">03</span><span><strong>Class 3 Skimmer</strong><small>High-capacity waterway vessel</small></span></a>
+<a href="products.html#alligator-neo" role="menuitem"><span class="menu-number">04</span><span><strong>Alligator Neo Harvester</strong><small>Aquatic vegetation management</small></span></a>
+</div>
+</div>
+<a class="nav-link" href="blog.html">Blog &amp; News</a>
+<a class="nav-link" href="contact.html">Contact</a>
+<a class="mobile-nav-cta" href="contact.html#contact-form">Discuss Your Project <span>↗</span></a>
+</nav>
+<a class="nav-cta" href="contact.html#contact-form">Discuss Your Project <span aria-hidden="true">↗</span></a>
+<button aria-expanded="false" aria-label="Open navigation" class="menu" id="globalMenuToggle" type="button">☰</button>
+</div>
+</header>
 <style>@media(max-width:800px){.navlinks.mobile-open{display:flex;position:absolute;top:82px;left:0;right:0;background:white;padding:20px;flex-direction:column;align-items:flex-start;box-shadow:0 15px 30px #092c3b20}}</style>
 <main>
 <section class="hero"><div class="container hero-grid">
@@ -437,4 +500,12 @@ function closeProductDetails() {
     });
 })();
 </script>
+<script>(function(){
+ const nav=document.getElementById('navlinks');
+ const menu=document.getElementById('globalMenuToggle');
+ if(menu&&nav){menu.addEventListener('click',()=>{const open=nav.classList.toggle('open');menu.setAttribute('aria-expanded',String(open));menu.setAttribute('aria-label',open?'Close navigation':'Open navigation');menu.textContent=open?'×':'☰';});}
+ document.querySelectorAll('.nav-products-toggle,.nav-insights-toggle').forEach(btn=>btn.addEventListener('click',e=>{e.stopPropagation();const wrap=btn.closest('.nav-dropdown');const open=wrap.classList.toggle('open');btn.setAttribute('aria-expanded',String(open));}));
+ document.addEventListener('click',e=>{document.querySelectorAll('.nav-dropdown.open').forEach(w=>{if(!w.contains(e.target)){w.classList.remove('open');const b=w.querySelector('button[aria-haspopup="true"]');if(b)b.setAttribute('aria-expanded','false');}});});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.nav-dropdown.open').forEach(w=>{w.classList.remove('open');const b=w.querySelector('button[aria-haspopup="true"]');if(b)b.setAttribute('aria-expanded','false');});if(nav&&menu){nav.classList.remove('open');menu.setAttribute('aria-expanded','false');menu.textContent='☰';}}});
+})();</script>
 </body></html>
