@@ -82,6 +82,106 @@ footer{background:#031c29;color:#b7cbd1;padding:30px 0;font-size:12px}
 footer .container{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 @media(max-width:800px){.hero-grid,.product-grid{grid-template-columns:1fr;gap:30px}.product:nth-child(even) .product-image{order:0}.hero-art img,.product-image img{height:270px}.navlinks{display:none}.menu{display:block}.navcta{display:none}.product{padding:55px 0}.hero{padding:65px 0}.container{width:calc(100% - 36px)}}
 </style>
+<style>
+/* PREMIUM FOUR-PRODUCT CARD GALLERY */
+.product-cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 22px;
+  padding-top: 35px;
+  padding-bottom: 55px;
+}
+.product-card {
+  background: #fff;
+  border: 1px solid #e5eceb;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 12px 35px rgba(7, 40, 43, .07);
+  transition: transform .3s ease, box-shadow .3s ease;
+}
+.product-card:hover {
+  transform: translateY(-7px);
+  box-shadow: 0 20px 45px rgba(7, 40, 43, .13);
+}
+.product-card > img {
+  width: 100%;
+  height: 205px;
+  object-fit: cover;
+  display: block;
+}
+.card-content { padding: 22px; }
+.card-number {
+  color: #159b8d;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.3px;
+}
+.card-content h3 {
+  color: #092f32;
+  font-size: 21px;
+  margin: 12px 0 10px;
+}
+.card-content p {
+  color: #647477;
+  font-size: 13px;
+  line-height: 1.7;
+  min-height: 66px;
+}
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 17px 0;
+}
+.card-tags span {
+  background: #edf7f5;
+  color: #087c70;
+  border-radius: 30px;
+  padding: 6px 9px;
+  font-size: 10px;
+  font-weight: 700;
+}
+.card-button {
+  width: 100%;
+  padding: 13px 16px;
+  border: 0;
+  border-radius: 9px;
+  background: #073c3e;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .2s ease;
+}
+.card-button:hover { background: #119889; }
+.product.product-collapsed { display: none; }
+.product.product-expanded {
+  display: block;
+  animation: productReveal .35s ease;
+}
+.product-close {
+  display: inline-block;
+  margin: 0 0 20px;
+  padding: 10px 16px;
+  border: 1px solid #cbdcda;
+  border-radius: 8px;
+  background: #fff;
+  color: #073c3e;
+  cursor: pointer;
+  font-weight: 700;
+}
+@keyframes productReveal {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (max-width: 1050px) {
+  .product-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 600px) {
+  .product-cards { grid-template-columns: 1fr; padding-left: 20px; padding-right: 20px; }
+  .product-card > img { height: 220px; }
+  .card-content p { min-height: 0; }
+}
+</style>
 </head>
 <body>
 <header><div class="container nav">
@@ -103,7 +203,52 @@ footer .container{display:flex;justify-content:space-between;gap:20px;flex-wrap:
 <div class="product-nav"><a href="#fetch-skimmer">01 · Fetch Skimmer</a><a href="#class-2">02 · Class 2</a><a href="#class-3">03 · Class 3</a><a href="#alligator-neo">04 · Alligator Neo</a></div>
 </section>
 
-<section class="product" id="fetch-skimmer"><div class="container product-grid">
+<div class="product-cards container" id="product-cards">
+  <article class="product-card">
+    <img src="assets/unified-products/fetch.jpg" alt="Clearbot Fetch Skimmer">
+    <div class="card-content">
+      <span class="card-number">01 / COMPACT VESSEL</span>
+      <h3>Fetch Skimmer</h3>
+      <p>Compact unmanned electric vessel for floating waste collection and waterway surveys.</p>
+      <div class="card-tags"><span>Unmanned</span><span>Electric</span><span>Remote Operation</span></div>
+      <button class="card-button" type="button" onclick="toggleProductDetails('fetch-skimmer', this)" aria-expanded="false">View Details ↗</button>
+    </div>
+  </article>
+
+  <article class="product-card">
+    <img src="assets/unified-products/class-2.jpg" alt="Clearbot Class 2 Skimmer">
+    <div class="card-content">
+      <span class="card-number">02 / MID-SIZE PLATFORM</span>
+      <h3>Class 2 Skimmer</h3>
+      <p>Electric collection platform for river, lake and port waste recovery operations.</p>
+      <div class="card-tags"><span>Up to 200 kg</span><span>80 kg/hr</span><span>Smart Dashboard</span></div>
+      <button class="card-button" type="button" onclick="toggleProductDetails('class-2', this)" aria-expanded="false">View Details ↗</button>
+    </div>
+  </article>
+
+  <article class="product-card">
+    <img src="assets/unified-products/class-3.jpg" alt="Clearbot Class 3 Skimmer">
+    <div class="card-content">
+      <span class="card-number">03 / HIGH-CAPACITY VESSEL</span>
+      <h3>Class 3 Skimmer</h3>
+      <p>High-capacity unmanned electric vessel for waste recovery, surveys and monitoring.</p>
+      <div class="card-tags"><span>450 kg Carrying</span><span>1,000 kg Towing</span><span>Remote Control</span></div>
+      <button class="card-button" type="button" onclick="toggleProductDetails('class-3', this)" aria-expanded="false">View Details ↗</button>
+    </div>
+  </article>
+
+  <article class="product-card">
+    <img src="assets/unified-products/alligator.jpg" alt="Clearbot Alligator Neo Harvester">
+    <div class="card-content">
+      <span class="card-number">04 / AQUATIC WEED HARVESTER</span>
+      <h3>Alligator Neo</h3>
+      <p>Unmanned electric harvester designed for aquatic vegetation and water hyacinth management.</p>
+      <div class="card-tags"><span>2 Tonnes Capacity</span><span>2 Cutters</span><span>Electric</span></div>
+      <button class="card-button" type="button" onclick="toggleProductDetails('alligator-neo', this)" aria-expanded="false">View Details ↗</button>
+    </div>
+  </article>
+</div>
+<section class="product product-collapsed" id="fetch-skimmer"><div class="container"><button class="product-close" type="button" onclick="closeProductDetails()">← Back to Products</button></div><div class="container product-grid">
 <div class="product-image"><img src="assets/unified-products/fetch.jpg" alt="Clearbot Fetch Skimmer"></div>
 <div><div class="number">01 / COMPACT ELECTRIC VESSEL</div><h2>Clearbot Fetch Skimmer</h2>
 <p class="product-copy">A compact unmanned electric boat designed for floating waste collection and waterway surveys in hard-to-reach areas, including ports and marinas. It supports remote operation, live video feed and environmental monitoring workflows.</p>
@@ -121,7 +266,7 @@ footer .container{display:flex;justify-content:space-between;gap:20px;flex-wrap:
 <div class="product-actions"><a class="btn" href="contact.html#contact-form">Request a Technical Demo ↗</a></div>
 </div></div></section>
 
-<section class="product" id="class-2"><div class="container product-grid">
+<section class="product product-collapsed" id="class-2"><div class="container"><button class="product-close" type="button" onclick="closeProductDetails()">← Back to Products</button></div><div class="container product-grid">
 <div class="product-image"><img src="assets/unified-products/class-2.jpg" alt="Clearbot Class 2 Skimmer"></div>
 <div><div class="number">02 / MID-SIZE COLLECTION PLATFORM</div><h2>Clearbot Class 2 Skimmer</h2>
 <p class="product-copy">A smarter unmanned electric platform for floating waste recovery and data-led waterway operations. Designed for river, lake and port environments, with remote operation and dashboard-led monitoring.</p>
@@ -139,7 +284,7 @@ footer .container{display:flex;justify-content:space-between;gap:20px;flex-wrap:
 <div class="product-actions"><a class="btn" href="contact.html#contact-form">Request a Technical Demo ↗</a></div>
 </div></div></section>
 
-<section class="product" id="class-3"><div class="container product-grid">
+<section class="product product-collapsed" id="class-3"><div class="container"><button class="product-close" type="button" onclick="closeProductDetails()">← Back to Products</button></div><div class="container product-grid">
 <div class="product-image"><img src="assets/unified-products/class-3.jpg" alt="Clearbot Class 3 Skimmer"></div>
 <div><div class="number">03 / HIGH-CAPACITY WATERWAY VESSEL</div><h2>Clearbot Class 3 Skimmer</h2>
 <p class="product-copy">A high-capacity unmanned electric vessel for floating waste recovery, hydrographic and draft surveys, and waterway monitoring across ports, harbours, rivers and lakes.</p>
@@ -161,7 +306,7 @@ footer .container{display:flex;justify-content:space-between;gap:20px;flex-wrap:
 <div class="product-actions"><a class="btn" href="contact.html#contact-form">Request a Technical Demo ↗</a></div>
 </div></div></section>
 
-<section class="product" id="alligator-neo"><div class="container product-grid">
+<section class="product product-collapsed" id="alligator-neo"><div class="container"><button class="product-close" type="button" onclick="closeProductDetails()">← Back to Products</button></div><div class="container product-grid">
 <div class="product-image"><img src="assets/unified-products/alligator.jpg" alt="Clearbot Alligator Neo Harvester"></div>
 <div><div class="number">04 / AQUATIC VEGETATION MANAGEMENT</div><h2>Alligator Neo Harvester</h2>
 <p class="product-copy">A rugged unmanned electric vessel designed to cut through dense water hyacinth and aquatic vegetation across ports, lakes and other waterbodies.</p>
@@ -201,4 +346,39 @@ footer .container{display:flex;justify-content:space-between;gap:20px;flex-wrap:
 
 </main>
 <footer><div class="container"><span>© 2026 Clear Robotics. All rights reserved.</span><span>Unmanned electric solutions for cleaner waterways.</span><span><a href="index.html">Home</a> · <a href="projects.html">Projects</a> · <a href="contact.html">Contact</a></span></div></footer>
+<script>
+function toggleProductDetails(id, button) {
+  const section = document.getElementById(id);
+  if (!section) return;
+
+  const wasOpen = section.classList.contains('product-expanded');
+  closeProductDetails();
+
+  if (!wasOpen) {
+    section.classList.remove('product-collapsed');
+    section.classList.add('product-expanded');
+    button.textContent = 'Hide Details ↑';
+    button.setAttribute('aria-expanded', 'true');
+
+    setTimeout(() => {
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 80);
+  }
+}
+
+function closeProductDetails() {
+  document.querySelectorAll('.product[id]').forEach(section => {
+    section.classList.remove('product-expanded');
+    section.classList.add('product-collapsed');
+  });
+
+  document.querySelectorAll('.card-button').forEach(button => {
+    button.textContent = 'View Details ↗';
+    button.setAttribute('aria-expanded', 'false');
+  });
+
+  const gallery = document.getElementById('product-cards');
+  if (gallery) gallery.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+</script>
 </body></html>
