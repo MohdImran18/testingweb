@@ -241,3 +241,13 @@ a[href^="tel:" i],
   opacity: 0 !important;
   pointer-events: none !important;
 }
+/* GLOBAL PRESENCE BROCHURE BUTTON */
+.global-intro-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+.global-intro-actions .global-intro-link {
+  margin-top: 0;
+}
