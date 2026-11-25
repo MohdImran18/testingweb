@@ -182,6 +182,37 @@ footer .container{display:flex;justify-content:space-between;gap:20px;flex-wrap:
   .card-content p { min-height: 0; }
 }
 </style>
+<style>
+/* Equal-height product cards and aligned action buttons */
+.product-cards {
+  align-items: stretch;
+}
+.product-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.product-card > img {
+  flex: 0 0 205px;
+  object-fit: cover;
+}
+.card-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.card-content p {
+  flex: 1;
+}
+.card-button {
+  margin-top: auto;
+}
+@media (max-width: 600px) {
+  .product-card > img {
+    flex-basis: 220px;
+  }
+}
+</style>
 </head>
 <body>
 <header><div class="container nav">
@@ -197,7 +228,7 @@ footer .container{display:flex;justify-content:space-between;gap:20px;flex-wrap:
 <h1>One Fleet.<br><span>Four Solutions.</span></h1>
 <p>Explore Clear Robotics’ unmanned electric vessels, designed for floating waste collection, waterway surveys and aquatic vegetation management across diverse operating environments.</p>
 <div class="hero-actions"><a class="btn light" href="#fleet">Explore the Fleet ↓</a><a class="btn outline" href="contact.html#contact-form">Discuss Your Project ↗</a></div></div>
-<div class="hero-art"><img src="assets/unified-products/fetch.jpg" alt="Clearbot Fetch Skimmer"></div>
+<div class="hero-art"><img src="assets/unified-products/fetch.jpg" data-cb-image-key="products.html::fetch-skimmer" alt="Clearbot Fetch Skimmer"></div>
 </div></section>
 <section class="intro container" id="fleet"><div class="kicker">OUR PRODUCT RANGE</div><h2>Find the Right Vessel for Your Waterway</h2><p>From compact vessels for confined waterways to high-capacity platforms and aquatic weed harvesters, explore the Clearbot fleet.</p>
 <div class="product-nav"><a href="#fetch-skimmer">01 · Fetch Skimmer</a><a href="#class-2">02 · Class 2</a><a href="#class-3">03 · Class 3</a><a href="#alligator-neo">04 · Alligator Neo</a></div>
@@ -205,7 +236,7 @@ footer .container{display:flex;justify-content:space-between;gap:20px;flex-wrap:
 
 <div class="product-cards container" id="product-cards">
   <article class="product-card">
-    <img src="assets/unified-products/fetch.jpg" alt="Clearbot Fetch Skimmer">
+    <img src="assets/unified-products/fetch.jpg" data-cb-image-key="products.html::fetch-skimmer" alt="Clearbot Fetch Skimmer">
     <div class="card-content">
       <span class="card-number">01 / COMPACT VESSEL</span>
       <h3>Fetch Skimmer</h3>
@@ -216,7 +247,7 @@ footer .container{display:flex;justify-content:space-between;gap:20px;flex-wrap:
   </article>
 
   <article class="product-card">
-    <img src="assets/unified-products/class-2.jpg" alt="Clearbot Class 2 Skimmer">
+    <img src="assets/unified-products/class-2.jpg" data-cb-image-key="products.html::class-2" alt="Clearbot Class 2 Skimmer">
     <div class="card-content">
       <span class="card-number">02 / MID-SIZE PLATFORM</span>
       <h3>Class 2 Skimmer</h3>
@@ -227,7 +258,7 @@ footer .container{display:flex;justify-content:space-between;gap:20px;flex-wrap:
   </article>
 
   <article class="product-card">
-    <img src="assets/unified-products/class-3.jpg" alt="Clearbot Class 3 Skimmer">
+    <img src="assets/unified-products/class-3.jpg" data-cb-image-key="products.html::class-3" alt="Clearbot Class 3 Skimmer">
     <div class="card-content">
       <span class="card-number">03 / HIGH-CAPACITY VESSEL</span>
       <h3>Class 3 Skimmer</h3>
@@ -238,7 +269,7 @@ footer .container{display:flex;justify-content:space-between;gap:20px;flex-wrap:
   </article>
 
   <article class="product-card">
-    <img src="assets/unified-products/alligator.jpg" alt="Clearbot Alligator Neo Harvester">
+    <img src="assets/unified-products/alligator.jpg" data-cb-image-key="products.html::alligator-neo" alt="Clearbot Alligator Neo Harvester">
     <div class="card-content">
       <span class="card-number">04 / AQUATIC WEED HARVESTER</span>
       <h3>Alligator Neo</h3>
@@ -249,7 +280,7 @@ footer .container{display:flex;justify-content:space-between;gap:20px;flex-wrap:
   </article>
 </div>
 <section class="product product-collapsed" id="fetch-skimmer"><div class="container"><button class="product-close" type="button" onclick="closeProductDetails()">← Back to Products</button></div><div class="container product-grid">
-<div class="product-image"><img src="assets/unified-products/fetch.jpg" alt="Clearbot Fetch Skimmer"></div>
+<div class="product-image"><img src="assets/unified-products/fetch.jpg" data-cb-image-key="products.html::fetch-skimmer" alt="Clearbot Fetch Skimmer"></div>
 <div><div class="number">01 / COMPACT ELECTRIC VESSEL</div><h2>Clearbot Fetch Skimmer</h2>
 <p class="product-copy">A compact unmanned electric boat designed for floating waste collection and waterway surveys in hard-to-reach areas, including ports and marinas. It supports remote operation, live video feed and environmental monitoring workflows.</p>
 <div class="tags"><span class="tag">UNMANNED</span><span class="tag">100% ELECTRIC</span><span class="tag">REMOTE OPERATION</span><span class="tag">SURVEY SUPPORT</span></div>
@@ -267,7 +298,7 @@ footer .container{display:flex;justify-content:space-between;gap:20px;flex-wrap:
 </div></div></section>
 
 <section class="product product-collapsed" id="class-2"><div class="container"><button class="product-close" type="button" onclick="closeProductDetails()">← Back to Products</button></div><div class="container product-grid">
-<div class="product-image"><img src="assets/unified-products/class-2.jpg" alt="Clearbot Class 2 Skimmer"></div>
+<div class="product-image"><img src="assets/unified-products/class-2.jpg" data-cb-image-key="products.html::class-2" alt="Clearbot Class 2 Skimmer"></div>
 <div><div class="number">02 / MID-SIZE COLLECTION PLATFORM</div><h2>Clearbot Class 2 Skimmer</h2>
 <p class="product-copy">A smarter unmanned electric platform for floating waste recovery and data-led waterway operations. Designed for river, lake and port environments, with remote operation and dashboard-led monitoring.</p>
 <div class="tags"><span class="tag">UNMANNED</span><span class="tag">ELECTRIC</span><span class="tag">SOLAR CHARGING OPTION</span><span class="tag">SMART DASHBOARD</span></div>
@@ -285,7 +316,7 @@ footer .container{display:flex;justify-content:space-between;gap:20px;flex-wrap:
 </div></div></section>
 
 <section class="product product-collapsed" id="class-3"><div class="container"><button class="product-close" type="button" onclick="closeProductDetails()">← Back to Products</button></div><div class="container product-grid">
-<div class="product-image"><img src="assets/unified-products/class-3.jpg" alt="Clearbot Class 3 Skimmer"></div>
+<div class="product-image"><img src="assets/unified-products/class-3.jpg" data-cb-image-key="products.html::class-3" alt="Clearbot Class 3 Skimmer"></div>
 <div><div class="number">03 / HIGH-CAPACITY WATERWAY VESSEL</div><h2>Clearbot Class 3 Skimmer</h2>
 <p class="product-copy">A high-capacity unmanned electric vessel for floating waste recovery, hydrographic and draft surveys, and waterway monitoring across ports, harbours, rivers and lakes.</p>
 <div class="tags"><span class="tag">UNMANNED</span><span class="tag">ELECTRIC</span><span class="tag">AI-DRIVEN DATA</span><span class="tag">REMOTE CONTROL</span></div>
@@ -307,7 +338,7 @@ footer .container{display:flex;justify-content:space-between;gap:20px;flex-wrap:
 </div></div></section>
 
 <section class="product product-collapsed" id="alligator-neo"><div class="container"><button class="product-close" type="button" onclick="closeProductDetails()">← Back to Products</button></div><div class="container product-grid">
-<div class="product-image"><img src="assets/unified-products/alligator.jpg" alt="Clearbot Alligator Neo Harvester"></div>
+<div class="product-image"><img src="assets/unified-products/alligator.jpg" data-cb-image-key="products.html::alligator-neo" alt="Clearbot Alligator Neo Harvester"></div>
 <div><div class="number">04 / AQUATIC VEGETATION MANAGEMENT</div><h2>Alligator Neo Harvester</h2>
 <p class="product-copy">A rugged unmanned electric vessel designed to cut through dense water hyacinth and aquatic vegetation across ports, lakes and other waterbodies.</p>
 <div class="tags"><span class="tag">UNMANNED</span><span class="tag">ELECTRIC</span><span class="tag">AQUATIC WEED CUTTING</span></div>
@@ -380,5 +411,30 @@ function closeProductDetails() {
   const gallery = document.getElementById('product-cards');
   if (gallery) gallery.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
+
+/* Admin Image Manager: product image replacements */
+(function () {
+  fetch("/api/public/site-images", { credentials: "same-origin" })
+    .then(function (response) {
+      return response.ok ? response.json() : null;
+    })
+    .then(function (result) {
+      if (!result || !Array.isArray(result.images)) return;
+
+      var replacements = new Map(
+        result.images
+          .filter(function (item) { return item.url; })
+          .map(function (item) { return [item.id, item.url]; })
+      );
+
+      document.querySelectorAll("img[data-cb-image-key]").forEach(function (img) {
+        var replacement = replacements.get(img.getAttribute("data-cb-image-key"));
+        if (replacement) img.src = replacement;
+      });
+    })
+    .catch(function (error) {
+      console.warn("Product image overrides could not be loaded.", error);
+    });
+})();
 </script>
 </body></html>

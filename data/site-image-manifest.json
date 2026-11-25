@@ -105,7 +105,7 @@
         "id":  "blog-complete-waterway-fleet.html::1",
         "page":  "blog-complete-waterway-fleet.html",
         "src":  "https://i.ytimg.com/vi/xQl9Pyccj_M/hqdefault.jpg",
-        "alt":  "Why One Solution Isn’t Enough: Building a Complete Waterway Fleet"
+        "alt":  "Why One Solution Isnâ€™t Enough: Building a Complete Waterway Fleet"
     },
     {
         "id":  "blog-complete-waterway-fleet.html::2",
@@ -195,7 +195,7 @@
         "id":  "blog.html::4",
         "page":  "blog.html",
         "src":  "https://i.ytimg.com/vi/xQl9Pyccj_M/hqdefault.jpg",
-        "alt":  "Why One Solution Isn’t Enough: Building a Complete Waterway Fleet"
+        "alt":  "Why One Solution Isnâ€™t Enough: Building a Complete Waterway Fleet"
     },
     {
         "id":  "blog.html::5",
@@ -916,4 +916,91 @@
         "page":  "services.html",
         "src":  "assets/clear-robotics-logo.png",
         "alt":  "Clear Robotics"
-    },[{"id":"index.html::media-feature-cnn","page":"index.html","src":"assets/media-logos/cnn.png","alt":"CNN media logo"},{"id":"index.html::media-feature-scmp","page":"index.html","src":"assets/media-logos/scmp.png","alt":"South China Morning Post media logo"},{"id":"index.html::media-feature-forbes","page":"index.html","src":"assets/media-logos/forbes.png","alt":"Forbes media logo"},{"id":"index.html::media-feature-eco-business","page":"index.html","src":"assets/media-logos/eco-business.png","alt":"Eco-Business media logo"},{"id":"index.html::media-feature-new-atlas","page":"index.html","src":"assets/media-logos/new-atlas.png","alt":"New Atlas media logo"},{"id":"index.html::media-feature-the-beat","page":"index.html","src":"assets/media-logos/the-beat.png","alt":"The Beat Asia media logo"},{"id":"index.html::media-feature-hktdc","page":"index.html","src":"assets/media-logos/hktdc.png","alt":"HKTDC media logo"},{"id":"index.html::media-feature-cna","page":"index.html","src":"assets/media-logos/cna.png","alt":"Channel NewsAsia media logo"},{"id":"index.html::media-feature-bloomberg","page":"index.html","src":"assets/media-logos/bloomberg.png","alt":"Bloomberg media logo"},{"id":"index.html::media-feature-wsj","page":"index.html","src":"assets/media-logos/wsj.png","alt":"The Wall Street Journal media logo"}]]
+    },
+    [
+        {
+            "id":  "index.html::media-feature-cnn",
+            "page":  "index.html",
+            "src":  "assets/media-logos/cnn.png",
+            "alt":  "CNN media logo"
+        },
+        {
+            "id":  "index.html::media-feature-scmp",
+            "page":  "index.html",
+            "src":  "assets/media-logos/scmp.png",
+            "alt":  "South China Morning Post media logo"
+        },
+        {
+            "id":  "index.html::media-feature-forbes",
+            "page":  "index.html",
+            "src":  "assets/media-logos/forbes.png",
+            "alt":  "Forbes media logo"
+        },
+        {
+            "id":  "index.html::media-feature-eco-business",
+            "page":  "index.html",
+            "src":  "assets/media-logos/eco-business.png",
+            "alt":  "Eco-Business media logo"
+        },
+        {
+            "id":  "index.html::media-feature-new-atlas",
+            "page":  "index.html",
+            "src":  "assets/media-logos/new-atlas.png",
+            "alt":  "New Atlas media logo"
+        },
+        {
+            "id":  "index.html::media-feature-the-beat",
+            "page":  "index.html",
+            "src":  "assets/media-logos/the-beat.png",
+            "alt":  "The Beat Asia media logo"
+        },
+        {
+            "id":  "index.html::media-feature-hktdc",
+            "page":  "index.html",
+            "src":  "assets/media-logos/hktdc.png",
+            "alt":  "HKTDC media logo"
+        },
+        {
+            "id":  "index.html::media-feature-cna",
+            "page":  "index.html",
+            "src":  "assets/media-logos/cna.png",
+            "alt":  "Channel NewsAsia media logo"
+        },
+        {
+            "id":  "index.html::media-feature-bloomberg",
+            "page":  "index.html",
+            "src":  "assets/media-logos/bloomberg.png",
+            "alt":  "Bloomberg media logo"
+        },
+        {
+            "id":  "index.html::media-feature-wsj",
+            "page":  "index.html",
+            "src":  "assets/media-logos/wsj.png",
+            "alt":  "The Wall Street Journal media logo"
+        }
+    ],
+    {
+        "page":  "products.html",
+        "alt":  "Clearbot Fetch Skimmer product image",
+        "id":  "products.html::fetch-skimmer",
+        "src":  "original/assets/unified-products/fetch.jpg"
+    },
+    {
+        "page":  "products.html",
+        "alt":  "Clearbot Class 2 Skimmer product image",
+        "id":  "products.html::class-2",
+        "src":  "original/assets/unified-products/class-2.jpg"
+    },
+    {
+        "page":  "products.html",
+        "alt":  "Clearbot Class 3 Skimmer product image",
+        "id":  "products.html::class-3",
+        "src":  "original/assets/unified-products/class-3.jpg"
+    },
+    {
+        "page":  "products.html",
+        "alt":  "Clearbot Alligator Neo product image",
+        "id":  "products.html::alligator-neo",
+        "src":  "original/assets/unified-products/alligator.jpg"
+    }
+]
