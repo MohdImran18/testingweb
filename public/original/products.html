@@ -296,6 +296,128 @@ footer .container{display:flex;justify-content:space-between;gap:20px;flex-wrap:
 .site-header .menu{width:42px;height:42px}
 }
 </style>
+
+<style id="products-page-footer">
+.site-footer {
+  background: #031c29;
+  color: #d3e2e6;
+  padding: 62px 0 24px;
+  font-size: 12px;
+}
+.site-footer .footer-main {
+  width: min(1290px, calc(100% - 72px));
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.55fr .75fr 1.1fr 1.35fr;
+  gap: clamp(28px, 5vw, 76px);
+  align-items: start;
+}
+.site-footer .footer-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 240px;
+  max-width: 100%;
+  min-height: 76px;
+  padding: 10px 15px;
+  background: #f1f9f8;
+  border-radius: 13px;
+}
+.site-footer .footer-logo img {
+  display: block;
+  width: 100%;
+  max-height: 58px;
+  object-fit: contain;
+}
+.site-footer .footer-brand p {
+  color: #d0e0e4;
+  line-height: 2;
+  margin: 20px 0 0;
+  font-size: 12px;
+}
+.site-footer .footer-column {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 15px;
+}
+.site-footer .footer-column h3 {
+  color: #53e0d8;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .16em;
+  margin: 10px 0 17px;
+}
+.site-footer .footer-column a {
+  color: #d4e2e6;
+  font-size: 12px;
+  line-height: 1.5;
+  transition: color .2s ease;
+}
+.site-footer .footer-column a:hover {
+  color: #65e3dc;
+}
+.site-footer .footer-contact p {
+  color: #d4e2e6;
+  line-height: 1.7;
+  margin: 0 0 0;
+}
+.site-footer .footer-contact .footer-email {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 15px;
+  border: 1px solid #36515c;
+  border-radius: 12px;
+  background: #183440;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 850;
+  white-space: nowrap;
+}
+.site-footer .footer-bottom {
+  width: min(1290px, calc(100% - 72px));
+  margin: 40px auto 0;
+  padding-top: 22px;
+  border-top: 1px solid #29424d;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  color: #a9c2ca;
+  font-size: 10px;
+  letter-spacing: .04em;
+}
+@media (max-width: 900px) {
+  .site-footer .footer-main {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 38px 30px;
+  }
+}
+@media (max-width: 560px) {
+  .site-footer { padding: 42px 0 22px; }
+  .site-footer .footer-main,
+  .site-footer .footer-bottom {
+    width: calc(100% - 36px);
+  }
+  .site-footer .footer-main {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px 18px;
+  }
+  .site-footer .footer-brand,
+  .site-footer .footer-contact { grid-column: 1 / -1; }
+  .site-footer .footer-logo { width: 225px; }
+  .site-footer .footer-contact .footer-email {
+    font-size: 13px;
+    white-space: normal;
+  }
+  .site-footer .footer-bottom {
+    flex-direction: column;
+    margin-top: 30px;
+    line-height: 1.6;
+  }
+}
+</style>
+
 </head>
 <body>
 <header class="site-header">
@@ -469,7 +591,44 @@ footer .container{display:flex;justify-content:space-between;gap:20px;flex-wrap:
 
 
 </main>
-<footer><div class="container"><span>© 2026 Clear Robotics. All rights reserved.</span><span>Unmanned electric solutions for cleaner waterways.</span><span><a href="index.html">Home</a> · <a href="projects.html">Projects</a> · <a href="contact.html">Contact</a></span></div></footer>
+<footer class="site-footer">
+  <div class="footer-main">
+    <div class="footer-brand">
+      <a class="footer-logo" href="index.html#home" aria-label="Clear Robotics home">
+        <img src="assets/clear-robotics-logo.png" alt="Clear Robotics">
+      </a>
+      <p>Unmanned electric and solar-powered solutions<br>for cleaner, healthier waterways.</p>
+    </div>
+
+    <div class="footer-column">
+      <h3>EXPLORE</h3>
+      <a href="index.html#home">Home</a>
+      <a href="about.html">About Us</a>
+      <a href="projects.html">Projects</a>
+      <a href="blog.html">Blog &amp; News</a>
+    </div>
+
+    <div class="footer-column">
+      <h3>OUR PRODUCTS</h3>
+      <a href="products.html#fetch-skimmer">Fetch Skimmer</a>
+      <a href="products.html#class-2">Class 2 Skimmer</a>
+      <a href="products.html#class-3">Class 3 Skimmer</a>
+      <a href="products.html#alligator-neo">Alligator Neo Harvester</a>
+    </div>
+
+    <div class="footer-column footer-contact">
+      <h3>CONNECT WITH OUR TEAM</h3>
+      <p>Corporate, partnership and project enquiries</p>
+      <a class="footer-email" href="mailto:contact@clearbot.org">contact@clearbot.org <span aria-hidden="true">↗</span></a>
+      <a href="contact.html#contact-form">Contact our team</a>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <span>© 2026 Clear Robotics. All rights reserved.</span>
+    <span>Cleaner waterways. Smarter operations.</span>
+  </div>
+</footer>
 <script>
 function toggleProductDetails(id, button) {
   const section = document.getElementById(id);
