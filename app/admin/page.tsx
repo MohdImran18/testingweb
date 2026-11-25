@@ -40,8 +40,9 @@ function imagePageTitle(page:string) {
   return base.replace(/\b\w/g,letter=>letter.toUpperCase());
 }
 function imageSource(slot:SiteImage) {
-  if(slot.url) return slot.url;
-  if(/^(https?:|data:|blob:)/i.test(slot.src)) return slot.src;
+  if (!slot || typeof slot.src !== "string" || !slot.src.trim()) return "";
+  if (typeof slot.url === "string" && slot.url) return slot.url;
+  if (/^(https?:|data:|blob:)/i.test(slot.src)) return slot.src;
   return `/${slot.src.replace(/^\.\//,"").replace(/^\//,"")}`;
 }
 function formatBytes(bytes:number) {
@@ -203,13 +204,89 @@ export default function AdminPage() {
 
   const filteredLeads=useMemo(()=>leads.filter(l=>(leadStatus==="all"||l.status===leadStatus)&&(!leadSearch||[l.fullName,l.email,l.company,l.country,l.phone].some(v=>String(v||"").toLowerCase().includes(leadSearch.toLowerCase())))),[leads,leadStatus,leadSearch]);
   const groupedSiteImages=useMemo(()=>{
-    const pageOrder=["Homepage Hero Slider","index.html","about.html","projects.html","class-1.html","class-2.html","class-3.html","alligator.html","deployment-models.html","services.html","service-bathymetric-survey.html","service-draft-survey.html","service-hyacinth-removal.html","service-solid-waste-recovery.html","project-falgu-river-gaya.html","project-hong-kong-oil-response.html","project-ilugin-river-philippines.html","project-jnpa-mumbai.html","project-lohagarh-fort-bharatpur.html","project-nonbah-river-meghalaya.html","project-putiya-kavin-chira-kerala.html","project-sentx-landfill-hong-kong.html","project-sino-group-hong-kong.html","project-umiam-lake-meghalaya.html","blog.html","news.html","blog-complete-waterway-fleet.html","blog-diesel-to-digital.html","blog-digital-twins.html","blog-service-based-management.html","contact.html"];
-    const order=new Map(pageOrder.map((page,index)=>[page,index]));
-    const query=siteImageSearch.trim().toLowerCase();
-    const filtered=siteImages.filter(slot=>{const slide=heroSlideNumber(slot);return !query||[slot.page,slot.alt,slot.src,slide?"homepage hero slider":""].some(value=>String(value||"").toLowerCase().includes(query));});
-    const grouped=new Map<string,SiteImage[]>();
-    for(const slot of filtered){const key=heroSlideNumber(slot)?"Homepage Hero Slider":(slot.page||"Other pages");if(!grouped.has(key))grouped.set(key,[]);grouped.get(key)!.push(slot);}
-    return Array.from(grouped.entries()).sort(([a],[b])=>(order.get(a)??999)-(order.get(b)??999)||a.localeCompare(b));
+    const pageOrder=[
+      "Homepage Hero Slider","index.html","about.html","projects.html",
+      "class-1.html","class-2.html","class-3.html","alligator.html",
+      "deployment-models.html","services.html",
+      "service-bathymetric-survey.html","service-draft-survey.html",
+      "service-hyacinth-removal.html","service-solid-waste-recovery.html",
+      "project-falgu-river-gaya.html","project-hong-kong-oil-response.html",
+      "project-ilugin-river-philippines.html","project-jnpa-mumbai.html",
+      "project-lohagarh-fort-bharatpur.html","project-nonbah-river-meghalaya.html",
+      "project-putiya-kavin-chira-kerala.html","project-sentx-landfill-hong-kong.html",
+      "project-sino-group-hong-kong.html","project-umiam-lake-meghalaya.html",
+      "blog.html","news.html","blog-complete-waterway-fleet.html",
+      "blog-diesel-to-digital.html","blog-digital-twins.html",
+      "blog-service-based-management.html","contact.html"
+    ];
+
+    // Normalize normal records and flatten malformed numeric-key containers.
+    const flatSlots: SiteImage[] = [];
+
+    const collectSlots = (value: unknown): void => {
+      if (Array.isArray(value)) {
+        value.forEach(collectSlots);
+        return;
+      }
+
+      if (!value || typeof value !== "object") return;
+
+      const item = value as Partial<SiteImage>;
+
+      if (
+        typeof item.id === "string" &&
+        typeof item.page === "string" &&
+        typeof item.src === "string"
+      ) {
+        flatSlots.push({
+          id: item.id,
+          page: item.page,
+          src: item.src,
+          alt: typeof item.alt === "string" ? item.alt : "",
+          url: typeof item.url === "string" ? item.url : ""
+        });
+        return;
+      }
+
+      Object.values(value as Record<string, unknown>).forEach(child => {
+        if (child && typeof child === "object") collectSlots(child);
+      });
+    };
+
+    (siteImages as unknown[]).forEach(collectSlots);
+
+    const uniqueSlots = Array.from(
+      new Map(flatSlots.map(slot => [slot.id, slot])).values()
+    );
+
+    const order = new Map(pageOrder.map((page,index) => [page,index]));
+    const query = siteImageSearch.trim().toLowerCase();
+
+    const filtered = uniqueSlots.filter(slot => {
+      const slide = heroSlideNumber(slot);
+      return !query || [
+        slot.page,
+        slot.alt,
+        slot.src,
+        slide ? "homepage hero slider" : ""
+      ].some(value => String(value || "").toLowerCase().includes(query));
+    });
+
+    const grouped = new Map<string,SiteImage[]>();
+
+    for (const slot of filtered) {
+      const key = heroSlideNumber(slot)
+        ? "Homepage Hero Slider"
+        : (slot.page || "Other pages");
+
+      if (!grouped.has(key)) grouped.set(key,[]);
+      grouped.get(key)!.push(slot);
+    }
+
+    return Array.from(grouped.entries()).sort(
+      ([a],[b]) => (order.get(a) ?? 999) - (order.get(b) ?? 999)
+        || a.localeCompare(b)
+    );
   },[siteImages,siteImageSearch]);
   const tabs=[{id:"overview" as Section,label:"Overview",icon:LayoutDashboard,show:true},{id:"leads" as Section,label:"Leads & enquiries",icon:Users,show:canLeads},{id:"projects" as Section,label:"Projects manager",icon:FileText,show:canContent},{id:"blogs" as Section,label:"Blog manager",icon:BookOpen,show:canContent},{id:"images" as Section,label:"Image manager",icon:Images,show:canContent},{id:"seo" as Section,label:"SEO manager",icon:Globe,show:canContent},{id:"users" as Section,label:"User access",icon:Shield,show:isSuper},{id:"settings" as Section,label:"Settings",icon:Settings,show:true}].filter(t=>t.show);
 
