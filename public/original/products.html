@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Explore Clear Robotics unmanned electric waterway vessels: Fetch Skimmer, Class 2, Class 3 and Alligator Neo.">
+<title>Our Products | Clear Robotics</title>
+<style>
+:root{--navy:#062b3a;--deep:#031c29;--teal:#16c6c1;--mint:#75e5df;--ink:#123548;--muted:#667d88;--pale:#f2f8f9;--line:#dce8eb}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:95px}
+body{margin:0;font-family:Inter,Arial,sans-serif;color:var(--ink);background:#fff}
+a{text-decoration:none;color:inherit}
+.container{width:min(1240px,calc(100% - 48px));margin:auto}
+header{height:82px;background:#fff;border-bottom:1px solid #e7eef0;position:sticky;top:0;z-index:50}
+.nav{height:100%;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.brand img{width:205px;max-height:58px;object-fit:contain}
+.navlinks{display:flex;align-items:center;gap:28px;font-size:13px;font-weight:750}
+.navlinks a:hover{color:#078e96}
+.navcta,.btn{display:inline-flex;align-items:center;justify-content:center;padding:15px 21px;border-radius:12px;background:var(--navy);color:#fff;font-weight:800;font-size:12px;transition:.2s}
+.navcta:hover,.btn:hover{background:#0b5665;transform:translateY(-2px)}
+.menu{display:none;border:1px solid var(--line);background:white;border-radius:9px;padding:10px;font-size:22px}
+.hero{background:radial-gradient(circle at 85% 20%,#126171 0,transparent 34%),linear-gradient(115deg,#031c29,#064457 70%,#087a7d);color:#fff;padding:88px 0 80px;overflow:hidden}
+.eyebrow,.kicker{font-size:10px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;color:#62ded8}
+.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:55px;align-items:center}
+.hero h1{font-size:clamp(44px,6vw,76px);letter-spacing:-.055em;line-height:1.02;margin:20px 0}
+.hero h1 span{color:var(--mint)}
+.hero p{font-size:16px;line-height:1.9;color:#c6dce1;max-width:650px}
+.hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.btn.light{background:var(--teal);color:#032c38}
+.btn.outline{background:transparent;border:1px solid #8bbdc4}
+.hero-art{border:1px solid #ffffff38;border-radius:24px;overflow:hidden;box-shadow:0 30px 75px #00121d70}
+.hero-art img{width:100%;height:360px;object-fit:cover;display:block}
+.intro{padding:75px 0 36px;text-align:center}
+.intro h2{font-size:clamp(32px,4vw,48px);letter-spacing:-.04em;margin:12px 0}
+.intro p{color:var(--muted);max-width:700px;margin:0 auto;line-height:1.8}
+.product-nav{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:30px auto 60px}
+.product-nav a{border:1px solid var(--line);border-radius:999px;padding:11px 17px;font-size:12px;font-weight:800;background:#fff}
+.product-nav a:hover{background:var(--navy);color:#fff}
+.product{padding:78px 0;border-top:1px solid var(--line)}
+.product:nth-of-type(even){background:var(--pale)}
+.product-grid{display:grid;grid-template-columns:1fr 1fr;gap:55px;align-items:center}
+.product:nth-child(even) .product-image{order:2}
+.product-image{border-radius:22px;overflow:hidden;background:#dce9ec;box-shadow:0 20px 50px #092c3b18}
+.product-image img{width:100%;height:390px;object-fit:cover;display:block}
+.number{font-size:11px;color:#07939b;font-weight:900;letter-spacing:.16em}
+.product h2{font-size:clamp(34px,4vw,52px);line-height:1.06;letter-spacing:-.045em;margin:12px 0}
+.product-copy{font-size:15px;line-height:1.9;color:var(--muted)}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0}
+.tag{background:#e6f7f6;color:#087f88;padding:8px 11px;border-radius:99px;font-size:10px;font-weight:850}
+.metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:24px 0}
+.metric{background:#fff;border:1px solid var(--line);border-radius:13px;padding:16px}
+.metric strong{display:block;font-size:22px;color:#078d96}
+.metric span{font-size:10px;color:var(--muted);font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.specs{margin-top:22px;border:1px solid var(--line);border-radius:15px;overflow:hidden;background:#fff}
+.specs h3{margin:0;padding:17px 19px;background:#eaf4f5;font-size:15px}
+.spec-row{display:flex;justify-content:space-between;gap:20px;padding:13px 18px;border-top:1px solid #e9eff1;font-size:12px}
+.spec-row span{color:var(--muted)}
+.spec-row strong{text-align:right;color:var(--ink)}
+.note{font-size:11px;color:#82949b;line-height:1.7;margin-top:12px}
+.product-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+.btn.secondary{background:#e8f6f6;color:#087c84}
+.compare{padding:80px 0;background:#f1f7f8}
+.section-title{text-align:center;margin-bottom:35px}
+.section-title h2{font-size:clamp(32px,4vw,46px);margin:10px 0;letter-spacing:-.04em}
+.section-title p{color:var(--muted);line-height:1.8}
+.table-wrap{overflow:auto;background:#fff;border:1px solid var(--line);border-radius:16px}
+table{border-collapse:collapse;width:100%;min-width:760px;font-size:12px}
+th,td{text-align:left;padding:17px 18px;border-bottom:1px solid var(--line)}
+th{background:var(--navy);color:white;font-size:11px}
+td:first-child{font-weight:800;color:var(--ink)}
+td{color:#617783}
+.faq{padding:75px 0}
+.faq-list{max-width:900px;margin:30px auto}
+details{border-bottom:1px solid var(--line);padding:19px 4px}
+summary{font-weight:800;cursor:pointer;font-size:14px}
+details p{color:var(--muted);font-size:13px;line-height:1.8}
+.final-cta{padding:70px 0;background:linear-gradient(115deg,#031c29,#075365);color:white;text-align:center}
+.final-cta h2{font-size:clamp(32px,4vw,48px);margin:10px 0}
+.final-cta p{color:#c2d9df;line-height:1.8}
+footer{background:#031c29;color:#b7cbd1;padding:30px 0;font-size:12px}
+footer .container{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+@media(max-width:800px){.hero-grid,.product-grid{grid-template-columns:1fr;gap:30px}.product:nth-child(even) .product-image{order:0}.hero-art img,.product-image img{height:270px}.navlinks{display:none}.menu{display:block}.navcta{display:none}.product{padding:55px 0}.hero{padding:65px 0}.container{width:calc(100% - 36px)}}
+</style>
+</head>
+<body>
+<header><div class="container nav">
+<a class="brand" href="index.html#home"><img src="assets/clear-robotics-logo.png" alt="Clear Robotics"></a>
+<nav class="navlinks"><a href="index.html#home">Home</a><a href="about.html">About Us</a><a href="projects.html">Projects</a><a href="products.html">Products</a><a href="blog.html">Blog &amp; News</a><a href="contact.html">Contact</a></nav>
+<a class="navcta" href="contact.html#contact-form">Discuss Your Project ↗</a>
+<button class="menu" type="button" onclick="document.querySelector('.navlinks').classList.toggle('mobile-open')">☰</button>
+</div></header>
+<style>@media(max-width:800px){.navlinks.mobile-open{display:flex;position:absolute;top:82px;left:0;right:0;background:white;padding:20px;flex-direction:column;align-items:flex-start;box-shadow:0 15px 30px #092c3b20}}</style>
+<main>
+<section class="hero"><div class="container hero-grid">
+<div><div class="eyebrow">UNMANNED · ELECTRIC · PURPOSE-BUILT</div>
+<h1>One Fleet.<br><span>Four Solutions.</span></h1>
+<p>Explore Clear Robotics’ unmanned electric vessels, designed for floating waste collection, waterway surveys and aquatic vegetation management across diverse operating environments.</p>
+<div class="hero-actions"><a class="btn light" href="#fleet">Explore the Fleet ↓</a><a class="btn outline" href="contact.html#contact-form">Discuss Your Project ↗</a></div></div>
+<div class="hero-art"><img src="assets/unified-products/fetch.jpg" alt="Clearbot Fetch Skimmer"></div>
+</div></section>
+<section class="intro container" id="fleet"><div class="kicker">OUR PRODUCT RANGE</div><h2>Find the Right Vessel for Your Waterway</h2><p>From compact vessels for confined waterways to high-capacity platforms and aquatic weed harvesters, explore the Clearbot fleet.</p>
+<div class="product-nav"><a href="#fetch-skimmer">01 · Fetch Skimmer</a><a href="#class-2">02 · Class 2</a><a href="#class-3">03 · Class 3</a><a href="#alligator-neo">04 · Alligator Neo</a></div>
+</section>
+
+<section class="product" id="fetch-skimmer"><div class="container product-grid">
+<div class="product-image"><img src="assets/unified-products/fetch.jpg" alt="Clearbot Fetch Skimmer"></div>
+<div><div class="number">01 / COMPACT ELECTRIC VESSEL</div><h2>Clearbot Fetch Skimmer</h2>
+<p class="product-copy">A compact unmanned electric boat designed for floating waste collection and waterway surveys in hard-to-reach areas, including ports and marinas. It supports remote operation, live video feed and environmental monitoring workflows.</p>
+<div class="tags"><span class="tag">UNMANNED</span><span class="tag">100% ELECTRIC</span><span class="tag">REMOTE OPERATION</span><span class="tag">SURVEY SUPPORT</span></div>
+<div class="metrics"><div class="metric"><strong>2 hours</strong><span>Battery life · technical overview</span></div><div class="metric"><strong>2 knots</strong><span>Average speed · technical overview</span></div></div>
+<div class="specs"><h3>Technical overview</h3>
+<div class="spec-row"><span>Charging options</span><strong>Battery swapping, solar charging</strong></div>
+<div class="spec-row"><span>Range</span><strong>5 km</strong></div>
+<div class="spec-row"><span>Dimensions</span><strong>1.30 × 0.75 × 0.68 m</strong></div>
+<div class="spec-row"><span>Payload capacity</span><strong>15–50 kg</strong></div>
+<div class="spec-row"><span>Propulsion</span><strong>100% electric</strong></div>
+<div class="spec-row"><span>Applications</span><strong>Waste collection, surveys, monitoring</strong></div></div>
+<p class="note">The source page also shows different headline figures for battery life and speed. Technical overview figures are shown here; confirm final configuration with the Clearbot team.</p>
+<p class="note">Published Sino Group demonstration in Hong Kong: reported area covered of 5,000 sq. m.</p>
+<div class="product-actions"><a class="btn" href="contact.html#contact-form">Request a Technical Demo ↗</a></div>
+</div></div></section>
+
+<section class="product" id="class-2"><div class="container product-grid">
+<div class="product-image"><img src="assets/unified-products/class-2.jpg" alt="Clearbot Class 2 Skimmer"></div>
+<div><div class="number">02 / MID-SIZE COLLECTION PLATFORM</div><h2>Clearbot Class 2 Skimmer</h2>
+<p class="product-copy">A smarter unmanned electric platform for floating waste recovery and data-led waterway operations. Designed for river, lake and port environments, with remote operation and dashboard-led monitoring.</p>
+<div class="tags"><span class="tag">UNMANNED</span><span class="tag">ELECTRIC</span><span class="tag">SOLAR CHARGING OPTION</span><span class="tag">SMART DASHBOARD</span></div>
+<div class="metrics"><div class="metric"><strong>Up to 200 kg</strong><span>Payload capacity</span></div><div class="metric"><strong>80 kg/hr</strong><span>Published collection rate</span></div></div>
+<div class="specs"><h3>Technical overview</h3>
+<div class="spec-row"><span>Battery life</span><strong>6–8 hours per charge</strong></div>
+<div class="spec-row"><span>Average speed</span><strong>3 knots</strong></div>
+<div class="spec-row"><span>Range</span><strong>5 km</strong></div>
+<div class="spec-row"><span>Dimensions</span><strong>3.0 × 1.3 × 0.56 m</strong></div>
+<div class="spec-row"><span>Payload capacity</span><strong>Up to 200 kg</strong></div>
+<div class="spec-row"><span>Charging options</span><strong>Battery swapping, solar charging</strong></div>
+<div class="spec-row"><span>Applications</span><strong>Waste collection, surveys &amp; monitoring</strong></div></div>
+<p class="note">Published collection and payload figures. Actual performance depends on waste type, site conditions, water conditions and operating configuration.</p>
+<div class="product-actions"><a class="btn" href="contact.html#contact-form">Request a Technical Demo ↗</a></div>
+</div></div></section>
+
+<section class="product" id="class-3"><div class="container product-grid">
+<div class="product-image"><img src="assets/unified-products/class-3.jpg" alt="Clearbot Class 3 Skimmer"></div>
+<div><div class="number">03 / HIGH-CAPACITY WATERWAY VESSEL</div><h2>Clearbot Class 3 Skimmer</h2>
+<p class="product-copy">A high-capacity unmanned electric vessel for floating waste recovery, hydrographic and draft surveys, and waterway monitoring across ports, harbours, rivers and lakes.</p>
+<div class="tags"><span class="tag">UNMANNED</span><span class="tag">ELECTRIC</span><span class="tag">AI-DRIVEN DATA</span><span class="tag">REMOTE CONTROL</span></div>
+<div class="metrics"><div class="metric"><strong>450 kg</strong><span>Carrying capacity</span></div><div class="metric"><strong>1,000 kg</strong><span>Towing capacity</span></div></div>
+<div class="specs"><h3>Class 3 – R3 datasheet specifications</h3>
+<div class="spec-row"><span>Machine tonnage</span><strong>4 m³</strong></div>
+<div class="spec-row"><span>Dimensions</span><strong>4.04 × 1.68 × 2.3 m</strong></div>
+<div class="spec-row"><span>Battery configuration</span><strong>2 batteries, 155 V, 100 Ah each</strong></div>
+<div class="spec-row"><span>Battery life</span><strong>Up to 8 hours</strong></div>
+<div class="spec-row"><span>Charging time</span><strong>4–6 hours for two batteries</strong></div>
+<div class="spec-row"><span>Maximum speed</span><strong>5 knots</strong></div>
+<div class="spec-row"><span>Telemetry range</span><strong>Up to 1 km, line of sight</strong></div>
+<div class="spec-row"><span>Engines</span><strong>2 × 4 HP</strong></div>
+<div class="spec-row"><span>Minimum water depth</span><strong>1.5 m</strong></div>
+<div class="spec-row"><span>Hull / conveyor</span><strong>Fiberglass / POM belt</strong></div>
+<div class="spec-row"><span>Camera / remote screen</span><strong>1080p HD / 7-inch HD</strong></div></div>
+<p class="note">The supplied Class 3 – R3 datasheet does not specify solar charging. Remote-control battery life is listed separately as up to 10 hours.</p>
+<div class="product-actions"><a class="btn" href="contact.html#contact-form">Request a Technical Demo ↗</a></div>
+</div></div></section>
+
+<section class="product" id="alligator-neo"><div class="container product-grid">
+<div class="product-image"><img src="assets/unified-products/alligator.jpg" alt="Clearbot Alligator Neo Harvester"></div>
+<div><div class="number">04 / AQUATIC VEGETATION MANAGEMENT</div><h2>Alligator Neo Harvester</h2>
+<p class="product-copy">A rugged unmanned electric vessel designed to cut through dense water hyacinth and aquatic vegetation across ports, lakes and other waterbodies.</p>
+<div class="tags"><span class="tag">UNMANNED</span><span class="tag">ELECTRIC</span><span class="tag">AQUATIC WEED CUTTING</span></div>
+<div class="metrics"><div class="metric"><strong>2 tonnes</strong><span>Loading capacity</span></div><div class="metric"><strong>2 cutters</strong><span>Cutting system</span></div></div>
+<div class="specs"><h3>Published datasheet details</h3>
+<div class="spec-row"><span>Loading capacity</span><strong>2 tonnes / 4–4.5 m³</strong></div>
+<div class="spec-row"><span>Cutting size</span><strong>1.7 m (W) × 1.1 m (D)</strong></div>
+<div class="spec-row"><span>Cutters</span><strong>2</strong></div>
+<div class="spec-row"><span>Empty navigation speed</span><strong>5–7 km/h</strong></div>
+<div class="spec-row"><span>Full-load navigation speed</span><strong>2–2.5 km/h</strong></div>
+<div class="spec-row"><span>Main power</span><strong>Lithium battery power group</strong></div></div>
+<p class="note">The supplied datasheet does not specify battery runtime or solar charging. It also does not state a vegetation-clearing rate per hour.</p>
+<div class="product-actions"><a class="btn" href="contact.html#contact-form">Request a Technical Demo ↗</a></div>
+</div></div></section>
+
+<section class="compare"><div class="container">
+<div class="section-title"><div class="kicker">FLEET OVERVIEW</div><h2>Compare the Clearbot Fleet</h2><p>Review key published information. Final vessel suitability depends on site and configuration.</p></div>
+<div class="table-wrap"><table><thead><tr><th>Product</th><th>Primary application</th><th>Published capacity</th><th>Speed</th><th>Power / charging</th></tr></thead><tbody>
+<tr><td>Fetch Skimmer</td><td>Floating waste, surveys</td><td>15–50 kg payload</td><td>2 knots*</td><td>Electric; battery swap / solar charging</td></tr>
+<tr><td>Class 2</td><td>Waste collection, monitoring</td><td>Up to 200 kg payload</td><td>3 knots</td><td>Electric; battery swap / solar charging</td></tr>
+<tr><td>Class 3</td><td>High-capacity waste recovery, surveys</td><td>450 kg carry / 1,000 kg tow</td><td>5 knots</td><td>Electric battery system</td></tr>
+<tr><td>Alligator Neo</td><td>Aquatic vegetation cutting</td><td>2 tonnes / 4–4.5 m³</td><td>5–7 km/h empty</td><td>Lithium battery power group</td></tr>
+</tbody></table></div>
+<p class="note">*Fetch Skimmer technical overview figure. Its source page also contains different headline figures; confirm the final configuration with the technical team.</p>
+</div></section>
+
+<section class="faq"><div class="container">
+<div class="section-title"><div class="kicker">NEED MORE INFORMATION?</div><h2>Frequently Asked Questions</h2><p>Talk to our team about your waterway, operating conditions and vessel configuration.</p></div>
+<div class="faq-list">
+<details><summary>Which Clearbot product is suitable for compact waterways?</summary><p>Fetch Skimmer is described as a compact vessel for confined and shallow water areas, including ports and marinas. Site suitability should be assessed against local conditions.</p></details>
+<details><summary>Which products support floating waste collection?</summary><p>Fetch Skimmer, Class 2 and Class 3 are presented for floating waste collection. Alligator Neo is designed for aquatic vegetation management.</p></details>
+<details><summary>Does every product support solar charging?</summary><p>No. Solar charging is listed for Fetch Skimmer and Class 2. The supplied Class 3 and Alligator Neo datasheets do not specify solar charging.</p></details>
+<details><summary>Can I request a technical demonstration?</summary><p>Yes. Use the Discuss Your Project button to share your location, waterbody and operating requirements with our team.</p></details>
+</div></div></section>
+
+<section class="final-cta"><div class="container"><div class="kicker">LET'S PLAN YOUR DEPLOYMENT</div><h2>Let's find the right vessel for your waterway.</h2><p>Tell us about your location, waterbody and cleaning requirements.</p><a class="btn light" href="contact.html#contact-form">Discuss Your Project ↗</a></div></section>
+</main>
+<footer><div class="container"><span>© 2026 Clear Robotics. All rights reserved.</span><span>Unmanned electric solutions for cleaner waterways.</span><span><a href="index.html">Home</a> · <a href="projects.html">Projects</a> · <a href="contact.html">Contact</a></span></div></footer>
+</body></html>
