@@ -158,6 +158,44 @@ footer .container{display:flex;justify-content:space-between;gap:20px;flex-wrap:
   display: block;
   animation: productReveal .35s ease;
 }
+/* Consistent detail layout for Fetch, Class 2, Class 3 and Alligator Neo. */
+
+/* Keep every product detail in the same orientation as Fetch Skimmer. */
+.product.product-expanded > .container.product-grid > .product-image {
+  order: 2 !important;
+}
+.product.product-expanded > .container.product-grid > div:last-child {
+  order: 1 !important;
+}
+@media (max-width: 800px) {
+  .product.product-expanded > .container.product-grid > .product-image,
+  .product.product-expanded > .container.product-grid > div:last-child {
+    order: initial !important;
+  }
+}
+
+.product.product-expanded { scroll-margin-top: 100px; }
+.product.product-expanded > .container.product-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 55px;
+  align-items: center;
+}
+.product.product-expanded .product-image { min-width: 0; }
+.product.product-expanded .product-image img {
+  width: 100%;
+  height: 390px;
+  object-fit: cover;
+  display: block;
+}
+@media (max-width: 800px) {
+  .product.product-expanded > .container.product-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  .product.product-expanded .product-image img { height: 270px; }
+}
+
 .product-close {
   display: inline-block;
   margin: 0 0 20px;
@@ -438,21 +476,29 @@ function toggleProductDetails(id, button) {
   if (!section) return;
 
   const wasOpen = section.classList.contains('product-expanded');
-  closeProductDetails();
+  closeProductDetails(false);
 
-  if (!wasOpen) {
-    section.classList.remove('product-collapsed');
-    section.classList.add('product-expanded');
-    button.textContent = 'Hide Details ↑';
-    button.setAttribute('aria-expanded', 'true');
-
-    setTimeout(() => {
-      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 80);
+  if (wasOpen) {
+    const gallery = document.getElementById('product-cards');
+    if (gallery) gallery.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return;
   }
+
+  section.classList.remove('product-collapsed');
+  section.classList.add('product-expanded');
+
+  const activeButton = document.querySelector('.card-button[onclick*="' + id + '"]');
+  if (activeButton) {
+    activeButton.textContent = 'Hide Details ↑';
+    activeButton.setAttribute('aria-expanded', 'true');
+  }
+
+  window.requestAnimationFrame(() => {
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
 }
 
-function closeProductDetails() {
+function closeProductDetails(scrollToGallery = true) {
   document.querySelectorAll('.product[id]').forEach(section => {
     section.classList.remove('product-expanded');
     section.classList.add('product-collapsed');
@@ -463,8 +509,10 @@ function closeProductDetails() {
     button.setAttribute('aria-expanded', 'false');
   });
 
-  const gallery = document.getElementById('product-cards');
-  if (gallery) gallery.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (scrollToGallery) {
+    const gallery = document.getElementById('product-cards');
+    if (gallery) gallery.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 }
 
 /* Admin Image Manager: product image replacements */
