@@ -236,7 +236,7 @@ export default function AdminPage() {
   const filteredLeads=useMemo(()=>leads.filter(l=>(leadStatus==="all"||l.status===leadStatus)&&(!leadSearch||[l.fullName,l.email,l.company,l.country,l.phone].some(v=>String(v||"").toLowerCase().includes(leadSearch.toLowerCase())))),[leads,leadStatus,leadSearch]);
   const groupedSiteImages=useMemo(()=>{
     const pageOrder=[
-      "Homepage Hero Slider","index.html","about.html","projects.html",
+      "Homepage Hero Slider","index.html","about.html","products.html","projects.html",
       "class-1.html","class-2.html","class-3.html","alligator.html",
       "deployment-models.html","services.html",
       "service-bathymetric-survey.html","service-draft-survey.html",
@@ -274,7 +274,8 @@ export default function AdminPage() {
           page: item.page,
           src: item.src,
           alt: typeof item.alt === "string" ? item.alt : "",
-          url: typeof item.url === "string" ? item.url : ""
+          url: typeof item.url === "string" ? item.url : "",
+          videoUrl: typeof item.videoUrl === "string" ? item.videoUrl : ""
         });
         return;
       }
