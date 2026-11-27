@@ -15,7 +15,7 @@ type Lead = { id: string; fullName: string; email: string; phone: string; compan
 type Blog = { id: string; title: string; slug: string; excerpt: string; content: string; featuredImage: string; imageAlt: string; category: string; tags: string[]; author: string; status: string; publishAt: string; updatedAt?: string; seo?: Record<string,string> };
 type Category = { id:string; name:string; slug:string };
 type SeoPage = { id:string; path:string; fields: Record<string,string> };
-type SiteImage = { id:string; page:string; src:string; alt:string; url:string };
+type SiteImage = { id:string; page:string; src:string; alt:string; url:string; videoUrl?:string };
 type Project = { id:string; title:string; slug:string; location:string; category:string; summary:string; image:string; videoUrl:string; detailUrl:string; status:string; updatedAt?:string };
 type Section = "overview"|"leads"|"projects"|"blogs"|"images"|"seo"|"users"|"settings";
 
@@ -173,7 +173,38 @@ export default function AdminPage() {
   async function addCategory(e:FormEvent){e.preventDefault();if(!categoryName.trim())return;try{const r=await api<{category:Category}>("/api/admin/categories",{method:"POST",body:JSON.stringify({name:categoryName})});setCategories(prev=>[r.category,...prev]);setCategoryName("");setNotice("Category added.");}catch(e){setError((e as Error).message);}}
   async function uploadImage(file?:File){if(!file)return;setBusy(true);setError("");try{const dataUrl=await new Promise<string>((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result));reader.onerror=()=>reject(new Error("Could not read image."));reader.readAsDataURL(file);});const r=await api<{url:string}>("/api/admin/uploads",{method:"POST",body:JSON.stringify({filename:file.name,dataUrl})});setBlog(prev=>({...prev,featuredImage:r.url,imageAlt:prev.imageAlt||file.name.replace(/\.[^.]+$/,"")}));setNotice("Image uploaded.");}catch(e){setError((e as Error).message);}finally{setBusy(false);}}
 
-  async function uploadSiteImage(slot:SiteImage,file?:File){if(!file)return;setBusy(true);setError("");try{if(!/^image\/(jpeg|png|webp|gif)$/.test(file.type))throw new Error("Use JPG, PNG, WEBP or GIF images.");if(file.size>5*1024*1024)throw new Error("Image must be 5 MB or smaller.");const dataUrl=await new Promise<string>((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result));reader.onerror=()=>reject(new Error("Could not read image."));reader.readAsDataURL(file);});const uploaded=await api<{url:string}>("/api/admin/uploads",{method:"POST",body:JSON.stringify({filename:file.name,dataUrl})});await api("/api/admin/site-images",{method:"PUT",body:JSON.stringify({id:slot.id,url:uploaded.url})});setSiteImages(prev=>prev.map(item=>item.id===slot.id?{...item,url:uploaded.url}:item));setNotice("Website image replaced successfully.");}catch(e){setError((e as Error).message);}finally{setBusy(false);}}
+  async function uploadSiteImage(slot:SiteImage,file?:File){
+    if(!file)return;setBusy(true);setError("");
+    try{
+      if(!/^image\/(jpeg|png|webp|gif)$/.test(file.type))throw new Error("Use JPG, PNG, WEBP or GIF images.");
+      if(file.size>5*1024*1024)throw new Error("Image must be 5 MB or smaller.");
+      const dataUrl=await new Promise<string>((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result));reader.onerror=()=>reject(new Error("Could not read image."));reader.readAsDataURL(file);});
+      const uploaded=await api<{url:string}>("/api/admin/uploads",{method:"POST",body:JSON.stringify({filename:file.name,dataUrl})});
+      await api("/api/admin/site-images",{method:"PUT",body:JSON.stringify({id:slot.id,url:uploaded.url})});
+      setSiteImages(prev=>prev.map(item=>item.id===slot.id?{...item,url:uploaded.url}:item));
+      setNotice("Website image replaced successfully.");
+    }catch(e){setError((e as Error).message);}finally{setBusy(false);}
+  }
+  async function uploadSiteVideo(slot:SiteImage,file?:File){
+    if(!file)return;setBusy(true);setError("");
+    try{
+      if(!/^video\/(mp4|webm|quicktime)$/.test(file.type))throw new Error("Use MP4, WebM or MOV video.");
+      if(file.size>30*1024*1024)throw new Error("Video must be 30 MB or smaller.");
+      const dataUrl=await new Promise<string>((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result));reader.onerror=()=>reject(new Error("Could not read video."));reader.readAsDataURL(file);});
+      const uploaded=await api<{url:string}>("/api/admin/uploads",{method:"POST",body:JSON.stringify({filename:file.name,dataUrl})});
+      await api("/api/admin/site-images",{method:"PUT",body:JSON.stringify({id:slot.id,videoUrl:uploaded.url})});
+      setSiteImages(prev=>prev.map(item=>item.id===slot.id?{...item,videoUrl:uploaded.url}:item));
+      setNotice("Product video uploaded successfully.");
+    }catch(e){setError((e as Error).message);}finally{setBusy(false);}
+  }
+  async function resetSiteVideo(slot:SiteImage){
+    setBusy(true);setError("");
+    try{
+      await api("/api/admin/site-images",{method:"PUT",body:JSON.stringify({id:slot.id,videoUrl:""})});
+      setSiteImages(prev=>prev.map(item=>item.id===slot.id?{...item,videoUrl:""}:item));
+      setNotice("Product video removed. Image fallback restored.");
+    }catch(e){setError((e as Error).message);}finally{setBusy(false);}
+  }
   async function resetSiteImage(slot:SiteImage){setBusy(true);try{await api("/api/admin/site-images",{method:"PUT",body:JSON.stringify({id:slot.id,url:""})});setSiteImages(prev=>prev.map(item=>item.id===slot.id?{...item,url:""}:item));setNotice("Original image restored.");}catch(e){setError((e as Error).message);}finally{setBusy(false);}}
   async function recordSiteImageMeta(slot:SiteImage,img:HTMLImageElement){
     const width=img.naturalWidth; const height=img.naturalHeight;
@@ -366,9 +397,9 @@ export default function AdminPage() {
               const cardTitle=slide?`Homepage Hero Slider — Slide ${slide}: ${homeHeroSlideNames[slide-1]}`:(slot.alt||fileName);
               const positionLabel=slide?`Slide ${slide} of 5 · Homepage carousel image`:`${imagePageTitle(page)} · Image ${slotIndex+1} of ${slots.length}`;
               return <article className={`cb-admin-card cb-site-image-card${slide?" cb-site-image-hero-card":""}`} key={slot.id}>
-                <div className="cb-site-image-preview">{source?<img src={source} alt={slot.alt||fileName} loading="lazy" onLoad={e=>{void recordSiteImageMeta(slot,e.currentTarget);}} onError={e=>{const img=e.currentTarget;img.style.display="none";const parent=img.parentElement;if(parent){parent.classList.add("is-broken");if(!parent.querySelector(".cb-site-image-dummy")){const fallback=document.createElement("div");fallback.className="cb-site-image-dummy";fallback.innerHTML="<b>Preview unavailable</b><small>Upload a replacement image</small>";parent.appendChild(fallback);}}}}/>:<div className="cb-site-image-dummy"><ImagePlus/><b>Image placeholder</b><small>Upload image to fill this slot</small></div>}</div>
+                {slot.id.startsWith("products.html::")&&slot.videoUrl&&<video className="cb-site-image-video-preview" src={slot.videoUrl} controls playsInline preload="metadata"/>}<div className="cb-site-image-preview">{source?<img src={source} alt={slot.alt||fileName} loading="lazy" onLoad={e=>{void recordSiteImageMeta(slot,e.currentTarget);}} onError={e=>{const img=e.currentTarget;img.style.display="none";const parent=img.parentElement;if(parent){parent.classList.add("is-broken");if(!parent.querySelector(".cb-site-image-dummy")){const fallback=document.createElement("div");fallback.className="cb-site-image-dummy";fallback.innerHTML="<b>Preview unavailable</b><small>Upload a replacement image</small>";parent.appendChild(fallback);}}}}/>:<div className="cb-site-image-dummy"><ImagePlus/><b>Image placeholder</b><small>Upload image to fill this slot</small></div>}</div>
                 <div className="cb-site-image-info"><b>{cardTitle}</b><small className="cb-site-image-position">{positionLabel}</small><div className="cb-site-image-meta cb-site-image-meta-detailed"><span><strong>Current uploaded</strong>{actual}</span><span><strong>Recommended</strong>{requirement.size}<small>{requirement.detail}</small></span><span><strong>File size</strong>{imageFileSizes[slot.id]||"Checking…"}</span><span><strong>Format</strong>{imageFormat(source)}</span></div><small className={`cb-site-image-resolution ${resolutionStatus==="Meets recommendation"?"good":resolutionStatus==="Below recommendation"?"warn":""}`}>{resolutionStatus}</small><small className="cb-site-image-source" title={slot.src}>{fileName}</small></div>
-                <div className="cb-site-image-actions"><label className="cb-admin-primary compact"><ImagePlus size={14}/> Upload replacement<input type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden onChange={e=>uploadSiteImage(slot,e.target.files?.[0])}/></label>{slot.url&&<button className="cb-admin-secondary compact" disabled={busy} onClick={()=>resetSiteImage(slot)}>Restore original</button>}</div>
+                <div className="cb-site-image-actions"><label className="cb-admin-primary compact"><ImagePlus size={14}/> Upload replacement<input type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden onChange={e=>uploadSiteImage(slot,e.target.files?.[0])}/></label>{slot.url&&<button className="cb-admin-secondary compact" disabled={busy} onClick={()=>resetSiteImage(slot)}>Restore original</button>}{slot.id.startsWith("products.html::")&&<><label className="cb-admin-primary compact">Upload / Replace Video<input type="file" accept="video/mp4,video/webm,video/quicktime" hidden onChange={e=>uploadSiteVideo(slot,e.target.files?.[0])}/></label>{slot.videoUrl&&<button className="cb-admin-secondary compact" disabled={busy} onClick={()=>resetSiteVideo(slot)}>Remove Video</button>}</>}</div>
               </article>;
             })}</div>
           </section>;

@@ -43,13 +43,15 @@ function json(res, status, payload, extraHeaders = {}) {
 function clean(value, max = 1000) { return String(value ?? '').trim().slice(0, max); }
 function safeSlug(value) { return clean(value, 180).toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
 function safeContentUrl(value) { const url = clean(value, 1200); if (!url) return ''; return /^(https?:\/\/|\/(?!\/)|[a-z0-9][a-z0-9._/-]*(?:[?#][^<>\"']*)?)$/i.test(url) ? url : ''; }
-function readBody(req) {
+function readBody(req, maxBytes = MAX_BODY) {
   return new Promise((resolve, reject) => {
     let body = ''; let failed = false;
     req.on('data', chunk => {
       if (failed) return;
       body += chunk;
-      if (Buffer.byteLength(body) > MAX_BODY) { failed = true; reject(new Error('Request body too large')); req.resume(); }
+      if (Buffer.byteLength(body) > maxBytes) {
+        failed = true; reject(new Error('Request body too large')); req.resume();
+      }
     });
     req.on('end', () => {
       if (failed) return;
@@ -367,7 +369,7 @@ async function handleApi(req, res, url) {
   if (method === 'GET' && pathname === '/api/public/site-images') {
     const manifest = readJsonFile(SITE_IMAGE_MANIFEST, []);
     const overrides = await listRecords('siteImages');
-    return json(res, 200, { images: overrides.map(({ id, url }) => ({ id, url })) });
+    return json(res, 200, { images: overrides.map(({ id, url, videoUrl }) => ({ id, url, videoUrl: videoUrl || '' })) });
   }
   if (method === 'GET' && pathname === '/api/public/seo') {
     const pagePath = clean(url.searchParams.get('path') || '/', 300);
@@ -399,19 +401,34 @@ async function handleApi(req, res, url) {
       if (!canContent) return json(res,403,{error:'Content management permission required.'});
       const manifest = readJsonFile(SITE_IMAGE_MANIFEST, []);
       const overrides = await listRecords('siteImages');
-      return json(res,200,{ images: manifest.map(item => ({ ...item, url: overrides.find(entry => entry.id === item.id)?.url || '' })) });
+      return json(res,200,{ images: manifest.map(item => { const saved = overrides.find(entry => entry.id === item.id) || {}; return { ...item, url: saved.url || '', videoUrl: saved.videoUrl || '' }; }) });
     }
     if (method === 'PUT' && pathname === '/api/admin/site-images') {
       if (!canContent) return json(res,403,{error:'Content management permission required.'});
-      const body = await readBody(req); const id = clean(body.id,240); const urlValue = clean(body.url,800);
+      const body = await readBody(req);
+      const id = clean(body.id,240);
       const manifest = readJsonFile(SITE_IMAGE_MANIFEST, []);
       if (!manifest.some(item => item.id === id)) return json(res,404,{error:'Image slot not found.'});
-      if (urlValue && !/^\/api\/uploads\/[a-f0-9-]{20,80}$/i.test(urlValue)) return json(res,400,{error:'Choose an image uploaded to the media library.'});
+
+      const hasUrl = Object.prototype.hasOwnProperty.call(body, 'url');
+      const hasVideo = Object.prototype.hasOwnProperty.call(body, 'videoUrl');
+      if (!hasUrl && !hasVideo) return json(res,400,{error:'No media field supplied.'});
+
+      const urlValue = hasUrl ? clean(body.url,800) : undefined;
+      const videoValue = hasVideo ? clean(body.videoUrl,800) : undefined;
+      const validUpload = value => !value || /^\/api\/uploads\/[a-f0-9-]{20,80}$/i.test(value);
+      if (hasUrl && !validUpload(urlValue)) return json(res,400,{error:'Choose an image uploaded to the media library.'});
+      if (hasVideo && !validUpload(videoValue)) return json(res,400,{error:'Choose a video uploaded to the media library.'});
+
       const existing = await getRecord('siteImages', id);
-      const record = { id, url: urlValue, updatedAt: new Date().toISOString(), updatedBy: user.email };
-      if (urlValue) await putRecord('siteImages',record); else if (existing) await deleteRecord('siteImages',id);
-      await logActivity(user, urlValue ? 'updated' : 'reset', 'site_image', id);
-      return json(res,200,{ok:true,id,url:urlValue});
+      const record = { ...(existing || {}), id, updatedAt: new Date().toISOString(), updatedBy: user.email };
+      if (hasUrl) record.url = urlValue;
+      if (hasVideo) record.videoUrl = videoValue;
+      if (!record.url && !record.videoUrl) await deleteRecord('siteImages',id);
+      else await putRecord('siteImages',record);
+
+      await logActivity(user, (hasVideo ? videoValue : urlValue) ? 'updated' : 'reset', 'site_image', id);
+      return json(res,200,{ok:true,id,url:record.url || '',videoUrl:record.videoUrl || ''});
     }
     if (method === 'GET' && pathname === '/api/admin/settings') {
       return json(res, 200, { notifyTo: NOTIFY_TO, emailConfigured: Boolean(transporter), database: useDatabase ? 'PostgreSQL' : 'Local JSON (development only)', roles: ['super_admin','sales','marketing'] });
@@ -558,8 +575,18 @@ async function handleApi(req, res, url) {
       if (!isSuper) return json(res,403,{error:'Super Admin permission required.'}); return json(res,200,{activity:(await listRecords('activity')).slice(0,100)});
     }
     if (method === 'POST' && pathname === '/api/admin/uploads') {
-      if (!canContent) return json(res,403,{error:'Content management permission required.'}); const body=await readBody(req); const match=String(body.dataUrl||'').match(/^data:(image\/(?:jpeg|png|webp|gif));base64,([A-Za-z0-9+/=]+)$/); if(!match) return json(res,400,{error:'Use a JPG, PNG, WEBP or GIF image.'}); const buffer=Buffer.from(match[2],'base64'); if(buffer.length>5*1024*1024) return json(res,413,{error:'Image must be 5 MB or smaller.'}); const id=crypto.randomUUID(); const filename=clean(body.filename,160)||'blog-image';
-      if(useDatabase) await pool.query('INSERT INTO admin_media(id,filename,mime_type,data) VALUES($1,$2,$3,$4)',[id,filename,match[1],buffer]); else await putRecord('media',{id,filename,mimeType:match[1],data:buffer.toString('base64'),createdAt:new Date().toISOString()});
+      if (!canContent) return json(res,403,{error:'Content management permission required.'});
+      const body = await readBody(req, 42 * 1024 * 1024);
+      const match = String(body.dataUrl || '').match(/^data:(image\/(?:jpeg|png|webp|gif)|video\/(?:mp4|webm|quicktime));base64,([A-Za-z0-9+/=]+)$/);
+      if (!match) return json(res,400,{error:'Supported formats: JPG, PNG, WEBP, GIF, MP4, WebM or MOV.'});
+      const buffer = Buffer.from(match[2],'base64');
+      const isVideo = match[1].startsWith('video/');
+      const maxSize = isVideo ? 30 * 1024 * 1024 : 5 * 1024 * 1024;
+      if (buffer.length > maxSize) return json(res,413,{error:isVideo ? 'Video must be 30 MB or smaller.' : 'Image must be 5 MB or smaller.'});
+      const id = crypto.randomUUID();
+      const filename = clean(body.filename,160) || (isVideo ? 'product-video' : 'blog-image');
+      if (useDatabase) await pool.query('INSERT INTO admin_media(id,filename,mime_type,data) VALUES($1,$2,$3,$4)',[id,filename,match[1],buffer]);
+      else await putRecord('media',{id,filename,mimeType:match[1],data:buffer.toString('base64'),createdAt:new Date().toISOString()});
       return json(res,201,{url:`/api/uploads/${id}`,id});
     }
     return json(res,404,{error:'Admin API route not found.'});

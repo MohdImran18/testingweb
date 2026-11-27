@@ -42,7 +42,7 @@ a{text-decoration:none;color:inherit}
 .product-grid{display:grid;grid-template-columns:1fr 1fr;gap:55px;align-items:center}
 .product:nth-child(even) .product-image{order:2}
 .product-image{border-radius:22px;overflow:hidden;background:#dce9ec;box-shadow:0 20px 50px #092c3b18}
-.product-image img{width:100%;height:390px;object-fit:cover;display:block}
+.product-image img{width:100%;height:390px;object-fit:cover;display:block}.product-image video{width:100%;height:390px;object-fit:cover;display:block;background:#092c3b}
 .number{font-size:11px;color:#07939b;font-weight:900;letter-spacing:.16em}
 .product h2{font-size:clamp(34px,4vw,52px);line-height:1.06;letter-spacing:-.045em;margin:12px 0}
 .product-copy{font-size:15px;line-height:1.9;color:var(--muted)}
@@ -80,7 +80,7 @@ details p{color:var(--muted);font-size:13px;line-height:1.8}
 .final-cta p{color:#c2d9df;line-height:1.8}
 footer{background:#031c29;color:#b7cbd1;padding:30px 0;font-size:12px}
 footer .container{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
-@media(max-width:800px){.hero-grid,.product-grid{grid-template-columns:1fr;gap:30px}.product:nth-child(even) .product-image{order:0}.hero-art img,.product-image img{height:270px}.navlinks{display:none}.menu{display:block}.navcta{display:none}.product{padding:55px 0}.hero{padding:65px 0}.container{width:calc(100% - 36px)}}
+@media(max-width:800px){.hero-grid,.product-grid{grid-template-columns:1fr;gap:30px}.product:nth-child(even) .product-image{order:0}.hero-art img,.product-image img,.product-image video{height:270px}.navlinks{display:none}.menu{display:block}.navcta{display:none}.product{padding:55px 0}.hero{padding:65px 0}.container{width:calc(100% - 36px)}}
 </style>
 <style>
 /* PREMIUM FOUR-PRODUCT CARD GALLERY */
@@ -188,12 +188,13 @@ footer .container{display:flex;justify-content:space-between;gap:20px;flex-wrap:
   object-fit: cover;
   display: block;
 }
+.product.product-expanded .product-image video{width:100%;height:390px;object-fit:cover;display:block;background:#092c3b}
 @media (max-width: 800px) {
   .product.product-expanded > .container.product-grid {
     grid-template-columns: 1fr;
     gap: 30px;
   }
-  .product.product-expanded .product-image img { height: 270px; }
+  .product.product-expanded .product-image img,.product.product-expanded .product-image video { height: 270px; }
 }
 
 .product-close {
@@ -674,28 +675,36 @@ function closeProductDetails(scrollToGallery = true) {
   }
 }
 
-/* Admin Image Manager: product image replacements */
+/* Admin Image Manager: product image and video replacements */
 (function () {
   fetch("/api/public/site-images", { credentials: "same-origin" })
-    .then(function (response) {
-      return response.ok ? response.json() : null;
-    })
+    .then(function (response) { return response.ok ? response.json() : null; })
     .then(function (result) {
       if (!result || !Array.isArray(result.images)) return;
-
-      var replacements = new Map(
-        result.images
-          .filter(function (item) { return item.url; })
-          .map(function (item) { return [item.id, item.url]; })
-      );
+      var replacements = new Map(result.images.map(function (item) {
+        return [item.id, item];
+      }));
 
       document.querySelectorAll("img[data-cb-image-key]").forEach(function (img) {
-        var replacement = replacements.get(img.getAttribute("data-cb-image-key"));
-        if (replacement) img.src = replacement;
+        var media = replacements.get(img.getAttribute("data-cb-image-key"));
+        if (media && media.url) img.src = media.url;
+      });
+
+      document.querySelectorAll(".product.product-collapsed .product-image img[data-cb-image-key]").forEach(function (img) {
+        var media = replacements.get(img.getAttribute("data-cb-image-key"));
+        if (!media || !media.videoUrl) return;
+        var video = document.createElement("video");
+        video.src = media.videoUrl;
+        video.controls = true;
+        video.playsInline = true;
+        video.preload = "metadata";
+        video.setAttribute("aria-label", img.alt || "Product video");
+        if (media.url) video.poster = media.url;
+        img.parentNode.replaceChild(video, img);
       });
     })
     .catch(function (error) {
-      console.warn("Product image overrides could not be loaded.", error);
+      console.warn("Product media overrides could not be loaded.", error);
     });
 })();
 </script>
