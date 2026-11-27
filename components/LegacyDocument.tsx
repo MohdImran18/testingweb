@@ -315,8 +315,8 @@ export default function LegacyDocument({ body, styles, links, scripts, title }: 
       img.dataset.cbFallbackApplied = "true";
       const alt = (img.alt || "").toLowerCase();
       img.src = /logo|client|partner/.test(alt)
-        ? "/assets/clear-robotics-logo.png"
-        : "/assets/home-hero-waterway-cleanup.jpg";
+        ? "/original/assets/clear-robotics-logo.png"
+        : "/original/assets/home-hero-waterway-cleanup.jpg";
       img.classList.add("cb-image-fallback");
     };
     const legacyImages = Array.from(document.querySelectorAll<HTMLImageElement>(".legacy-site img"));
